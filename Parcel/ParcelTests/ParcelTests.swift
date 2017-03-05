@@ -11,7 +11,7 @@ class AreaActor: Actor<Area> {}
 
 class VoidActor: Actor<Void> {}
 
-class PercelTests: XCTestCase {
+class ParcelTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
