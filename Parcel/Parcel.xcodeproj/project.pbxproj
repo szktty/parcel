@@ -11,7 +11,6 @@
 		9156D2331E6C731C00D95EC1 /* ParcelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9156D2321E6C731C00D95EC1 /* ParcelTests.swift */; };
 		9156D2351E6C731C00D95EC1 /* Parcel.h in Headers */ = {isa = PBXBuildFile; fileRef = 9156D2271E6C731C00D95EC1 /* Parcel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9156D2421E6C737A00D95EC1 /* Worker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9156D23E1E6C737A00D95EC1 /* Worker.swift */; };
-		9156D2431E6C737A00D95EC1 /* ActorContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9156D23F1E6C737A00D95EC1 /* ActorContext.swift */; };
 		9156D2441E6C737A00D95EC1 /* Actor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9156D2401E6C737A00D95EC1 /* Actor.swift */; };
 		9156D2451E6C737A00D95EC1 /* Scheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9156D2411E6C737A00D95EC1 /* Scheduler.swift */; };
 /* End PBXBuildFile section */
@@ -34,7 +33,6 @@
 		9156D2321E6C731C00D95EC1 /* ParcelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcelTests.swift; sourceTree = "<group>"; };
 		9156D2341E6C731C00D95EC1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9156D23E1E6C737A00D95EC1 /* Worker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Worker.swift; sourceTree = "<group>"; };
-		9156D23F1E6C737A00D95EC1 /* ActorContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorContext.swift; sourceTree = "<group>"; };
 		9156D2401E6C737A00D95EC1 /* Actor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Actor.swift; sourceTree = "<group>"; };
 		9156D2411E6C737A00D95EC1 /* Scheduler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scheduler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -79,12 +77,11 @@
 		9156D2261E6C731C00D95EC1 /* Parcel */ = {
 			isa = PBXGroup;
 			children = (
-				9156D23E1E6C737A00D95EC1 /* Worker.swift */,
-				9156D23F1E6C737A00D95EC1 /* ActorContext.swift */,
-				9156D2401E6C737A00D95EC1 /* Actor.swift */,
-				9156D2411E6C737A00D95EC1 /* Scheduler.swift */,
 				9156D2271E6C731C00D95EC1 /* Parcel.h */,
 				9156D2281E6C731C00D95EC1 /* Info.plist */,
+				9156D2401E6C737A00D95EC1 /* Actor.swift */,
+				9156D2411E6C737A00D95EC1 /* Scheduler.swift */,
+				9156D23E1E6C737A00D95EC1 /* Worker.swift */,
 			);
 			path = Parcel;
 			sourceTree = "<group>";
@@ -211,7 +208,6 @@
 				9156D2441E6C737A00D95EC1 /* Actor.swift in Sources */,
 				9156D2451E6C737A00D95EC1 /* Scheduler.swift in Sources */,
 				9156D2421E6C737A00D95EC1 /* Worker.swift in Sources */,
-				9156D2431E6C737A00D95EC1 /* ActorContext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,6 +414,7 @@
 				9156D23A1E6C731C00D95EC1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		9156D23B1E6C731C00D95EC1 /* Build configuration list for PBXNativeTarget "ParcelTests" */ = {
 			isa = XCConfigurationList;
@@ -426,6 +423,7 @@
 				9156D23D1E6C731C00D95EC1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -1,12 +1,21 @@
 import Foundation
 
-class Scheduler {
+public class Scheduler {
     
     static var `default`: Scheduler = Scheduler()
     
     var workers: [Worker]
 
     public var numberOfMaxProcesses: Int
+    
+    var availableWorker: Worker {
+        get {
+            return workers.reduce(workers.first!) {
+                min, worker in
+                return worker.actors.count < min.actors.count ? worker : min
+            }
+        }
+    }
     
     init(numberOfWorkers: Int? = nil,
          numberOfMaxProcesses: Int? = nil) {
@@ -19,17 +28,8 @@ class Scheduler {
         }
     }
     
-    func add<T>(actor: Actor<T>) {
-        let context = ActorContext(actor: actor)
-        assignWorker(context)
-    }
-    
-    func assignWorker<T>(_ context: ActorContext<T>) {
-        let worker = workers.reduce(workers.first!) {
-            min, worker in
-            return worker.contexts.count < min.contexts.count ? worker : min
-        }
-        worker.add(context: context)
+    func register<T>(actor: Actor<T>) {
+        availableWorker.register(actor: actor)
     }
 
 }

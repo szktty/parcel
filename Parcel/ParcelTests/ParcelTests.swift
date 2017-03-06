@@ -7,10 +7,6 @@ enum Area {
     case exit
 }
 
-class AreaActor: Actor<Area> {}
-
-class VoidActor: Actor<Void> {}
-
 class ParcelTests: XCTestCase {
     
     override func setUp() {
@@ -24,33 +20,36 @@ class ParcelTests: XCTestCase {
     }
     
     func testExample() {
-        let ref = AreaActor.spawn {
-            context, message in
-            switch message {
-            case .rectangle(let width, let height):
-                print("Area of rectangle is \(width), \(height)")
-            case .circle(let r):
-                let circle = 3.14159 * r * r
-                print("Area of circle is \(circle)")
-            case .exit:
-                print("Exit")
-                context.terminate()
+        let actor = Actor<Area>.spawn {
+            actor in
+            actor.receive {
+                message in
+                switch message {
+                case .rectangle(let width, let height):
+                    print("Area of rectangle is \(width), \(height)")
+                case .circle(let r):
+                    let circle = 3.14159 * r * r
+                    print("Area of circle is \(circle)")
+                case .exit:
+                    print("Exit")
+                    return .break
+                }
+                return .continue
             }
         }
-        ref ! .rectangle(6, 10)
-        ref ! .circle(23)
-        ref ! .exit
+        actor ! .rectangle(6, 10)
+        actor ! .circle(23)
+        actor ! .exit
     }
     
     func _testRepeatSpawn() {
         let n = 100000
         for _ in 0...n {
-            let ref = VoidActor.spawn {
-                context, message in
-                context.terminate()
-                return
+            let actor = Actor<Void>.spawn {
+                actor in
+                actor.receive { return .break }
             }
-            ref ! ()
+            actor ! ()
         }
     }
     

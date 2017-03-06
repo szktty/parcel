@@ -5,7 +5,7 @@ class Worker {
     weak var scheduler: Scheduler!
     var workerId: Int
     var dispatchQueue: DispatchQueue
-    var contexts: [AnyObject] = []
+    var actors: [AnyObject] = []
 
     init(scheduler: Scheduler, workerId: Int) {
         self.scheduler = scheduler
@@ -13,22 +13,27 @@ class Worker {
         dispatchQueue = DispatchQueue(label: workerId.description)
     }
     
-    func add<T>(context: ActorContext<T>) {
+    func register<T>(actor: Actor<T>) {
         dispatchQueue.async {
-            self.contexts.append(context)
-            while !context.isTerminate {
-                if let message = context.mailbox.pop() {
-                    context.receive(message)
+            actor.worker = self
+            self.actors.append(actor)
+            while !actor.isTerminate {
+                guard let message = actor.pop() else { continue }
+                do {
+                    try actor.evaluate(message: message)
+                } catch {
+                    break
                 }
             }
-            self.remove(context: context)
+            self.unregister(actor: actor)
         }
     }
     
-    func remove<T>(context: ActorContext<T>) {
-        contexts = contexts.filter {
+    func unregister<T>(actor: Actor<T>) {
+        // TODO: performance?
+        actors = actors.filter {
             e in
-            return ObjectIdentifier(e) != ObjectIdentifier(context)
+            return ObjectIdentifier(e) != ObjectIdentifier(actor)
         }
     }
     

@@ -1,24 +1,148 @@
 import Foundation
 
+public enum ActorError: Error {
+    case unspawned
+}
+
+public enum Loop {
+    case `continue`
+    case `break`
+    case timeout
+}
+
 public class Actor<T> {
 
-    public weak var context: ActorContext<T>!
-    var messageHandler: (ActorContext<T>, T) -> ()
-    // TODO: timeout handler
-    
-    public required init(messageHandler: @escaping (ActorContext<T>, T) -> ()) {
-        self.messageHandler = messageHandler
+    public weak var scheduler: Scheduler?
+    weak var worker: Worker?
+    var messageHandler: ((T) throws -> Loop)?
+    var deadline: Int?
+    var timeoutHandler: (() throws -> Void)?
+    var isTerminate: Bool = false
+    var errorHandler: ((Error) -> Void)?
+    var messageQueue: MessageQueue<T> = MessageQueue()
+
+    public required init(scheduler: Scheduler? = nil) {
+        self.scheduler = scheduler ?? Scheduler.default
     }
     
-    // subclasses can override instead of using the message handler
-    public func receive(_ message: T) {
-        messageHandler(context, message)
+    // MARK: Event handlers
+    
+    public func receive(handler: @escaping (T) throws -> Loop) {
+        messageHandler = handler
     }
     
-    public class func spawn(messageHandler: @escaping (ActorContext<T>, T) -> ()) -> ActorContext<T> {
-        let actor = self.init(messageHandler: messageHandler)
-        Scheduler.default.add(actor: actor)
-        return actor.context
+    public func after(deadline: Int, handler: @escaping () throws -> Void) {
+        self.deadline = deadline
+        timeoutHandler = handler
+    }
+    
+    public func rescue(handler: @escaping (Error) -> Void) {
+        errorHandler = handler
+    }
+    
+    // MARK: Process
+    
+    public func spawn(scheduler: Scheduler? = nil) {
+        let scheduler = scheduler ?? Scheduler.default
+        scheduler.register(actor: self)
+    }
+    
+    public class func spawn(scheduler: Scheduler? = nil,
+                            block: @escaping (Actor<T>) -> Void) -> Actor<T> {
+        let actor: Actor<T> = self.init(scheduler: scheduler)
+        block(actor)
+        actor.spawn()
+        return actor
+    }
+    
+    // MARK: Message passing
+    
+    public func send(message: T) {
+        self.messageQueue.enqueue(message)
+    }
+    
+    public func pop() -> T? {
+        if let message = self.messageQueue.dequeue() {
+            return message
+        } else {
+            return nil
+        }
+    }
+
+    func evaluate(message: T) throws {
+        if let handler = messageHandler {
+            switch try handler(message) {
+            case .continue:
+                break
+            case .break:
+                isTerminate = true
+            case .timeout:
+                // TODO
+                break
+            }
+        }
+    }
+    
+    func handle(error: Error) {
+        isTerminate = true
+        errorHandler?(error)
+    }
+    
+}
+
+infix operator !
+
+func !<T>(lhs: Actor<T>, rhs: T) {
+    lhs.send(message: rhs)
+}
+
+class MessageQueue<T> {
+    
+    var firstItem: MessageQueueItem<T>?
+    var lastItem: MessageQueueItem<T>?
+    var count: Int = 0
+    
+    private let lockQueue = DispatchQueue(label: "Message queue")
+    
+    func enqueue(_ value: T) {
+        lockQueue.sync {
+            let item = MessageQueueItem(value: value)
+            if count == 0 {
+                firstItem = item
+                lastItem = item
+            } else {
+                lastItem?.next = item
+                lastItem = item
+            }
+            count += 1
+        }
+    }
+    
+    func dequeue() -> T? {
+        var result: T?
+        lockQueue.sync {
+            if let item = firstItem {
+                firstItem = item.next
+                count -= 1
+                if count == 0 {
+                    firstItem = nil
+                    lastItem = nil
+                }
+                result = item.value
+            }
+        }
+        return result
+    }
+    
+}
+
+class MessageQueueItem<T> {
+    
+    var value: T
+    var next: MessageQueueItem<T>?
+    
+    init(value: T) {
+        self.value = value
     }
     
 }
