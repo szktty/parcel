@@ -19,6 +19,8 @@ enum Area {
 // create a process
 let actor = Actor<Area>.spawn {
     actor in
+
+    // set callback when the actor receives a new message
     actor.receive {
         message in
         switch message {
@@ -29,8 +31,11 @@ let actor = Actor<Area>.spawn {
             print("Area of circle is \(circle)")
         case .exit:
             print("Exit")
+            // terminate the process
             return .break
         }
+
+        // wait next message
         return .continue
     }
 }
