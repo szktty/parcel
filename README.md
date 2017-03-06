@@ -16,26 +16,29 @@ enum Area {
     case exit
 }
 
-class AreaActor: Actor<Area> {}
-
-let ref = AreaActor.spawn {
-    context, message in
-    switch message {
-    case .rectangle(let width, let height):
-        print("Area of rectangle is \(width), \(height)")
-    case .circle(let r):
-        let circle = 3.14159 * r * r
-        print("Area of circle is \(circle)")
-    case .exit:
-        print("Exit")
-        context.terminate()
+// create a process
+let actor = Actor<Area>.spawn {
+    actor in
+    actor.receive {
+        message in
+        switch message {
+        case .rectangle(let width, let height):
+            print("Area of rectangle is \(width), \(height)")
+        case .circle(let r):
+            let circle = 3.14159 * r * r
+            print("Area of circle is \(circle)")
+        case .exit:
+            print("Exit")
+            return .break
+        }
+        return .continue
     }
 }
 
 // message passing
-ref ! .rectangle(6, 10)
-ref ! .circle(23)
-ref ! .exit
+actor ! .rectangle(6, 10)
+actor ! .circle(23)
+actor ! .exit
 ```
 
 Output:
