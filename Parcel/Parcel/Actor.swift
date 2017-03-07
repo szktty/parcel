@@ -19,10 +19,11 @@ public class Actor<T> {
     var timeoutHandler: (() throws -> Void)?
     var isTerminate: Bool = false
     var errorHandler: ((Error) -> Void)?
-    var messageQueue: MessageQueue<T> = MessageQueue()
+    var messageQueue: MessageQueue<T>!
 
     public required init(scheduler: Scheduler? = nil) {
         self.scheduler = scheduler ?? Scheduler.default
+        messageQueue = MessageQueue(actor: self)
     }
     
     // MARK: Event handlers
@@ -102,11 +103,16 @@ func !<T>(lhs: Actor<T>, rhs: T) {
 
 class MessageQueue<T> {
     
+    weak var actor: Actor<T>!
     var firstItem: MessageQueueItem<T>?
     var lastItem: MessageQueueItem<T>?
     var count: Int = 0
     
     private let lockQueue = DispatchQueue(label: "Message queue")
+    
+    init(actor: Actor<T>) {
+        self.actor = actor
+    }
     
     func enqueue(_ value: T) {
         lockQueue.sync {
