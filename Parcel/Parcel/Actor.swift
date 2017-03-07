@@ -75,12 +75,16 @@ public class Actor<T> {
             case .continue:
                 break
             case .break:
-                isTerminate = true
+                terminate()
             case .timeout:
                 // TODO
                 break
             }
         }
+    }
+    
+    public func terminate() {
+        isTerminate = true
     }
     
     func handle(error: Error) {
