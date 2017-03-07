@@ -2,12 +2,11 @@ import Foundation
 
 public class Scheduler {
     
-    static var `default`: Scheduler = Scheduler()
+    public static var `default`: Scheduler = Scheduler()
+    public var numberOfMaxProcesses: Int
     
     var workers: [Worker]
 
-    public var numberOfMaxProcesses: Int
-    
     var availableWorker: Worker {
         get {
             return workers.reduce(workers.first!) {
