@@ -37,7 +37,7 @@ class Worker {
 
         if let deadline = actor.deadline {
             self.dispatchQueue.asyncAfter(deadline: deadline) {
-                if !actor.isTerminate {
+                if !actor.isTerminate || actor.timeoutForced {
                     actor.timeoutHandler?()
                     self.unregister(actor: actor)
                 }

@@ -20,6 +20,7 @@ public class Actor<T> {
     var deadline: DispatchTime?
     var timeoutHandler: (() -> Void)?
     var isTerminate: Bool = false
+    var timeoutForced: Bool = false
     var errorHandler: ((Error) -> Void)?
     var messageQueue: MessageQueue<T>!
 
@@ -80,8 +81,7 @@ public class Actor<T> {
             case .break:
                 terminate()
             case .timeout:
-                // TODO
-                break
+                timeoutForced = true
             }
         }
     }
