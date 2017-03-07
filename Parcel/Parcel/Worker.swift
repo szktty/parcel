@@ -5,7 +5,7 @@ class Worker {
     weak var scheduler: Scheduler!
     var workerId: Int
     var dispatchQueue: DispatchQueue
-    var actors: [AnyObject] = []
+    var actors: [ObjectIdentifier: AnyObject] = [:]
 
     init(scheduler: Scheduler,
          workerId: Int,
@@ -19,7 +19,14 @@ class Worker {
     func add<T>(actor: Actor<T>) {
         dispatchQueue.sync {
             actor.worker = self
-            self.actors.append(actor)
+            self.actors[ObjectIdentifier(actor)] = actor
+        }
+    }
+    
+    func remove<T>(actor: Actor<T>) {
+        dispatchQueue.sync {
+            actor.worker = nil
+            self.actors[ObjectIdentifier(actor)] = nil
         }
     }
     
@@ -49,12 +56,8 @@ class Worker {
     }
     
     func unregister<T>(actor: Actor<T>) {
-        // TODO: performance?
         actor.terminate()
-        actors = actors.filter {
-            e in
-            return ObjectIdentifier(e) != ObjectIdentifier(actor)
-        }
+        remove(actor: actor)
     }
     
 }
