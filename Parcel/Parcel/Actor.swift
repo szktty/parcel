@@ -91,7 +91,7 @@ public class Actor<T> {
     }
     
     func handle(error: Error) {
-        isTerminate = true
+        terminate()
         errorHandler?(error)
     }
     
