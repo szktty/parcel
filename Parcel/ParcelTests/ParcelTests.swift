@@ -43,17 +43,19 @@ class ParcelTests: XCTestCase {
     }
     
     func _testRepeatSpawn() {
-        let n = 100000
-        for _ in 0...n {
-            let actor = Actor<Void>.spawn {
-                actor in
-                actor.receive { return .break }
+        measure {
+            let n = 10000
+            for _ in 0...n {
+                let actor = Actor<Void>.spawn {
+                    actor in
+                    actor.receive { return .break }
+                }
+                actor ! ()
             }
-            actor ! ()
         }
     }
     
-    func testTimeout() {
+    func _testTimeout() {
         let exp = self.expectation(description: "timeout test")
         let _ = Actor<Void>.spawn {
             actor in
