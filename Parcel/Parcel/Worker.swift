@@ -7,10 +7,13 @@ class Worker {
     var dispatchQueue: DispatchQueue
     var actors: [AnyObject] = []
 
-    init(scheduler: Scheduler, workerId: Int) {
+    init(scheduler: Scheduler,
+         workerId: Int,
+         dispatchQueue: DispatchQueue? = nil) {
         self.scheduler = scheduler
         self.workerId = workerId
-        dispatchQueue = DispatchQueue(label: workerId.description)
+        self.dispatchQueue = dispatchQueue
+            ?? DispatchQueue(label: workerId.description)
     }
     
     func register<T>(actor: Actor<T>) {
