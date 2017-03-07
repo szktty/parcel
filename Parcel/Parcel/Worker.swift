@@ -5,6 +5,7 @@ class Worker {
     weak var scheduler: Scheduler!
     var workerId: Int
     var dispatchQueue: DispatchQueue
+    var lockQueue: DispatchQueue
     var actors: [ObjectIdentifier: AnyObject] = [:]
 
     init(scheduler: Scheduler,
@@ -14,17 +15,18 @@ class Worker {
         self.workerId = workerId
         self.dispatchQueue = dispatchQueue
             ?? DispatchQueue(label: workerId.description)
+        self.lockQueue = DispatchQueue(label: "actors")
     }
     
     func add<T>(actor: Actor<T>) {
-        dispatchQueue.sync {
+        lockQueue.sync {
             actor.worker = self
             self.actors[ObjectIdentifier(actor)] = actor
         }
     }
     
     func remove<T>(actor: Actor<T>) {
-        dispatchQueue.sync {
+        lockQueue.sync {
             actor.worker = nil
             self.actors[ObjectIdentifier(actor)] = nil
         }
