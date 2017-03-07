@@ -53,7 +53,15 @@ class ParcelTests: XCTestCase {
         }
     }
     
+    func testTimeout() {
+        let exp = self.expectation(description: "timeout test")
+        let _ = Actor<Void>.spawn {
+            actor in
+            actor.after(deadline: DispatchTime(uptimeNanoseconds: 1000)) {
+                exp.fulfill()
+            }
         }
+        self.waitForExpectations(timeout: 2)
     }
 
 }

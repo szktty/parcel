@@ -15,8 +15,8 @@ public class Actor<T> {
     public weak var scheduler: Scheduler?
     weak var worker: Worker?
     var messageHandler: ((T) throws -> Loop)?
-    var deadline: Int?
-    var timeoutHandler: (() throws -> Void)?
+    var deadline: DispatchTime?
+    var timeoutHandler: (() -> Void)?
     var isTerminate: Bool = false
     var errorHandler: ((Error) -> Void)?
     var messageQueue: MessageQueue<T>!
@@ -32,7 +32,7 @@ public class Actor<T> {
         messageHandler = handler
     }
     
-    public func after(deadline: Int, handler: @escaping () throws -> Void) {
+    public func after(deadline: DispatchTime, handler: @escaping () -> Void) {
         self.deadline = deadline
         timeoutHandler = handler
     }

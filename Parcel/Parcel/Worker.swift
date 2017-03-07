@@ -16,10 +16,26 @@ class Worker {
             ?? DispatchQueue(label: workerId.description)
     }
     
-    func register<T>(actor: Actor<T>) {
-        dispatchQueue.async {
+    func add<T>(actor: Actor<T>) {
+        dispatchQueue.sync {
             actor.worker = self
             self.actors.append(actor)
+        }
+    }
+    
+    func register<T>(actor: Actor<T>) {
+        self.add(actor: actor)
+
+        if let deadline = actor.deadline {
+            self.dispatchQueue.asyncAfter(deadline: deadline) {
+                if !actor.isTerminate {
+                    actor.timeoutHandler?()
+                    self.unregister(actor: actor)
+                }
+            }
+        }
+        
+        dispatchQueue.async {
             while !actor.isTerminate {
                 guard let message = actor.pop() else { continue }
                 do {
@@ -34,6 +50,7 @@ class Worker {
     
     func unregister<T>(actor: Actor<T>) {
         // TODO: performance?
+        actor.terminate()
         actors = actors.filter {
             e in
             return ObjectIdentifier(e) != ObjectIdentifier(actor)
