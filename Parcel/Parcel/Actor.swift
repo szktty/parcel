@@ -13,6 +13,8 @@ public enum Loop {
 public class Actor<T> {
 
     public weak var scheduler: Scheduler?
+    public var userInfo: [String: Any] = [:]
+    
     weak var worker: Worker?
     var messageHandler: ((T) throws -> Loop)?
     var deadline: DispatchTime?
