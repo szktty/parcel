@@ -3,7 +3,7 @@ import Foundation
 public class Scheduler {
     
     public static var `default`: Scheduler = Scheduler()
-    public var numberOfMaxProcesses: Int
+    public var maxNumberOfActors: Int
     
     var workers: [Worker]
 
@@ -16,13 +16,13 @@ public class Scheduler {
         }
     }
     
-    init(numberOfWorkers: Int? = nil,
-         numberOfMaxProcesses: Int? = nil) {
-        let numberOfWorkers = numberOfWorkers ?? ProcessInfo.processInfo.processorCount
-        self.numberOfMaxProcesses = numberOfMaxProcesses ?? 100000
+    init(maxNumberOfWorkers: Int? = nil,
+         maxNumberOfActors: Int? = nil) {
+        let maxNumberOfWorkers = maxNumberOfWorkers ?? ProcessInfo.processInfo.processorCount
+        self.maxNumberOfActors = maxNumberOfActors ?? 100000
         
         workers = []
-        for i in 0..<numberOfWorkers {
+        for i in 0..<maxNumberOfWorkers {
             workers.append(Worker(scheduler: self, workerId: i))
         }
     }
