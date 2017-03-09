@@ -3,6 +3,7 @@ import Foundation
 public class ActorCenter {
     
     public static var `default`: ActorCenter = ActorCenter()
+    public var maxNumberOfWorkers: Int
     public var maxNumberOfActors: Int
     
     var workers: [Worker]
@@ -18,11 +19,11 @@ public class ActorCenter {
     
     init(maxNumberOfWorkers: Int? = nil,
          maxNumberOfActors: Int? = nil) {
-        let maxNumberOfWorkers = maxNumberOfWorkers ?? ProcessInfo.processInfo.processorCount
+        self.maxNumberOfWorkers = maxNumberOfWorkers ?? ProcessInfo.processInfo.processorCount
         self.maxNumberOfActors = maxNumberOfActors ?? 100000
         
         workers = []
-        for i in 0..<maxNumberOfWorkers {
+        for i in 0..<self.maxNumberOfWorkers {
             workers.append(Worker(actorCenter: self, workerId: i))
         }
     }
