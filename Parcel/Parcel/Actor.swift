@@ -18,7 +18,7 @@ public class Actor<T> {
     var messageHandler: ((T) throws -> Loop)?
     var deadline: DispatchTime?
     var timeoutHandler: (() -> Void)?
-    var isTerminate: Bool = false
+    var isAlive: Bool = true
     var timeoutForced: Bool = false
     var errorHandler: ((Error) -> Void)?
     var messageQueue: MessageQueue<T>!
@@ -83,7 +83,7 @@ public class Actor<T> {
     }
     
     public func terminate() {
-        isTerminate = true
+        isAlive = false
     }
     
     func handle(error: Error) {
