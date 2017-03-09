@@ -20,6 +20,8 @@ class ParcelTests: XCTestCase {
     }
     
     func testExample() {
+        let exp = self.expectation(description: "example")
+        var count = 0
         let parcel = Parcel<Area>.spawn {
             parcel in
             parcel.onReceive {
@@ -27,10 +29,15 @@ class ParcelTests: XCTestCase {
                 switch message {
                 case .rectangle(let width, let height):
                     print("Area of rectangle is \(width), \(height)")
+                    count += 1
                 case .circle(let r):
                     let circle = 3.14159 * r * r
+                    count += 1
                     print("Area of circle is \(circle)")
                 case .exit:
+                    if count == 2 {
+                        exp.fulfill()
+                    }
                     print("Exit")
                     return .break
                 }
@@ -40,6 +47,7 @@ class ParcelTests: XCTestCase {
         parcel ! .rectangle(6, 10)
         parcel ! .circle(23)
         parcel ! .exit
+        self.waitForExpectations(timeout: 2)
     }
     
     func _testRepeatSpawn() {
