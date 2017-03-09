@@ -1,8 +1,8 @@
 import Foundation
 
-public class Scheduler {
+public class ActorCenter {
     
-    public static var `default`: Scheduler = Scheduler()
+    public static var `default`: ActorCenter = ActorCenter()
     public var maxNumberOfActors: Int
     
     var workers: [Worker]
@@ -23,7 +23,7 @@ public class Scheduler {
         
         workers = []
         for i in 0..<maxNumberOfWorkers {
-            workers.append(Worker(scheduler: self, workerId: i))
+            workers.append(Worker(actorCenter: self, workerId: i))
         }
     }
     
