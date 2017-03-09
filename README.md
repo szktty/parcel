@@ -17,11 +17,11 @@ enum Area {
 }
 
 // create a process
-let actor = Actor<Area>.spawn {
-    actor in
+let parcel = Parcel<Area>.spawn {
+    parcel in
 
-    // set callback when the actor receives a new message
-    actor.onReceive {
+    // set callback when the parcel receives a new message
+    parcel.onReceive {
         message in
         switch message {
         case .rectangle(let width, let height):
@@ -41,9 +41,9 @@ let actor = Actor<Area>.spawn {
 }
 
 // message passing
-actor ! .rectangle(6, 10)
-actor ! .circle(23)
-actor ! .exit
+parcel ! .rectangle(6, 10)
+parcel ! .circle(23)
+parcel ! .exit
 ```
 
 Output:
