@@ -29,7 +29,7 @@ public class Actor<T> {
     
     // MARK: Event handlers
     
-    public func receive(handler: @escaping (T) throws -> Loop) {
+    public func onReceive(handler: @escaping (T) throws -> Loop) {
         messageHandler = handler
     }
     

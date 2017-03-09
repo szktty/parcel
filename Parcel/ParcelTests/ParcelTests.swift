@@ -22,7 +22,7 @@ class ParcelTests: XCTestCase {
     func testExample() {
         let actor = Actor<Area>.spawn {
             actor in
-            actor.receive {
+            actor.onReceive {
                 message in
                 switch message {
                 case .rectangle(let width, let height):
@@ -48,7 +48,7 @@ class ParcelTests: XCTestCase {
             for _ in 0...n {
                 let actor = Actor<Void>.spawn {
                     actor in
-                    actor.receive { return .break }
+                    actor.onReceive { return .break }
                 }
                 actor ! ()
             }

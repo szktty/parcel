@@ -21,7 +21,7 @@ let actor = Actor<Area>.spawn {
     actor in
 
     // set callback when the actor receives a new message
-    actor.receive {
+    actor.onReceive {
         message in
         switch message {
         case .rectangle(let width, let height):
