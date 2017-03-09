@@ -1,29 +1,29 @@
 import Foundation
 
-public class ActorCenter {
+public class ParcelCenter {
     
-    public static var `default`: ActorCenter = ActorCenter()
+    public static var `default`: ParcelCenter = ParcelCenter()
     public var maxNumberOfWorkers: Int
-    public var maxNumberOfActors: Int
+    public var maxNumberOfParcels: Int
     
     var workers: [Worker]
-    var actorLinks: [ObjectIdentifier: [BasicActor]] = [:]
+    var parcelLinks: [ObjectIdentifier: [BasicParcel]] = [:]
     var lockQueue: DispatchQueue
 
     var availableWorker: Worker {
         get {
             return workers.reduce(workers.first!) {
                 min, worker in
-                return worker.actors.count < min.actors.count ? worker : min
+                return worker.parcels.count < min.parcels.count ? worker : min
             }
         }
     }
     
     init(maxNumberOfWorkers: Int? = nil,
-         maxNumberOfActors: Int? = nil) {
+         maxNumberOfParcels: Int? = nil) {
         self.maxNumberOfWorkers = maxNumberOfWorkers ?? ProcessInfo.processInfo.processorCount
-        self.maxNumberOfActors = maxNumberOfActors ?? 100000
-        lockQueue = DispatchQueue(label: "actor center")
+        self.maxNumberOfParcels = maxNumberOfParcels ?? 100000
+        lockQueue = DispatchQueue(label: "parcel center")
         
         workers = []
         for i in 0..<self.maxNumberOfWorkers {
@@ -31,37 +31,37 @@ public class ActorCenter {
         }
     }
     
-    func register<T>(actor: Actor<T>) {
-        availableWorker.register(actor: actor)
+    func register<T>(parcel: Parcel<T>) {
+        availableWorker.register(parcel: parcel)
     }
     
-    public func link(actor1: BasicActor, actor2: BasicActor) {
-        guard actor1.id != actor2.id else { return }
+    public func link(parcel1: BasicParcel, parcel2: BasicParcel) {
+        guard parcel1.id != parcel2.id else { return }
         lockQueue.sync {
-            if var links = actorLinks[actor1.id] {
+            if var links = parcelLinks[parcel1.id] {
                 for link in links {
-                    if link.id == actor2.id {
+                    if link.id == parcel2.id {
                         return
                     }
                 }
-                links.append(actor2)
+                links.append(parcel2)
             } else {
-                actorLinks[actor1.id] = [actor2]
+                parcelLinks[parcel1.id] = [parcel2]
             }
         }
     }
     
-    func dead(actor: BasicActor, cause: BasicActor? = nil) {
+    func dead(parcel: BasicParcel, cause: BasicParcel? = nil) {
         let item = DispatchWorkItem {
-            if let links = self.actorLinks[actor.id] {
+            if let links = self.parcelLinks[parcel.id] {
                 for link in links {
                     if link.id == cause?.id {
                         continue
                     }
-                    link.onDeathHandler?(.death(actor))
-                    self.dead(actor: link, cause: actor)
+                    link.onDeathHandler?(.death(parcel))
+                    self.dead(parcel: link, cause: parcel)
                 }
-                self.actorLinks[actor.id] = nil
+                self.parcelLinks[parcel.id] = nil
             }
         }
         

@@ -1,8 +1,8 @@
 import Foundation
 
-public enum ActorError: Error {
+public enum ParcelError: Error {
     case unspawned
-    case death(BasicActor)
+    case death(BasicParcel)
     case user(Error)
 }
 
@@ -12,7 +12,7 @@ public enum Loop {
     case timeout
 }
 
-public class BasicActor {
+public class BasicParcel {
     
     public var id: ObjectIdentifier {
         get { return ObjectIdentifier(self) }
@@ -24,7 +24,7 @@ public class BasicActor {
     var isAlive: Bool = true
     var timeoutForced: Bool = false
     var onErrorHandler: ((Error) -> Void)?
-    var onDeathHandler: ((ActorError) -> Void)?
+    var onDeathHandler: ((ParcelError) -> Void)?
 
     public func after(deadline: DispatchTime, handler: @escaping () -> Void) {
         self.deadline = deadline
@@ -35,7 +35,7 @@ public class BasicActor {
         onErrorHandler = handler
     }
     
-    public func onDeath(handler: @escaping (ActorError) -> Void) {
+    public func onDeath(handler: @escaping (ParcelError) -> Void) {
         onDeathHandler = handler
     }
     
@@ -50,7 +50,7 @@ public class BasicActor {
     
 }
 
-public class Actor<T>: BasicActor {
+public class Parcel<T>: BasicParcel {
 
     public var userInfo: [String: Any] = [:]
     
@@ -59,7 +59,7 @@ public class Actor<T>: BasicActor {
 
     public required override init() {
         super.init()
-        messageQueue = MessageQueue(actor: self)
+        messageQueue = MessageQueue(parcel: self)
     }
     
     // MARK: Event handlers
@@ -71,14 +71,14 @@ public class Actor<T>: BasicActor {
     // MARK: Process
     
     public func spawn() {
-        ActorCenter.default.register(actor: self)
+        ParcelCenter.default.register(parcel: self)
     }
     
-    public class func spawn(block: @escaping (Actor<T>) -> Void) -> Actor<T> {
-        let actor: Actor<T> = self.init()
-        block(actor)
-        actor.spawn()
-        return actor
+    public class func spawn(block: @escaping (Parcel<T>) -> Void) -> Parcel<T> {
+        let parcel: Parcel<T> = self.init()
+        block(parcel)
+        parcel.spawn()
+        return parcel
     }
     
     // MARK: Message passing
@@ -112,21 +112,21 @@ public class Actor<T>: BasicActor {
 
 infix operator !
 
-func !<T>(lhs: Actor<T>, rhs: T) {
+func !<T>(lhs: Parcel<T>, rhs: T) {
     lhs.send(message: rhs)
 }
 
 class MessageQueue<T> {
     
-    weak var actor: Actor<T>!
+    weak var parcel: Parcel<T>!
     var firstItem: MessageQueueItem<T>?
     var lastItem: MessageQueueItem<T>?
     var count: Int = 0
     
     private let lockQueue = DispatchQueue(label: "Message queue")
     
-    init(actor: Actor<T>) {
-        self.actor = actor
+    init(parcel: Parcel<T>) {
+        self.parcel = parcel
     }
     
     func enqueue(_ value: T) {

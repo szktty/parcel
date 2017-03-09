@@ -20,9 +20,9 @@ class ParcelTests: XCTestCase {
     }
     
     func testExample() {
-        let actor = Actor<Area>.spawn {
-            actor in
-            actor.onReceive {
+        let parcel = Parcel<Area>.spawn {
+            parcel in
+            parcel.onReceive {
                 message in
                 switch message {
                 case .rectangle(let width, let height):
@@ -37,29 +37,29 @@ class ParcelTests: XCTestCase {
                 return .continue
             }
         }
-        actor ! .rectangle(6, 10)
-        actor ! .circle(23)
-        actor ! .exit
+        parcel ! .rectangle(6, 10)
+        parcel ! .circle(23)
+        parcel ! .exit
     }
     
     func _testRepeatSpawn() {
         measure {
             let n = 10000
             for _ in 0...n {
-                let actor = Actor<Void>.spawn {
-                    actor in
-                    actor.onReceive { return .break }
+                let parcel = Parcel<Void>.spawn {
+                    parcel in
+                    parcel.onReceive { return .break }
                 }
-                actor ! ()
+                parcel ! ()
             }
         }
     }
     
     func _testTimeout() {
         let exp = self.expectation(description: "timeout test")
-        let _ = Actor<Void>.spawn {
-            actor in
-            actor.after(deadline: DispatchTime(uptimeNanoseconds: 1000)) {
+        let _ = Parcel<Void>.spawn {
+            parcel in
+            parcel.after(deadline: DispatchTime(uptimeNanoseconds: 1000)) {
                 exp.fulfill()
             }
         }
@@ -68,21 +68,21 @@ class ParcelTests: XCTestCase {
 
     func testLink() {
         let exp = self.expectation(description: "link test")
-        let actor1 = Actor<Void>.spawn {
-            actor in
-            actor.onReceive {
+        let parcel1 = Parcel<Void>.spawn {
+            parcel in
+            parcel.onReceive {
                 throw NSError(domain: "Parcel", code: 0)
             }
         }
-        let actor2 = Actor<Void>.spawn {
-            actor in
-            actor.onDeath {
+        let parcel2 = Parcel<Void>.spawn {
+            parcel in
+            parcel.onDeath {
                 error in
                 exp.fulfill()
             }
         }
-        ActorCenter.default.link(actor1: actor1, actor2: actor2)
-        actor1 ! ()
+        ParcelCenter.default.link(parcel1: parcel1, parcel2: parcel2)
+        parcel1 ! ()
         self.waitForExpectations(timeout: 2)
     }
     

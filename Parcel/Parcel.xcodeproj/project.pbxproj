@@ -11,8 +11,8 @@
 		9156D2331E6C731C00D95EC1 /* ParcelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9156D2321E6C731C00D95EC1 /* ParcelTests.swift */; };
 		9156D2351E6C731C00D95EC1 /* Parcel.h in Headers */ = {isa = PBXBuildFile; fileRef = 9156D2271E6C731C00D95EC1 /* Parcel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9156D2421E6C737A00D95EC1 /* Worker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9156D23E1E6C737A00D95EC1 /* Worker.swift */; };
-		9156D2441E6C737A00D95EC1 /* Actor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9156D2401E6C737A00D95EC1 /* Actor.swift */; };
-		9156D2451E6C737A00D95EC1 /* ActorCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9156D2411E6C737A00D95EC1 /* ActorCenter.swift */; };
+		9156D2441E6C737A00D95EC1 /* Parcel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9156D2401E6C737A00D95EC1 /* Parcel.swift */; };
+		9156D2451E6C737A00D95EC1 /* ParcelCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9156D2411E6C737A00D95EC1 /* ParcelCenter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,8 +33,8 @@
 		9156D2321E6C731C00D95EC1 /* ParcelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcelTests.swift; sourceTree = "<group>"; };
 		9156D2341E6C731C00D95EC1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9156D23E1E6C737A00D95EC1 /* Worker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Worker.swift; sourceTree = "<group>"; };
-		9156D2401E6C737A00D95EC1 /* Actor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Actor.swift; sourceTree = "<group>"; };
-		9156D2411E6C737A00D95EC1 /* ActorCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorCenter.swift; sourceTree = "<group>"; };
+		9156D2401E6C737A00D95EC1 /* Parcel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parcel.swift; sourceTree = "<group>"; };
+		9156D2411E6C737A00D95EC1 /* ParcelCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParcelCenter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,8 +79,8 @@
 			children = (
 				9156D2271E6C731C00D95EC1 /* Parcel.h */,
 				9156D2281E6C731C00D95EC1 /* Info.plist */,
-				9156D2401E6C737A00D95EC1 /* Actor.swift */,
-				9156D2411E6C737A00D95EC1 /* ActorCenter.swift */,
+				9156D2401E6C737A00D95EC1 /* Parcel.swift */,
+				9156D2411E6C737A00D95EC1 /* ParcelCenter.swift */,
 				9156D23E1E6C737A00D95EC1 /* Worker.swift */,
 			);
 			path = Parcel;
@@ -205,8 +205,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9156D2441E6C737A00D95EC1 /* Actor.swift in Sources */,
-				9156D2451E6C737A00D95EC1 /* ActorCenter.swift in Sources */,
+				9156D2441E6C737A00D95EC1 /* Parcel.swift in Sources */,
+				9156D2451E6C737A00D95EC1 /* ParcelCenter.swift in Sources */,
 				9156D2421E6C737A00D95EC1 /* Worker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
