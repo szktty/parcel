@@ -38,7 +38,7 @@ public class Actor<T> {
         timeoutHandler = handler
     }
     
-    public func rescue(handler: @escaping (Error) -> Void) {
+    public func onError(handler: @escaping (Error) -> Void) {
         errorHandler = handler
     }
     
