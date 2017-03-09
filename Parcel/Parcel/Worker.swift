@@ -2,16 +2,13 @@ import Foundation
 
 class Worker {
     
-    weak var actorCenter: ActorCenter!
     var workerId: Int
     var dispatchQueue: DispatchQueue
     var lockQueue: DispatchQueue
     var actors: [ObjectIdentifier: AnyObject] = [:]
 
-    init(actorCenter: ActorCenter,
-         workerId: Int,
+    init(workerId: Int,
          dispatchQueue: DispatchQueue? = nil) {
-        self.actorCenter = actorCenter
         self.workerId = workerId
         self.dispatchQueue = dispatchQueue
             ?? DispatchQueue(label: workerId.description)

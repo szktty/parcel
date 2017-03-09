@@ -12,7 +12,6 @@ public enum Loop {
 
 public class Actor<T> {
 
-    public weak var actorCenter: ActorCenter?
     public var userInfo: [String: Any] = [:]
     
     weak var worker: Worker?
@@ -24,8 +23,7 @@ public class Actor<T> {
     var errorHandler: ((Error) -> Void)?
     var messageQueue: MessageQueue<T>!
 
-    public required init(actorCenter: ActorCenter? = nil) {
-        self.actorCenter = actorCenter ?? ActorCenter.default
+    public required init() {
         messageQueue = MessageQueue(actor: self)
     }
     
@@ -46,14 +44,12 @@ public class Actor<T> {
     
     // MARK: Process
     
-    public func spawn(actorCenter: ActorCenter? = nil) {
-        let actorCenter = actorCenter ?? ActorCenter.default
-        actorCenter.register(actor: self)
+    public func spawn() {
+        ActorCenter.default.register(actor: self)
     }
     
-    public class func spawn(actorCenter: ActorCenter? = nil,
-                            block: @escaping (Actor<T>) -> Void) -> Actor<T> {
-        let actor: Actor<T> = self.init(actorCenter: actorCenter)
+    public class func spawn(block: @escaping (Actor<T>) -> Void) -> Actor<T> {
+        let actor: Actor<T> = self.init()
         block(actor)
         actor.spawn()
         return actor

@@ -24,7 +24,7 @@ public class ActorCenter {
         
         workers = []
         for i in 0..<self.maxNumberOfWorkers {
-            workers.append(Worker(actorCenter: self, workerId: i))
+            workers.append(Worker(workerId: i))
         }
     }
     
