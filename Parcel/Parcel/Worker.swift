@@ -46,8 +46,10 @@ class Worker {
                 guard let message = actor.pop() else { continue }
                 do {
                     try actor.evaluate(message: message)
-                } catch {
-                    break
+                } catch let error {
+                    let userError = ActorError.user(error)
+                    actor.handle(error: userError)
+                    ActorCenter.default.dead(actor: actor)
                 }
             }
             self.unregister(actor: actor)

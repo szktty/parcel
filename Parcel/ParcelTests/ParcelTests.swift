@@ -66,4 +66,24 @@ class ParcelTests: XCTestCase {
         self.waitForExpectations(timeout: 2)
     }
 
+    func testLink() {
+        let exp = self.expectation(description: "link test")
+        let actor1 = Actor<Void>.spawn {
+            actor in
+            actor.onReceive {
+                throw NSError(domain: "Parcel", code: 0)
+            }
+        }
+        let actor2 = Actor<Void>.spawn {
+            actor in
+            actor.onDeath {
+                error in
+                exp.fulfill()
+            }
+        }
+        ActorCenter.default.link(actor1: actor1, actor2: actor2)
+        actor1 ! ()
+        self.waitForExpectations(timeout: 2)
+    }
+    
 }

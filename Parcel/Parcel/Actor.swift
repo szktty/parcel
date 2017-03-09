@@ -2,6 +2,8 @@ import Foundation
 
 public enum ActorError: Error {
     case unspawned
+    case death(BasicActor)
+    case user(Error)
 }
 
 public enum Loop {
@@ -10,36 +12,60 @@ public enum Loop {
     case timeout
 }
 
-public class Actor<T> {
-
-    public var userInfo: [String: Any] = [:]
+public class BasicActor {
+    
+    public var id: ObjectIdentifier {
+        get { return ObjectIdentifier(self) }
+    }
     
     weak var worker: Worker?
-    var messageHandler: ((T) throws -> Loop)?
     var deadline: DispatchTime?
     var timeoutHandler: (() -> Void)?
     var isAlive: Bool = true
     var timeoutForced: Bool = false
-    var errorHandler: ((Error) -> Void)?
-    var messageQueue: MessageQueue<T>!
+    var onErrorHandler: ((Error) -> Void)?
+    var onDeathHandler: ((ActorError) -> Void)?
 
-    public required init() {
-        messageQueue = MessageQueue(actor: self)
-    }
-    
-    // MARK: Event handlers
-    
-    public func onReceive(handler: @escaping (T) throws -> Loop) {
-        messageHandler = handler
-    }
-    
     public func after(deadline: DispatchTime, handler: @escaping () -> Void) {
         self.deadline = deadline
         timeoutHandler = handler
     }
     
     public func onError(handler: @escaping (Error) -> Void) {
-        errorHandler = handler
+        onErrorHandler = handler
+    }
+    
+    public func onDeath(handler: @escaping (ActorError) -> Void) {
+        onDeathHandler = handler
+    }
+    
+    public func terminate() {
+        isAlive = false
+    }
+    
+    func handle(error: Error) {
+        terminate()
+        onErrorHandler?(error)
+    }
+    
+}
+
+public class Actor<T>: BasicActor {
+
+    public var userInfo: [String: Any] = [:]
+    
+    var onReceiveHandler: ((T) throws -> Loop)?
+    var messageQueue: MessageQueue<T>!
+
+    public required override init() {
+        super.init()
+        messageQueue = MessageQueue(actor: self)
+    }
+    
+    // MARK: Event handlers
+    
+    public func onReceive(handler: @escaping (T) throws -> Loop) {
+        onReceiveHandler = handler
     }
     
     // MARK: Process
@@ -70,7 +96,7 @@ public class Actor<T> {
     }
 
     func evaluate(message: T) throws {
-        if let handler = messageHandler {
+        if let handler = onReceiveHandler {
             switch try handler(message) {
             case .continue:
                 break
@@ -80,15 +106,6 @@ public class Actor<T> {
                 timeoutForced = true
             }
         }
-    }
-    
-    public func terminate() {
-        isAlive = false
-    }
-    
-    func handle(error: Error) {
-        terminate()
-        errorHandler?(error)
     }
     
 }
