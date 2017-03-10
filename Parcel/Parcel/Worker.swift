@@ -49,7 +49,7 @@ class Worker {
                 } catch let error {
                     let userError = ParcelError.user(error)
                     parcel.handle(error: userError)
-                    ParcelCenter.default.dead(parcel: parcel)
+                    ParcelCenter.default.kill(parcel: parcel)
                 }
             }
             self.unregister(parcel: parcel)

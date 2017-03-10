@@ -94,4 +94,26 @@ class ParcelTests: XCTestCase {
         self.waitForExpectations(timeout: 2)
     }
     
+    func testMonitor() {
+        let exp = expectation(description: "moniter test")
+        let target = Parcel<Void>.spawn {
+            parcel in
+            parcel.onReceive {
+                throw NSError(domain: "Parcel", code: 0)
+            }
+            parcel.onDeath { _ in XCTFail() }
+            parcel.onDown { _ in XCTFail() }
+        }
+        let monitor = Parcel<Void>.spawn {
+            parcel in
+            parcel.onDown {
+                downed in
+                exp.fulfill()
+            }
+        }
+        ParcelCenter.default.addMonitor(monitor, forParcel: target)
+        target ! ()
+        waitForExpectations(timeout: 2)
+    }
+    
 }

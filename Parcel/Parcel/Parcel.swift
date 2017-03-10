@@ -25,6 +25,7 @@ public class BasicParcel {
     var timeoutForced: Bool = false
     var onErrorHandler: ((Error) -> Void)?
     var onDeathHandler: ((ParcelError) -> Void)?
+    var onDownHandler: ((BasicParcel) -> Void)?
 
     public func after(deadline: DispatchTime, handler: @escaping () -> Void) {
         self.deadline = deadline
@@ -37,6 +38,10 @@ public class BasicParcel {
     
     public func onDeath(handler: @escaping (ParcelError) -> Void) {
         onDeathHandler = handler
+    }
+    
+    public func onDown(handler: @escaping (BasicParcel) -> Void) {
+        onDownHandler = handler
     }
     
     public func terminate() {
