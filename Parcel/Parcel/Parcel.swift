@@ -12,7 +12,7 @@ public enum Loop {
     case timeout
 }
 
-public class BasicParcel {
+open class BasicParcel {
     
     public var id: ObjectIdentifier {
         get { return ObjectIdentifier(self) }
@@ -55,7 +55,7 @@ public class BasicParcel {
     
 }
 
-public class Parcel<T>: BasicParcel {
+open class Parcel<T>: BasicParcel {
 
     public var userInfo: [String: Any] = [:]
     
