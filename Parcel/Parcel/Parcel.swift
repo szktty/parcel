@@ -117,7 +117,7 @@ open class Parcel<T>: BasicParcel {
 
 infix operator !
 
-func !<T>(lhs: Parcel<T>, rhs: T) {
+public func !<T>(lhs: Parcel<T>, rhs: T) {
     lhs.send(message: rhs)
 }
 
