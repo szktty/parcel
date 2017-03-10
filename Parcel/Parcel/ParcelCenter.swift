@@ -35,7 +35,7 @@ public class ParcelCenter {
         availableWorker.register(parcel: parcel)
     }
     
-    public func link(parcel1: BasicParcel, parcel2: BasicParcel) {
+    public func addLink(parcel1: BasicParcel, parcel2: BasicParcel) {
         guard parcel1.id != parcel2.id else { return }
         lockQueue.sync {
             if var links = parcelLinks[parcel1.id] {

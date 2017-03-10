@@ -89,7 +89,7 @@ class ParcelTests: XCTestCase {
                 exp.fulfill()
             }
         }
-        ParcelCenter.default.link(parcel1: parcel1, parcel2: parcel2)
+        ParcelCenter.default.addLink(parcel1: parcel1, parcel2: parcel2)
         parcel1 ! ()
         self.waitForExpectations(timeout: 2)
     }
