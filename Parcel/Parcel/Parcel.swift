@@ -139,11 +139,10 @@ class MessageQueue<T> {
             let item = MessageQueueItem(value: value)
             if count == 0 {
                 firstItem = item
-                lastItem = item
             } else {
                 lastItem?.next = item
-                lastItem = item
             }
+            lastItem = item
             count += 1
         }
     }
@@ -154,8 +153,7 @@ class MessageQueue<T> {
             if let item = firstItem {
                 firstItem = item.next
                 count -= 1
-                if count == 0 {
-                    firstItem = nil
+                if firstItem == nil {
                     lastItem = nil
                 }
                 result = item.value
