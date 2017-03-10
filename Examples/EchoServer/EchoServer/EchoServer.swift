@@ -77,7 +77,7 @@ class ParcelTCPServer {
                     print("connect from \(client.address)[\(client.port)]")
                     while true {
                         let data = client.read(1024 * 10)
-                        parcel.send(message: (client, data))
+                        parcel ! (client, data)
                     }
                 }
             }
