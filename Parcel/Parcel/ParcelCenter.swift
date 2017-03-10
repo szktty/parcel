@@ -41,15 +41,40 @@ public class ParcelCenter {
     public func addLink(parcel1: BasicParcel, parcel2: BasicParcel) {
         guard parcel1.id != parcel2.id else { return }
         lockQueue.sync {
-            if var links = parcelLinks[parcel1.id] {
-                for link in links {
-                    if link.id == parcel2.id {
-                        return
-                    }
+            addOneLink(parcel1: parcel1, parcel2: parcel2)
+            addOneLink(parcel1: parcel2, parcel2: parcel1)
+        }
+    }
+    
+    func addOneLink(parcel1: BasicParcel, parcel2: BasicParcel) {
+        if var links = parcelLinks[parcel1.id] {
+            for link in links {
+                if link.id == parcel2.id {
+                    return
                 }
-                links.append(parcel2)
-            } else {
-                parcelLinks[parcel1.id] = [parcel2]
+            }
+            links.append(parcel2)
+        } else {
+            parcelLinks[parcel1.id] = [parcel2]
+        }
+    }
+    
+    public func removeLink(parcel1: BasicParcel, parcel2: BasicParcel) {
+        guard parcel1.id != parcel2.id else { return }
+        lockQueue.sync {
+            removeOneLink(parcel1: parcel1, parcel2: parcel2)
+            removeOneLink(parcel1: parcel2, parcel2: parcel1)
+        }
+    }
+    
+    func removeOneLink(parcel1: BasicParcel, parcel2: BasicParcel) {
+        if var links = parcelLinks[parcel1.id] {
+            let i = links.index {
+                link in
+                return link.id == parcel2.id
+            }
+            if let i = i {
+                links.remove(at: i)
             }
         }
     }
@@ -58,6 +83,7 @@ public class ParcelCenter {
     
     public func addMonitor(_ monitor: BasicParcel,
                            forParcel target: BasicParcel) {
+        guard monitor.id != target.id else { return }
         lockQueue.sync {
             if var monitors = parcelMonitors[target.id] {
                 for other in monitors {
@@ -74,6 +100,7 @@ public class ParcelCenter {
     
     public func removeMonitor(_ monitor: BasicParcel,
                               forParcel target: BasicParcel) {
+        guard monitor.id != target.id else { return }
         lockQueue.sync {
             if var monitors = parcelMonitors[target.id] {
                 monitors = monitors.filter {
@@ -92,7 +119,6 @@ public class ParcelCenter {
         notifyMonitors(parcel: parcel)
     }
     
-    // TODO: remove killed parcels
     func killLinks(parcel: BasicParcel, cause: BasicParcel? = nil) {
         let item = DispatchWorkItem {
             if let links = self.parcelLinks[parcel.id] {
