@@ -4,7 +4,9 @@ Actor-based concurrency library for Swift (experimental)
 
 ## Carthage
 
+```
 github "szktty/parcel"
+```
 
 ## Usage
 
