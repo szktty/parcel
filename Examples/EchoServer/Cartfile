@@ -1,1 +1,2 @@
-github "swiftsocket/SwiftSocket"
+github "szktty/parcel"
+github "swiftsocket/SwiftSocket" "2.0.1"
