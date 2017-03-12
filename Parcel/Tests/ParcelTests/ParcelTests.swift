@@ -50,7 +50,7 @@ class ParcelTests: XCTestCase {
         self.waitForExpectations(timeout: 2)
     }
     
-    func _testRepeatSpawn() {
+    func testRepeatSpawn() {
         measure {
             let n = 10000
             for _ in 0...n {
