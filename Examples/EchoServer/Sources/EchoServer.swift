@@ -4,7 +4,6 @@ import Parcel
 class EchoServer {
     
     var server: TCPServer
-    var serverParcel: Parcel<Void>?
     var hostname: String
     var port: UInt16
     
