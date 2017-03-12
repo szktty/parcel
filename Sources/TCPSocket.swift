@@ -1,90 +1,94 @@
 import Foundation
+import SocksCore
 
-public enum TCPMessage {
+public struct TCPPacket {
     
-    case data(client: TCPClient, data: Data)
-    case closed(client: TCPClient)
-    case error(client: TCPClient, error: Error)
+    public let client: TCPClient
+    public let state: TCPState
     
 }
 
-open class TCPClient {
+public enum TCPState {
     
-    var parcel: Parcel<TCPMessage>
-    
-    public static func connect() -> TCPClient? {
-        return nil
-    }
-    
-    public init(parcel: Parcel<TCPMessage>) {
-        self.parcel = parcel
-    }
-    
-    public func connect() {
-    }
-    
-    public func close() {
-        
-    }
-    
-    public func send(data: Data) {
-        
-    }
+    case bytes([UInt8])
+    case closed
+    case error(Error)
     
 }
 
-open class TCPServer {
+public class TCPClient {
     
-    public enum Option {
-        case backlog(Int32)
-    }
+    public let hostname: String
+    public let port: UInt16
+    public var queueLimit: Int32 = 4096
     
-    public var address: String
-    public var port: Int32
-    public var options: [Option]
-    public var socketDescriptor: Int32?
+    var socket: TCPInternetSocket?
     
-    public init(address: String, port: Int32, options: [Option] = []) {
-        self.address = address
+    public init(hostname: String, port: UInt16,
+                socket: TCPInternetSocket? = nil) {
+        self.hostname = hostname
         self.port = port
-        self.options = options
+        self.socket = socket
     }
     
-    public func close() {
-        if let sd = socketDescriptor {
-            // 0, -1, errno
-            Foundation.close(sd)
-        }
+    public func connect() throws {
+        try socket?.connect()
     }
     
-    public func listen() {
-        socketDescriptor = socket(AF_INET, SOCK_STREAM, 0)
-        sockaddr_in(sin_len: UInt8(sizeof(sockaddr_in)),
-                    sin_family: sa_family_t, sin_port: <#T##in_port_t#>, sin_addr: <#T##in_addr#>, sin_zero: <#T##(Int8, Int8, Int8, Int8, Int8, Int8, Int8, Int8)#>)
-        socklen_t(bigEndian: <#T##UInt32#>)
-
-        bind(<#T##Int32#>, <#T##UnsafePointer<sockaddr>!#>, <#T##socklen_t#>)
-        
-        var backlog: Int32 = 5
-        for option in options {
-            switch option {
-            case .backlog(let value):
-                backlog = value
-            default:
-                break
-            }
-        }
-        // TODO: error
-        Foundation.listen(socketDescriptor!, backlog)
+    public func close() throws {
+        try socket?.close()
     }
     
-    public func accept() {
-        
-    }
-    
-    public func receive() {
-        
+    public func send(bytes: [UInt8]) throws {
+        try socket?.send(data: bytes)
     }
     
 }
-*/
+
+public class TCPServer {
+    
+    public let hostname: String
+    public let port: UInt16
+    public var queueLimit: Int32 = 4096
+
+    var server: TCPInternetSocket!
+    var parcel: Parcel<TCPPacket>!
+    
+    public init(hostname: String, port: UInt16) throws {
+        self.hostname = hostname
+        self.port = port
+    }
+    
+    public func close() throws {
+        try server.close()
+        let client = TCPClient(hostname: hostname, port: port)
+        parcel ! TCPPacket(client: client, state: .closed)
+    }
+    
+    public func run(block: @escaping (Parcel<TCPPacket>) -> Void) throws -> Never {
+        parcel = Parcel<TCPPacket>.spawn(block: block)
+        try run(parcel: parcel)
+    }
+    
+    public func run(parcel: Parcel<TCPPacket>) throws -> Never {
+        self.parcel = parcel
+        let address = InternetAddress(hostname: hostname, port: port)
+        server = try TCPInternetSocket(address: address)
+        try server.bind()
+        try server.listen(queueLimit: queueLimit)
+        
+        while true {
+            do {
+                let socket = try server.accept()
+                let client = TCPClient(hostname: hostname, port: port, socket: socket)
+                let state = TCPState.bytes(try socket.recvAll())
+                parcel ! TCPPacket(client: client, state: state)
+            } catch let error {
+                let client = TCPClient(hostname: hostname, port: port)
+                parcel ! TCPPacket(client: client, state: .error(error))
+            }
+            
+        }
+    }
+    
+}
