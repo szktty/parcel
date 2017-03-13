@@ -84,8 +84,7 @@ class ParcelTests: XCTestCase {
         }
         let parcel2 = Parcel<Void>.spawn {
             parcel in
-            parcel.onDeath {
-                error in
+            parcel.onExit { signal in
                 exp.fulfill()
             }
         }
@@ -101,14 +100,16 @@ class ParcelTests: XCTestCase {
             parcel.onReceive {
                 throw NSError(domain: "Parcel", code: 0)
             }
-            parcel.onDeath { _ in XCTFail() }
-            parcel.onDown { _ in XCTFail() }
         }
         let monitor = Parcel<Void>.spawn {
             parcel in
-            parcel.onDown {
-                downed in
-                exp.fulfill()
+            parcel.onExit { signal in
+                switch signal {
+                case .down:
+                    exp.fulfill()
+                default:
+                    break
+                }
             }
         }
         ParcelCenter.default.addMonitor(monitor, forParcel: target)

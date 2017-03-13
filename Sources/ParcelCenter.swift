@@ -112,44 +112,42 @@ public class ParcelCenter {
         }
     }
     
-    // MARK: Kill parcels
+    // MARK: Exit Parcels
     
-    func kill(parcel: BasicParcel, cause: BasicParcel? = nil) {
-        killLinks(parcel: parcel, cause: cause)
-        notifyMonitors(parcel: parcel)
-    }
-    
-    func killLinks(parcel: BasicParcel, cause: BasicParcel? = nil) {
-        let item = DispatchWorkItem {
-            if let links = self.parcelLinks[parcel.id] {
-                for link in links {
-                    if link.id == cause?.id {
-                        continue
-                    }
-                    link.onDeathHandler?(.death(parcel))
-                    self.killLinks(parcel: link, cause: parcel)
-                }
-                self.parcelLinks[parcel.id] = nil
-            }
-        }
-        
-        if cause != nil {
-            // avoid recursive call and deadlock
-            item.perform()
-        } else {
-            lockQueue.sync(execute: item)
-        }
-    }
-    
-    func notifyMonitors(parcel: BasicParcel) {
+    func exit(parcel: BasicParcel, error: Error?) {
         lockQueue.sync {
-            if let monitors = parcelMonitors[parcel.id] {
-                for monitor in monitors {
-                    monitor.onDownHandler?(parcel)
-                }
-                parcelMonitors[parcel.id] = nil
-            }
+            let signal: Signal = error != nil ? .error(error!) : .normal
+            parcel.finish(signal: signal)
+            
+            var exited: [BasicParcel] = []
+            exitLinks(parcel: parcel, exited: &exited)
+            exitMonitors(parcel: parcel)
+
         }
     }
     
+    func exitLinks(parcel: BasicParcel, exited: inout [BasicParcel]) {
+        guard let links = parcelLinks[parcel.id] else { return }
+        for link in links {
+            if (exited.contains { exited in
+                exited.id == parcel.id
+            }) {
+                continue
+            }
+            exited.append(link)
+            link.finish(signal: .killed)
+            exitLinks(parcel: link, exited: &exited)
+        }
+        parcelLinks[parcel.id] = nil
+    }
+    
+    func exitMonitors(parcel: BasicParcel) {
+        if let monitors = parcelMonitors[parcel.id] {
+            for monitor in monitors {
+                monitor.finish(signal: .down)
+            }
+            parcelMonitors[parcel.id] = nil
+        }
+    }
+
 }

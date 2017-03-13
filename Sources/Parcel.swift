@@ -1,15 +1,17 @@
 import Foundation
 
-public enum ParcelError: Error {
-    case unspawned
-    case death(BasicParcel)
-    case user(Error)
-}
-
 public enum Loop {
     case `continue`
     case `break`
     case timeout
+}
+
+public enum Signal {
+    case normal
+    case kill
+    case killed
+    case down
+    case error(Error)
 }
 
 open class BasicParcel {
@@ -23,34 +25,24 @@ open class BasicParcel {
     var timeoutHandler: (() -> Void)?
     var isAlive: Bool = true
     var timeoutForced: Bool = false
-    var onErrorHandler: ((Error) -> Void)?
-    var onDeathHandler: ((ParcelError) -> Void)?
-    var onDownHandler: ((BasicParcel) -> Void)?
+    var onExitHandler: ((Signal) -> Void)?
 
     public func after(deadline: DispatchTime, handler: @escaping () -> Void) {
         self.deadline = deadline
         timeoutHandler = handler
     }
     
-    public func onError(handler: @escaping (Error) -> Void) {
-        onErrorHandler = handler
+    public func onExit(handler: @escaping (Signal) -> Void) {
+        onExitHandler = handler
     }
     
-    public func onDeath(handler: @escaping (ParcelError) -> Void) {
-        onDeathHandler = handler
+    public func exit(error: Error? = nil) {
+        ParcelCenter.default.exit(parcel: self, error: error)
     }
-    
-    public func onDown(handler: @escaping (BasicParcel) -> Void) {
-        onDownHandler = handler
-    }
-    
-    public func terminate() {
+
+    func finish(signal: Signal) {
         isAlive = false
-    }
-    
-    func handle(error: Error) {
-        terminate()
-        onErrorHandler?(error)
+        onExitHandler?(signal)
     }
     
 }
@@ -102,13 +94,13 @@ open class Parcel<T>: BasicParcel {
             case .continue:
                 break
             case .break:
-                terminate()
+                exit()
             case .timeout:
                 timeoutForced = true
             }
         }
     }
-    
+
 }
 
 infix operator !

@@ -47,17 +47,15 @@ class Worker {
                 do {
                     try parcel.evaluate(message: message)
                 } catch let error {
-                    let userError = ParcelError.user(error)
-                    parcel.handle(error: userError)
-                    ParcelCenter.default.kill(parcel: parcel)
+                    parcel.exit(error: error)
                 }
             }
+            parcel.finish(signal: .normal)
             self.unregister(parcel: parcel)
         }
     }
     
     func unregister<T>(parcel: Parcel<T>) {
-        parcel.terminate()
         remove(parcel: parcel)
     }
     
