@@ -89,15 +89,11 @@ open class Parcel<T>: BasicParcel {
     // MARK: Message passing
     
     public func send(message: T) {
-        self.messageQueue.enqueue(message)
+        messageQueue.enqueue(message)
     }
     
     public func pop() -> T? {
-        if let message = self.messageQueue.dequeue() {
-            return message
-        } else {
-            return nil
-        }
+        return messageQueue.dequeue()
     }
 
     func evaluate(message: T) throws {
