@@ -84,7 +84,7 @@ class ParcelTests: XCTestCase {
         }
         let parcel2 = Parcel<Void>.spawn {
             parcel in
-            parcel.onExit { signal in
+            parcel.onTerminate { signal in
                 exp.fulfill()
             }
         }
@@ -103,7 +103,7 @@ class ParcelTests: XCTestCase {
         }
         let monitor = Parcel<Void>.spawn {
             parcel in
-            parcel.onExit { signal in
+            parcel.onTerminate { signal in
                 switch signal {
                 case .down:
                     exp.fulfill()
