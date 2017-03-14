@@ -1,18 +1,114 @@
 # Parcel
 
-Actor-based concurrency library for Swift (experimental)
+Parcel is an Erlang-like actor-based concurrency library for Swift (experimental).
 
 ## Usage
 
-- Parcel<T>, ParcelCenter
-- Parcel = Process (avoid ``Foundation.Process``)
-- spawn
-- message, <T>
-- receive
-- link
-- monitor
-- exit
-- timer
+A main component of this library is actor reperesented as ``Parcel`` objects.
+``Parcel`` objects support asynchronous message passing.
+
+### Creating Parcels
+
+Parcels which defined as ``Percel<T>`` can be receive only messages of the type ``T``.
+For example, instances of ``Parcel<String>`` can receive only strings as message.
+
+```
+let p = Parcel<String>()
+```
+
+Next, you should define a message handler before starting waiting for messages.
+A message handler can be set in parcels with ``onReceive(handler:)``.
+``onReceive(handler:)`` takes a block which a parcel received a new message as an argument.
+
+```
+func onReceive(handler: @escaping (T) throws -> Loop)
+```
+
+Let's assume that print "Thunder" if a received message is "Flash" but otherwise print "Bye" the following:
+
+```
+let p = Parcel<String>()
+p.onReceive { message in
+    switch message {
+    case "Flash":
+        print("Thunder")
+        return .continue
+    default:
+        print("Bye")
+        return .break
+    }
+}
+p.run()
+```
+
+Message handler blocks must return ``Loop.continue`` or ``Loop.break``.
+``Loop.continue`` makes the parcel wait for messages again.
+``Loop.break`` makes the parcel stop waiting for messages and release.
+(Receive loop is written with recursive function in Erlang.
+But Swift does not guarantee tail call optimization.)
+Finally, the parcel starts waiting for messages with invoke ``run()``.
+
+The code from ``init()`` to ``run()`` can be replace with ``Parcel<T>.spawn()``.
+``spawn()`` makes a new parcel start waiting for messages after got block is executed.
+
+```
+let p = Parcel<String>.spawn { p in
+    p.onReceive { message in
+        switch message {
+        case "Flash":
+            print("Thunder")
+            return .continue
+        default:
+            print("Bye")
+            return .break
+        }
+    }
+}
+```
+
+### Sending Messages
+
+Use ``!`` operator to send messages.
+Left value of ``!`` operator is a parcel and right value is a message to send.
+
+````
+p ! "Flash" // --> "Thunder"
+p ! "Fresh" // --> "Bye"
+```
+
+### Handling Timeout
+
+- ``after(deadline:handler:)``
+
+### Error and Exit Handling
+
+- ``terminate(error:)``
+- ``onTerminate(handler:)``
+
+### Linking Parcels
+
+- ``ParcelCenter.addLink(parcel1:parcel2)``
+
+### Monitoring Parcels
+
+- ``ParcelCenter.addMonitor(_:forParcel:)``
+
+### Other APIs
+
+- TCPSocket
+
+## Package.swift
+
+```
+import PackageDescription
+
+let package = Package(
+    name: "YourApp",
+    dependencies: [
+        .Package(url: "https://github.com/szktty/parcel.git", majorVersion: 0),
+    ]
+)
+```
 
 ## Examples
 
