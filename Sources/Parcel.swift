@@ -66,16 +66,16 @@ open class Parcel<T>: BasicParcel {
         onReceiveHandler = handler
     }
     
-    // MARK: Process
+    // MARK: Running
     
-    public func spawn() {
+    public func run() {
         ParcelCenter.default.register(parcel: self)
     }
     
     public class func spawn(block: @escaping (Parcel<T>) -> Void) -> Parcel<T> {
         let parcel: Parcel<T> = self.init()
         block(parcel)
-        parcel.spawn()
+        parcel.run()
         return parcel
     }
     
