@@ -16,6 +16,8 @@ public enum Signal {
 
 open class BasicParcel {
     
+    public var isAlive: Bool = true
+
     public var id: ObjectIdentifier {
         get { return ObjectIdentifier(self) }
     }
@@ -23,7 +25,6 @@ open class BasicParcel {
     weak var worker: Worker?
     var deadline: DispatchTime?
     var timeoutHandler: (() -> Void)?
-    var isAlive: Bool = true
     var timeoutForced: Bool = false
     var onExitHandler: ((Signal) -> Void)?
 
