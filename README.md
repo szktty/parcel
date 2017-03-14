@@ -71,7 +71,7 @@ let p = Parcel<String>.spawn { p in
 Use ``!`` operator to send messages.
 Left value of ``!`` operator is a parcel and right value is a message to send.
 
-````
+```
 p ! "Flash" // --> "Thunder"
 p ! "Fresh" // --> "Bye"
 ```
