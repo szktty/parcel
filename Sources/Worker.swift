@@ -47,7 +47,7 @@ class Worker {
                 do {
                     try parcel.evaluate(message: message)
                 } catch let error {
-                    parcel.exit(error: error)
+                    parcel.terminate(error: error)
                 }
             }
             parcel.finish(signal: .normal)

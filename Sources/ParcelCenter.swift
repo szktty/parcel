@@ -112,36 +112,36 @@ public class ParcelCenter {
         }
     }
     
-    // MARK: Exit Parcels
+    // MARK: Terminate Parcels
     
-    func exit(parcel: BasicParcel, error: Error?) {
+    func terminate(parcel: BasicParcel, error: Error?) {
         lockQueue.sync {
             let signal: Signal = error != nil ? .error(error!) : .normal
             parcel.finish(signal: signal)
             
-            var exited: [BasicParcel] = []
-            exitLinks(parcel: parcel, exited: &exited)
-            exitMonitors(parcel: parcel)
+            var terminated: [BasicParcel] = []
+            terminateLinks(parcel: parcel, terminated: &terminated)
+            terminateMonitors(parcel: parcel)
 
         }
     }
     
-    func exitLinks(parcel: BasicParcel, exited: inout [BasicParcel]) {
+    func terminateLinks(parcel: BasicParcel, terminated: inout [BasicParcel]) {
         guard let links = parcelLinks[parcel.id] else { return }
         for link in links {
-            if (exited.contains { exited in
-                exited.id == parcel.id
+            if (terminated.contains { terminated in
+                terminated.id == parcel.id
             }) {
                 continue
             }
-            exited.append(link)
+            terminated.append(link)
             link.finish(signal: .killed)
-            exitLinks(parcel: link, exited: &exited)
+            terminateLinks(parcel: link, terminated: &terminated)
         }
         parcelLinks[parcel.id] = nil
     }
     
-    func exitMonitors(parcel: BasicParcel) {
+    func terminateMonitors(parcel: BasicParcel) {
         if let monitors = parcelMonitors[parcel.id] {
             for monitor in monitors {
                 monitor.finish(signal: .down)

@@ -26,24 +26,24 @@ open class BasicParcel {
     var deadline: DispatchTime?
     var timeoutHandler: (() -> Void)?
     var timeoutForced: Bool = false
-    var onExitHandler: ((Signal) -> Void)?
+    var onTerminateHandler: ((Signal) -> Void)?
 
     public func after(deadline: DispatchTime, handler: @escaping () -> Void) {
         self.deadline = deadline
         timeoutHandler = handler
     }
     
-    public func onExit(handler: @escaping (Signal) -> Void) {
-        onExitHandler = handler
+    public func onTerminate(handler: @escaping (Signal) -> Void) {
+        onTerminateHandler = handler
     }
     
-    public func exit(error: Error? = nil) {
-        ParcelCenter.default.exit(parcel: self, error: error)
+    public func terminate(error: Error? = nil) {
+        ParcelCenter.default.terminate(parcel: self, error: error)
     }
 
     func finish(signal: Signal) {
         isAlive = false
-        onExitHandler?(signal)
+        onTerminateHandler?(signal)
     }
     
 }
@@ -95,7 +95,7 @@ open class Parcel<T>: BasicParcel {
             case .continue:
                 break
             case .break:
-                exit()
+                terminate()
             case .timeout:
                 timeoutForced = true
             }
