@@ -42,11 +42,11 @@ p.run()
 ```
 
 Message handler blocks must return ``Loop.continue`` or ``Loop.break``.
-``Loop.continue`` makes the parcel wait for messages again.
-``Loop.break`` makes the parcel stop waiting for messages and release.
+``Loop.continue`` makes a parcel wait for messages again.
+``Loop.break`` makes a parcel stop waiting for messages and release.
 (Receive loop is written with recursive function in Erlang.
 But Swift does not guarantee tail call optimization.)
-Finally, the parcel starts waiting for messages with invoke ``run()``.
+Finally, invoke ``run`` to start waiting for messages.
 
 The code from ``init()`` to ``run()`` can be replace with ``Parcel<T>.spawn()``.
 ``spawn()`` makes a new parcel start waiting for messages after got block is executed.
@@ -87,11 +87,11 @@ p ! "Fresh" // --> "Bye"
 
 ### Linking Parcels
 
-- ``ParcelCenter.addLink(parcel1:parcel2)``
+- ``addLink(_:)``
 
 ### Monitoring Parcels
 
-- ``ParcelCenter.addMonitor(_:forParcel:)``
+- ``addMonitor(_:)``
 
 ### Other APIs
 
