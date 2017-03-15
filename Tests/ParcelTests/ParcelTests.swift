@@ -88,7 +88,7 @@ class ParcelTests: XCTestCase {
                 exp.fulfill()
             }
         }
-        ParcelCenter.default.addLink(parcel1: parcel1, parcel2: parcel2)
+        parcel1.addLink(parcel2)
         parcel1 ! ()
         self.waitForExpectations(timeout: 2)
     }
@@ -112,7 +112,7 @@ class ParcelTests: XCTestCase {
                 }
             }
         }
-        ParcelCenter.default.addMonitor(monitor, forParcel: target)
+        target.addMonitor(monitor)
         target ! ()
         waitForExpectations(timeout: 2)
     }

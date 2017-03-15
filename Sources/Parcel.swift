@@ -102,6 +102,14 @@ open class Parcel<T>: BasicParcel {
         }
     }
 
+    public func addLink(_ parcel: Parcel<T>) {
+        ParcelCenter.default.addLink(parcel1: self, parcel2: parcel)
+    }
+    
+    public func addMonitor(_ parcel: Parcel<T>) {
+        ParcelCenter.default.addMonitor(parcel, forParcel: self)
+    }
+    
 }
 
 infix operator !
