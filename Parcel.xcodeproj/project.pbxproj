@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9124F8271E796844004839CC /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9124F8261E796844004839CC /* Server.swift */; };
 		912B98E71E756E84006E6CE7 /* TCPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912B98E51E756C1B006E6CE7 /* TCPSocket.swift */; };
 		OBJ_100 /* Worker.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_37 /* Worker.swift */; };
 		OBJ_102 /* SocksCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_46 /* SocksCore.framework */; };
@@ -104,6 +105,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9124F8261E796844004839CC /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		912B98E51E756C1B006E6CE7 /* TCPSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPSocket.swift; sourceTree = "<group>"; };
 		OBJ_10 /* SynchronousTCPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronousTCPServer.swift; sourceTree = "<group>"; };
 		OBJ_11 /* SynchronousUDPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronousUDPServer.swift; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 				OBJ_35 /* ParcelCenter.swift */,
 				912B98E51E756C1B006E6CE7 /* TCPSocket.swift */,
 				OBJ_37 /* Worker.swift */,
+				9124F8261E796844004839CC /* Server.swift */,
 			);
 			name = Parcel;
 			path = Sources;
@@ -470,6 +473,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				9124F8271E796844004839CC /* Server.swift in Sources */,
 				OBJ_97 /* Parcel.swift in Sources */,
 				OBJ_98 /* ParcelCenter.swift in Sources */,
 				912B98E71E756E84006E6CE7 /* TCPSocket.swift in Sources */,
