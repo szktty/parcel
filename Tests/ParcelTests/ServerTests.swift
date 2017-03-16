@@ -1,16 +1,16 @@
 import XCTest
 @testable import Parcel
 
-final class MyBank: ServerBehavior {
+final class MyBank: ServerContext {
     
     public typealias Config = Void
-    public typealias Request = Void
-    public typealias State = Void
     public typealias Message = String
-    public typealias Reply = Void
+    public typealias Request = Void
+    public typealias Response = Void
+    public typealias Error = Void
     
     public static func run(config: Config) -> Server<MyBank> {
-        let server = Server<MyBank>(behavior: MyBank())
+        let server = Server<MyBank>(context: MyBank())
         server.run(config: config)
         return server
     }
@@ -19,19 +19,15 @@ final class MyBank: ServerBehavior {
         return .ignore
     }
     
-    func onSendSync(state: State, request: Request, from: Parcel<Message>) -> ServerSendSyncResult<MyBank> {
-        return .noreply(state: state, timeout: nil)
+    func onSendSync(client: Parcel<Response>,  request: Request) -> ServerSendSyncResult<MyBank> {
+        return .ignore(timeout: nil)
     }
     
-    func onSendAsync(state: State, request: Request) -> ServerSendAsyncResult<MyBank> {
-        return .noreply(state: state, timeout: nil)
+    func onSendAsync(client: Parcel<Response>, request: Request) -> ServerSendAsyncResult<MyBank> {
+        return .ignore(timeout: nil)
     }
     
-    func onReceive(state: State, message: Message) -> ServerReceiveResult<MyBank> {
-        return .noreply(state: state, timeout: nil)
-    }
-    
-    func terminate(state: State, error: Error?) {
+    func terminate(client: Parcel<Response>, error: Error?) {
         
     }
     
