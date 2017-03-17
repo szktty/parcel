@@ -8,7 +8,7 @@ public protocol ServerContext {
     associatedtype Message
     associatedtype Error
     
-    func initialize(config: Config) -> ServerInitResult<Self>
+    func initialize(config: Config?) -> ServerInitResult<Self>
     func onSendSync(client: Parcel<Response>, request: Request) -> ServerSendSyncResult<Self>
     func onSendAsync(client: Parcel<Response>, request: Request) -> ServerSendAsyncResult<Self>
     func terminate(error: Error)
@@ -65,7 +65,7 @@ open class Server<Context> where Context: ServerContext {
     
     // MARK: Running Servers
     
-    public func run(config: Context.Config) {
+    public func run(config: Context.Config? = nil) {
         switch context.initialize(config: config) {
         case .ignore:
             break
