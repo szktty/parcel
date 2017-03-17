@@ -14,31 +14,40 @@ public protocol ServerContext {
                     request: Request,
                     block: (Response) -> Void) -> ServerSendSync<Self>
     func onSendAsync(client: Client, request: Request) -> ServerSendAsync<Self>
-    func onTerminate(error: Error)
+    func onTerminate(error: ServerError<Self>)
     
 }
 
 public enum ServerInit<Context> where Context: ServerContext {
     case ok(timeout: Int?)
-    case terminate(Context.Error)
+    case terminate(error:ServerError<Context>)
     case ignore
 }
 
 public enum ServerSendSync<Context> where Context: ServerContext {
     case sync(timeout: Int?)
     case async(timeout: Int?)
-    case terminate(error: Context.Error)
+    case terminate(error: ServerError<Context>)
 }
 
 public enum ServerSendAsync<Context> where Context: ServerContext {
     case ignore(timeout: Int?)
-    case terminate(error: Context.Error)
+    case terminate(error: ServerError<Context>)
 }
 
 public enum ServerRun<Context> where Context: ServerContext {
     case ok(Parcel<Context.Message>)
     case ignore
-    case error(Context.Error)
+    case error(ServerError<Context>)
+}
+
+public enum ServerError<Context> where Context: ServerContext {
+    
+    case normal
+    case timeout
+    case error(Error)
+    case context(Context.Error)
+    
 }
 
 public struct ServerOption {
@@ -53,7 +62,7 @@ public enum ServerOperation<Context> where Context: ServerContext {
         request: Context.Request,
         timeout: Int?,
         block: (Context.Response) -> Void)
-    case terminate(error: Context.Error)
+    case terminate(error: ServerError<Context>)
     
 }
 
@@ -120,7 +129,7 @@ open class Server<Context> where Context: ServerContext {
     }
  */
 
-    public func terminate(error: Context.Error, timeout: Int? = nil) {
+    public func terminate(error: ServerError<Context>, timeout: Int? = nil) {
         context.onTerminate(error: error)
         parcel ! .terminate(error: error)
     }

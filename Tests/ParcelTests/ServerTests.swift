@@ -25,7 +25,7 @@ final class MyBankContext: ServerContext {
         block(())
         switch request {
         case .stop:
-            return .terminate(error: ())
+            return .terminate(error: .normal)
         default:
             return .sync(timeout: nil)
         }
@@ -35,7 +35,7 @@ final class MyBankContext: ServerContext {
         return .ignore(timeout: nil)
     }
     
-    func onTerminate(error: Error) {
+    func onTerminate(error: ServerError<MyBankContext>) {
         
     }
     
