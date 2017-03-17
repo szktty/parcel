@@ -35,7 +35,7 @@ final class MyBankContext: ServerContext {
         return .ignore(timeout: nil)
     }
     
-    func terminate(error: Error) {
+    func onTerminate(error: Error) {
         
     }
     

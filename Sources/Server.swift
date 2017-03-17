@@ -14,7 +14,7 @@ public protocol ServerContext {
                     request: Request,
                     block: (Response) -> Void) -> ServerSendSync<Self>
     func onSendAsync(client: Client, request: Request) -> ServerSendAsync<Self>
-    func terminate(error: Error)
+    func onTerminate(error: Error)
     
 }
 
@@ -121,7 +121,7 @@ open class Server<Context> where Context: ServerContext {
  */
 
     public func terminate(error: Context.Error, timeout: Int? = nil) {
-        context.terminate(error: error)
+        context.onTerminate(error: error)
         parcel ! .terminate(error: error)
     }
     
