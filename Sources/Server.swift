@@ -3,36 +3,39 @@ import Foundation
 public protocol ServerContext {
     
     associatedtype Config
+    associatedtype Client
     associatedtype Request
     associatedtype Response
     associatedtype Message
     associatedtype Error
     
-    func initialize(config: Config?) -> ServerInitResult<Self>
-    func onSendSync(client: Parcel<Response>, request: Request) -> ServerSendSyncResult<Self>
-    func onSendAsync(client: Parcel<Response>, request: Request) -> ServerSendAsyncResult<Self>
+    func initialize(config: Config?) -> ServerInit<Self>
+    func onSendSync(client: Client?,
+                    request: Request,
+                    block: (Response) -> Void) -> ServerSendSync<Self>
+    func onSendAsync(client: Client, request: Request) -> ServerSendAsync<Self>
     func terminate(error: Error)
     
 }
 
-public enum ServerInitResult<Context> where Context: ServerContext {
+public enum ServerInit<Context> where Context: ServerContext {
     case ok(timeout: Int?)
     case terminate(Context.Error)
     case ignore
 }
 
-public enum ServerSendSyncResult<Context> where Context: ServerContext {
-    case response(response: Context.Response, timeout: Int?)
+public enum ServerSendSync<Context> where Context: ServerContext {
+    case sync(timeout: Int?)
+    case async(timeout: Int?)
+    case terminate(error: Context.Error)
+}
+
+public enum ServerSendAsync<Context> where Context: ServerContext {
     case ignore(timeout: Int?)
     case terminate(error: Context.Error)
 }
 
-public enum ServerSendAsyncResult<Context> where Context: ServerContext {
-    case ignore(timeout: Int?)
-    case terminate(error: Context.Error)
-}
-
-public enum ServerRunResult<Context> where Context: ServerContext {
+public enum ServerRun<Context> where Context: ServerContext {
     case ok(Parcel<Context.Message>)
     case ignore
     case error(Context.Error)
@@ -45,7 +48,13 @@ public struct ServerOption {
 }
 
 public enum ServerOperation<Context> where Context: ServerContext {
-    case sendSync(client: Parcel<Context.Response>, request: Context.Request)
+    
+    case sendSync(client: Context.Client?,
+        request: Context.Request,
+        timeout: Int?,
+        block: (Context.Response) -> Void)
+    case terminate(error: Context.Error)
+    
 }
 
 open class Server<Context> where Context: ServerContext {
@@ -54,13 +63,11 @@ open class Server<Context> where Context: ServerContext {
     
     public var context: Context
     var parcel: Parcel<Operation>!
-    var waitingValues: [ObjectIdentifier: Context.Response] = [:]
-    var waitingErrors: [ObjectIdentifier: Context.Error] = [:]
-    var lockQueue: DispatchQueue
+    var syncQueue: DispatchQueue
     
     public init(context: Context) {
         self.context = context
-        lockQueue = DispatchQueue(label: "Server")
+        syncQueue = DispatchQueue(label: "Server")
     }
     
     // MARK: Running Servers
@@ -76,65 +83,68 @@ open class Server<Context> where Context: ServerContext {
         parcel = Parcel<Operation>.spawn { p in
             p.onReceive { message in
                 switch message {
-                case .sendSync(client: let client, request: let request):
-                    switch self.context.onSendSync(client: client, request: request) {
-                    case .response(response: let response, timeout: let timeout):
-                        self.waitingValues[client.id] = response
+                case .sendSync(client: let client,
+                               request: let request,
+                               timeout: let timeout,
+                               block: let block):
+                    var sync = true
+                    let callback: (Context.Response) -> Void = { response in
+                        sync = false
+                        block(response)
+                    }
+                    switch self.context.onSendSync(client: client,
+                                                   request: request,
+                                                   block: callback) {
+                    case .sync(timeout: let timeout):
+                        while sync {}
 
-                    case .ignore(timeout: let timeout):
+                    case .async(timeout: let timeout):
                         break
 
                     case .terminate(error: let error):
-                        self.waitingErrors[client.id] = error
+                        // TODO
+                        self.terminate(error: error)
                     }
+                    return .continue
+
+                case .terminate(error: let error):
+                    return .break
                 }
-                return .continue
             }
         }
     }
     
     /*
-    public func runAndLink(config: Context.Config, options: ServerOption) -> ServerRunResult<Context> {
+    public func runAndLink(config: Context.Config, options: ServerOption) -> ServerRun<Context> {
         return .ignore
     }
  */
 
     public func terminate(error: Context.Error, timeout: Int? = nil) {
         context.terminate(error: error)
+        parcel ! .terminate(error: error)
     }
     
     // MARK: Sending Requests
     
-    public func sendSync(client: Parcel<Context.Response>, request: Context.Request, timeout: Int? = nil) -> Context.Response {
+    public func sendSync(client: Context.Client? = nil,
+                         request: Context.Request,
+                         timeout: Int? = nil) -> Context.Response {
         assert(parcel != nil)
-        
-        var response: Context.Response!
-        lockQueue.sync {
-            parcel ! .sendSync(client: client, request: request)
-            while true {
-                if let value = self.waitingValues[client.id] {
-                    response = value
-                    self.waitingValues[client.id] = nil
-                    if let error = self.waitingErrors[client.id] {
-                        self.waitingErrors[client.id] = nil
-                        self.terminate(error: error)
-                    }
-                    break
-                }
-            }
+        var returnValue: Context.Response?
+        let block: (Context.Response) -> Void = { response in
+            returnValue = response
         }
-        return response
+        parcel ! .sendSync(client: client,
+                           request: request,
+                           timeout: timeout,
+                           block: block)
+        while returnValue == nil {}
+        return returnValue!
     }
     
     public func sendAsync(request: Context.Request) {
         
-    }
-    
-    // MARK: Sending Values to Clients
-    
-    public func sendResponse(client: Parcel<Context.Response>, response: Context.Response) {
-        client ! response
-        waitingValues[client.id] = response
     }
     
 }

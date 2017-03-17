@@ -1,34 +1,70 @@
 import XCTest
 @testable import Parcel
 
-final class MyBank: ServerContext {
+final class MyBankContext: ServerContext {
     
     public typealias Config = Void
+    public typealias Client = Void
     public typealias Message = String
-    public typealias Request = Void
     public typealias Response = Void
     public typealias Error = Void
     
-    public static func run(config: Config) -> Server<MyBank> {
-        let server = Server<MyBank>(context: MyBank())
-        server.run(config: config)
-        return server
+    enum Request {
+        case add(Int)
+        case remove(Int)
+        case stop
     }
     
-    func initialize(config: Config) -> ServerInitResult<MyBank> {
+    func initialize(config: Config?) -> ServerInit<MyBankContext> {
         return .ignore
     }
     
-    func onSendSync(client: Parcel<Response>,  request: Request) -> ServerSendSyncResult<MyBank> {
+    func onSendSync(client: Client?,
+                    request: Request,
+                    block: (Response) -> Void) -> ServerSendSync<MyBankContext> {
+        block(())
+        switch request {
+        case .stop:
+            return .terminate(error: ())
+        default:
+            return .sync(timeout: nil)
+        }
+    }
+    
+    func onSendAsync(client: Client, request: Request) -> ServerSendAsync<MyBankContext> {
         return .ignore(timeout: nil)
     }
     
-    func onSendAsync(client: Parcel<Response>, request: Request) -> ServerSendAsyncResult<MyBank> {
-        return .ignore(timeout: nil)
-    }
-    
-    func terminate(client: Parcel<Response>, error: Error?) {
+    func terminate(error: Error) {
         
+    }
+    
+}
+
+class MyBank {
+    
+    var server: Server<MyBankContext>
+    var context: MyBankContext
+    
+    init() {
+        context = MyBankContext()
+        server = Server<MyBankContext>(context: context)
+    }
+    
+    func run() {
+        server.run()
+    }
+    
+    func stop() {
+        server.sendSync(request: .stop)
+    }
+    
+    func deposit(amount: Int) {
+        server.sendSync(request: .add(amount))
+    }
+    
+    func withdraw(amount: Int) {
+        server.sendSync(request: .remove(amount))
     }
     
 }
@@ -48,6 +84,9 @@ class ServerTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let bank = MyBank()
+        bank.run()
+        bank.stop()
     }
 
     func testPerformanceExample() {
