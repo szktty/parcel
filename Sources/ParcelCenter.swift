@@ -114,15 +114,13 @@ public class ParcelCenter {
     
     // MARK: Terminate Parcels
     
-    func terminate(parcel: BasicParcel, error: Error?) {
+    func terminate(parcel: BasicParcel, signal: Signal) {
         lockQueue.sync {
-            let signal: Signal = error != nil ? .error(error!) : .normal
             parcel.finish(signal: signal)
             
             var terminated: [BasicParcel] = []
             terminateLinks(parcel: parcel, terminated: &terminated)
             terminateMonitors(parcel: parcel)
-
         }
     }
     

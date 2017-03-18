@@ -12,26 +12,26 @@ public protocol ServerContext {
     func initialize(config: Config?) -> ServerInit<Self>
     func onSync(client: Client?,
                 request: Request,
-                block: (Response) -> Void) -> ServerSync<Self>
+                execute: (Response) -> Void) -> ServerSync<Self>
     func onAsync(client: Client, request: Request) -> ServerAsync<Self>
     func onTerminate(error: ServerError<Self>)
     
 }
 
 public enum ServerInit<Context> where Context: ServerContext {
-    case ok(timeout: Int?)
+    case ok(timeout: UInt?)
     case terminate(error:ServerError<Context>)
     case ignore
 }
 
 public enum ServerSync<Context> where Context: ServerContext {
-    case sync(timeout: Int?)
-    case async(timeout: Int?)
+    case sync(timeout: UInt?)
+    case async(timeout: UInt?)
     case terminate(error: ServerError<Context>)
 }
 
 public enum ServerAsync<Context> where Context: ServerContext {
-    case ignore(timeout: Int?)
+    case ignore(timeout: UInt?)
     case terminate(error: ServerError<Context>)
 }
 
@@ -52,7 +52,7 @@ public enum ServerError<Context>: Error where Context: ServerContext {
 
 public struct ServerOption {
     
-    public var timeout: Int?
+    public var timeout: UInt?
     
 }
 
@@ -60,9 +60,9 @@ public enum ServerOperation<Context> where Context: ServerContext {
     
     case sync(client: Context.Client?,
         request: Context.Request,
-        timeout: Int?,
+        timeout: UInt?,
         block: (Context.Response) -> Void)
-    case terminate(error: ServerError<Context>, timeout: Int?)
+    case terminate(error: ServerError<Context>, timeout: UInt?)
     
 }
 
@@ -103,7 +103,7 @@ open class Server<Context> where Context: ServerContext {
                     }
                     switch self.context.onSync(client: client,
                                                request: request,
-                                               block: callback) {
+                                               execute: callback) {
                     case .sync(timeout: let timeout):
                         while sync {}
                         
@@ -115,7 +115,11 @@ open class Server<Context> where Context: ServerContext {
                     }
                     
                 case .terminate(error: let error, timeout: let timeout):
-                    self.terminate(error: error, timeout: timeout)
+                    if let deadline = timeout {
+                        self.terminateAfter(deadline: deadline, error: error)
+                    } else {
+                        self.terminate(error: error)
+                    }
                 }
                 
                 return .continue
@@ -129,15 +133,14 @@ open class Server<Context> where Context: ServerContext {
      }
      */
     
-    public func terminate(error: ServerError<Context>, timeout: Int? = nil) {
-        if let timeout = timeout {
-            parcel.after(deadline: DispatchTime(uptimeNanoseconds:
-                UInt64(1000000 * timeout))) {
-                self.context.onTerminate(error: error)
-            }
-        } else {
-            context.onTerminate(error: error)
-            parcel.terminate(error: error)
+    public func terminate(error: ServerError<Context>) {
+        parcel.terminate()
+        self.context.onTerminate(error: error)
+    }
+    
+    public func terminateAfter(deadline: UInt, error: ServerError<Context>) {
+        parcel.terminateAfter(deadline: deadline) {
+            self.context.onTerminate(error: error)
         }
     }
     
@@ -145,7 +148,7 @@ open class Server<Context> where Context: ServerContext {
     
     public func sync(client: Context.Client? = nil,
                      request: Context.Request,
-                     timeout: Int? = nil) -> Context.Response {
+                     timeout: UInt? = nil) -> Context.Response {
         assert(parcel != nil)
         var returnValue: Context.Response?
         let block: (Context.Response) -> Void = { response in

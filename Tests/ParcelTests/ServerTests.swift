@@ -20,9 +20,9 @@ final class MyBankContext: ServerContext {
     }
     
     func onSync(client: Client?,
-                    request: Request,
-                    block: (Response) -> Void) -> ServerSync<MyBankContext> {
-        block(())
+                request: Request,
+                execute: (Response) -> Void) -> ServerSync<MyBankContext> {
+        execute(())
         switch request {
         case .stop:
             return .terminate(error: .normal)

@@ -3,16 +3,16 @@ import Foundation
 class Worker {
     
     var workerId: Int
-    var dispatchQueue: DispatchQueue
+    var messageQueue: DispatchQueue
+    var executeQueue: DispatchQueue
     var lockQueue: DispatchQueue
     var parcels: [ObjectIdentifier: AnyObject] = [:]
 
-    init(workerId: Int,
-         dispatchQueue: DispatchQueue? = nil) {
+    init(workerId: Int) {
         self.workerId = workerId
-        self.dispatchQueue = dispatchQueue
-            ?? DispatchQueue(label: workerId.description)
-        self.lockQueue = DispatchQueue(label: "parcels")
+        self.messageQueue = DispatchQueue(label: workerId.description)
+        self.executeQueue = DispatchQueue(label: "worker.execute")
+        self.lockQueue = DispatchQueue(label: "worker.lock")
     }
     
     func add<T>(parcel: Parcel<T>) {
@@ -32,16 +32,7 @@ class Worker {
     func register<T>(parcel: Parcel<T>) {
         self.add(parcel: parcel)
 
-        if let deadline = parcel.deadline {
-            self.dispatchQueue.asyncAfter(deadline: deadline) {
-                if parcel.isAlive || parcel.timeoutForced {
-                    parcel.timeoutHandler?()
-                    self.unregister(parcel: parcel)
-                }
-            }
-        }
-        
-        dispatchQueue.async {
+        messageQueue.async {
             while parcel.isAlive {
                 guard let message = parcel.pop() else { continue }
                 do {
@@ -57,6 +48,18 @@ class Worker {
     
     func unregister<T>(parcel: Parcel<T>) {
         remove(parcel: parcel)
+    }
+    
+    // deadline: milliseconds
+    func asyncAfter(parcel: BasicParcel,
+                    deadline: UInt,
+                    execute: @escaping () -> Void) {
+        let deadline: DispatchTime = .now() + .milliseconds(Int(deadline))
+        executeQueue.asyncAfter(deadline: deadline) {
+            if parcel.isAlive {
+                execute()
+            }
+        }
     }
     
 }

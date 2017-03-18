@@ -65,11 +65,9 @@ class ParcelTests: XCTestCase {
     
     func testTimeout() {
         let exp = self.expectation(description: "timeout test")
-        let _ = Parcel<Void>.spawn {
-            parcel in
-            parcel.after(deadline: DispatchTime(uptimeNanoseconds: 1000)) {
-                exp.fulfill()
-            }
+        let parcel = Parcel<Void>.spawn { _ in }
+        parcel.terminateAfter(deadline: 1) {
+            exp.fulfill()
         }
         self.waitForExpectations(timeout: 2)
     }

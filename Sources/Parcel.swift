@@ -3,11 +3,11 @@ import Foundation
 public enum Loop {
     case `continue`
     case `break`
-    case timeout
 }
 
 public enum Signal {
     case normal
+    case timeout
     case kill
     case killed
     case down
@@ -22,25 +22,42 @@ open class BasicParcel {
         get { return ObjectIdentifier(self) }
     }
     
-    weak var worker: Worker?
-    var deadline: DispatchTime?
-    var timeoutHandler: (() -> Void)?
-    var timeoutForced: Bool = false
+    weak var worker: Worker!
     var onTerminateHandler: ((Signal) -> Void)?
 
-    public func after(deadline: DispatchTime, handler: @escaping () -> Void) {
-        self.deadline = deadline
-        timeoutHandler = handler
+    // MARK: Executing Work Items
+    
+    public func sync(execute: () -> Void) {
+        worker.executeQueue.sync(execute: execute)
     }
+    
+    public func async(execute: @escaping () -> Void) {
+        worker.executeQueue.async(execute: execute)
+    }
+    
+    // deadline: milliseconds
+    public func asyncAfter(deadline: UInt, execute: @escaping () -> Void) {
+        worker.asyncAfter(parcel: self, deadline: deadline, execute: execute)
+    }
+    
+    // MARK: Terminating
     
     public func onTerminate(handler: @escaping (Signal) -> Void) {
         onTerminateHandler = handler
     }
     
     public func terminate(error: Error? = nil) {
-        ParcelCenter.default.terminate(parcel: self, error: error)
+        let signal: Signal = error != nil ? .error(error!) : .normal
+        ParcelCenter.default.terminate(parcel: self, signal: signal)
     }
 
+    public func terminateAfter(deadline: UInt, execute: @escaping () -> Void) {
+        asyncAfter(deadline: deadline) {
+            ParcelCenter.default.terminate(parcel: self, signal: .timeout)
+            execute()
+        }
+    }
+    
     func finish(signal: Signal) {
         isAlive = false
         onTerminateHandler?(signal)
@@ -94,8 +111,6 @@ open class Parcel<T>: BasicParcel {
                 break
             case .break:
                 terminate()
-            case .timeout:
-                timeoutForced = true
             }
         }
     }
