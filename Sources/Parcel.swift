@@ -138,14 +138,12 @@ class MessageQueue<T> {
     var lastItem: MessageQueueItem<T>?
     var count: Int = 0
     
-    private let lockQueue = DispatchQueue(label: "Message queue")
-    
     init(parcel: Parcel<T>) {
         self.parcel = parcel
     }
     
     func enqueue(_ value: T) {
-        lockQueue.sync {
+        parcel.worker.mailboxQueue.sync {
             let item = MessageQueueItem(value: value)
             if count == 0 {
                 firstItem = item
@@ -159,7 +157,7 @@ class MessageQueue<T> {
     
     func dequeue() -> T? {
         var result: T?
-        lockQueue.sync {
+        parcel.worker.mailboxQueue.sync {
             if let item = firstItem {
                 firstItem = item.next
                 count -= 1

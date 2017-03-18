@@ -6,6 +6,7 @@ class Worker {
     var messageQueue: DispatchQueue
     var executeQueue: DispatchQueue
     var lockQueue: DispatchQueue
+    var mailboxQueue: DispatchQueue
     var parcels: [ObjectIdentifier: AnyObject] = [:]
 
     init(workerId: Int) {
@@ -13,6 +14,7 @@ class Worker {
         self.messageQueue = DispatchQueue(label: workerId.description)
         self.executeQueue = DispatchQueue(label: "worker.execute")
         self.lockQueue = DispatchQueue(label: "worker.lock")
+        self.mailboxQueue = DispatchQueue(label: "worker.mailbox")
     }
     
     func add<T>(parcel: Parcel<T>) {
