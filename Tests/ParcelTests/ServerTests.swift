@@ -24,7 +24,7 @@ final class MyBankContext: ServerContext {
     
     func onSync(client: Client?,
                 request: Request,
-                execute: (Response) -> Void) -> ServerSync<MyBankContext> {
+                execute: (Response?) -> Void) -> ServerSync<MyBankContext> {
         execute(())
         switch request {
         case .new(who: let who):
@@ -69,23 +69,38 @@ class MyBank {
     }
     
     func run() {
-        server.run()
+        let _ = server.run()
     }
     
     func stop() {
-        server.sync(request: .stop)
+        try! server.sync(request: .stop)
     }
     
     func newAccount(who: String) {
-        server.sync(request: .new(who: who))
+        do {
+            try server.sync(request: .new(who: who))
+        } catch let e {
+            print("newAccount error:", e)
+            assertionFailure()
+        }
     }
     
     func deposit(who: String, amount: Int) {
-        server.sync(request: .add(who: who, amount: amount))
+        do {
+            try server.sync(request: .add(who: who, amount: amount))
+        } catch let e {
+            print("deposit error:", e)
+            assertionFailure()
+        }
     }
     
     func withdraw(who: String, amount: Int) {
-        server.sync(request: .remove(who: who, amount: amount))
+        do {
+            try server.sync(request: .remove(who: who, amount: amount))
+        } catch let e {
+            print("withdraw error:", e)
+            assertionFailure()
+        }
     }
     
 }
