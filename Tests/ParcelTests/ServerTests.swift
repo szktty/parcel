@@ -10,10 +10,13 @@ final class MyBankContext: ServerContext {
     public typealias Error = Void
     
     enum Request {
-        case add(Int)
-        case remove(Int)
+        case new(who: String)
+        case add(who: String, amount: Int)
+        case remove(who: String, amount: Int)
         case stop
     }
+    
+    var clients: [String: Int] = [:]
     
     func initialize(config: Config?) -> ServerInit<MyBankContext> {
         return .ignore
@@ -24,10 +27,24 @@ final class MyBankContext: ServerContext {
                 execute: (Response) -> Void) -> ServerSync<MyBankContext> {
         execute(())
         switch request {
+        case .new(who: let who):
+            clients[who] = 0
+            return .wait(timeout: nil)
+            
+        case .add(who: let who, amount: let amount):
+            if let balance = clients[who] {
+                clients[who] = balance + amount
+            }
+            return .wait(timeout: nil)
+            
+        case .remove(who: let who, amount: let amount):
+            if let balance = clients[who] {
+                clients[who] = balance - amount
+            }
+            return .wait(timeout: nil)
+            
         case .stop:
             return .terminate(error: .normal)
-        default:
-            return .sync(timeout: nil)
         }
     }
     
@@ -59,12 +76,16 @@ class MyBank {
         server.sync(request: .stop)
     }
     
-    func deposit(amount: Int) {
-        server.sync(request: .add(amount))
+    func newAccount(who: String) {
+        server.sync(request: .new(who: who))
     }
     
-    func withdraw(amount: Int) {
-        server.sync(request: .remove(amount))
+    func deposit(who: String, amount: Int) {
+        server.sync(request: .add(who: who, amount: amount))
+    }
+    
+    func withdraw(who: String, amount: Int) {
+        server.sync(request: .remove(who: who, amount: amount))
     }
     
 }
@@ -86,6 +107,9 @@ class ServerTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         let bank = MyBank()
         bank.run()
+        let joe = "joe"
+        bank.newAccount(who: joe)
+        bank.deposit(who: joe, amount: 10)
         bank.stop()
     }
 
