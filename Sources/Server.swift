@@ -81,7 +81,8 @@ open class Server<Context> where Context: ServerContext {
     
     // MARK: Running Servers
     
-    public func run(config: Context.Config? = nil) {
+    public func run(config: Context.Config? = nil,
+                    options: ServerOption? = nil) -> Error? {
         switch context.initialize(config: config) {
         case .ignore:
             break
@@ -125,13 +126,16 @@ open class Server<Context> where Context: ServerContext {
                 return .continue
             }
         }
+        
+        // TODO
+        return nil
     }
     
-    /*
-     public func runAndLink(config: Context.Config, options: ServerOption) -> ServerRun<Context> {
-     return .ignore
-     }
-     */
+    public func runUnderSupervision(config: Context.Config? = nil,
+                                    options: ServerOption? = nil) -> Error? {
+        // TODO
+        return nil
+    }
     
     public func terminate(error: ServerError<Context>) {
         parcel.terminate()
