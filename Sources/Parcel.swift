@@ -68,11 +68,11 @@ open class BasicParcel {
 open class Parcel<T>: BasicParcel {
     
     var onReceiveHandler: ((T) throws -> Loop)?
-    var messageQueue: MessageQueue<T>!
+    var mailbox: Mailbox<T>!
 
     public required override init() {
         super.init()
-        messageQueue = MessageQueue(parcel: self)
+        mailbox = Mailbox(parcel: self)
     }
     
     // MARK: Event handlers
@@ -97,11 +97,11 @@ open class Parcel<T>: BasicParcel {
     // MARK: Message passing
     
     public func send(message: T) {
-        messageQueue.enqueue(message)
+        mailbox.enqueue(message)
     }
     
     public func pop() -> T? {
-        return messageQueue.dequeue()
+        return mailbox.dequeue()
     }
 
     func evaluate(message: T) throws {
@@ -131,11 +131,11 @@ public func !<T>(lhs: Parcel<T>, rhs: T) {
     lhs.send(message: rhs)
 }
 
-class MessageQueue<T> {
+class Mailbox<T> {
     
     weak var parcel: Parcel<T>!
-    var firstItem: MessageQueueItem<T>?
-    var lastItem: MessageQueueItem<T>?
+    var firstItem: MailboxItem<T>?
+    var lastItem: MailboxItem<T>?
     var count: Int = 0
     
     init(parcel: Parcel<T>) {
@@ -144,7 +144,7 @@ class MessageQueue<T> {
     
     func enqueue(_ value: T) {
         parcel.worker.mailboxQueue.sync {
-            let item = MessageQueueItem(value: value)
+            let item = MailboxItem(value: value)
             if count == 0 {
                 firstItem = item
             } else {
@@ -172,10 +172,10 @@ class MessageQueue<T> {
     
 }
 
-class MessageQueueItem<T> {
+class MailboxItem<T> {
     
     var value: T
-    var next: MessageQueueItem<T>?
+    var next: MailboxItem<T>?
     
     init(value: T) {
         self.value = value
