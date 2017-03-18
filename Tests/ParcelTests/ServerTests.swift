@@ -19,9 +19,9 @@ final class MyBankContext: ServerContext {
         return .ignore
     }
     
-    func onSendSync(client: Client?,
+    func onSync(client: Client?,
                     request: Request,
-                    block: (Response) -> Void) -> ServerSendSync<MyBankContext> {
+                    block: (Response) -> Void) -> ServerSync<MyBankContext> {
         block(())
         switch request {
         case .stop:
@@ -31,7 +31,7 @@ final class MyBankContext: ServerContext {
         }
     }
     
-    func onSendAsync(client: Client, request: Request) -> ServerSendAsync<MyBankContext> {
+    func onAsync(client: Client, request: Request) -> ServerAsync<MyBankContext> {
         return .ignore(timeout: nil)
     }
     
@@ -56,15 +56,15 @@ class MyBank {
     }
     
     func stop() {
-        server.sendSync(request: .stop)
+        server.sync(request: .stop)
     }
     
     func deposit(amount: Int) {
-        server.sendSync(request: .add(amount))
+        server.sync(request: .add(amount))
     }
     
     func withdraw(amount: Int) {
-        server.sendSync(request: .remove(amount))
+        server.sync(request: .remove(amount))
     }
     
 }

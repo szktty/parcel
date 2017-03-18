@@ -10,10 +10,10 @@ public protocol ServerContext {
     associatedtype Error
     
     func initialize(config: Config?) -> ServerInit<Self>
-    func onSendSync(client: Client?,
-                    request: Request,
-                    block: (Response) -> Void) -> ServerSendSync<Self>
-    func onSendAsync(client: Client, request: Request) -> ServerSendAsync<Self>
+    func onSync(client: Client?,
+                request: Request,
+                block: (Response) -> Void) -> ServerSync<Self>
+    func onAsync(client: Client, request: Request) -> ServerAsync<Self>
     func onTerminate(error: ServerError<Self>)
     
 }
@@ -24,13 +24,13 @@ public enum ServerInit<Context> where Context: ServerContext {
     case ignore
 }
 
-public enum ServerSendSync<Context> where Context: ServerContext {
+public enum ServerSync<Context> where Context: ServerContext {
     case sync(timeout: Int?)
     case async(timeout: Int?)
     case terminate(error: ServerError<Context>)
 }
 
-public enum ServerSendAsync<Context> where Context: ServerContext {
+public enum ServerAsync<Context> where Context: ServerContext {
     case ignore(timeout: Int?)
     case terminate(error: ServerError<Context>)
 }
@@ -58,7 +58,7 @@ public struct ServerOption {
 
 public enum ServerOperation<Context> where Context: ServerContext {
     
-    case sendSync(client: Context.Client?,
+    case sync(client: Context.Client?,
         request: Context.Request,
         timeout: Int?,
         block: (Context.Response) -> Void)
@@ -67,7 +67,7 @@ public enum ServerOperation<Context> where Context: ServerContext {
 }
 
 open class Server<Context> where Context: ServerContext {
-
+    
     typealias Operation = ServerOperation<Context>
     
     public var context: Context
@@ -92,30 +92,30 @@ open class Server<Context> where Context: ServerContext {
         parcel = Parcel<Operation>.spawn { p in
             p.onReceive { message in
                 switch message {
-                case .sendSync(client: let client,
-                               request: let request,
-                               timeout: let timeout,
-                               block: let block):
+                case .sync(client: let client,
+                           request: let request,
+                           timeout: let timeout,
+                           block: let block):
                     var sync = true
                     let callback: (Context.Response) -> Void = { response in
                         sync = false
                         block(response)
                     }
-                    switch self.context.onSendSync(client: client,
-                                                   request: request,
-                                                   block: callback) {
+                    switch self.context.onSync(client: client,
+                                               request: request,
+                                               block: callback) {
                     case .sync(timeout: let timeout):
                         while sync {}
-
+                        
                     case .async(timeout: let timeout):
                         break
-
+                        
                     case .terminate(error: let error):
                         // TODO
                         self.terminate(error: error)
                     }
                     return .continue
-
+                    
                 case .terminate(error: let error):
                     return .break
                 }
@@ -124,11 +124,11 @@ open class Server<Context> where Context: ServerContext {
     }
     
     /*
-    public func runAndLink(config: Context.Config, options: ServerOption) -> ServerRun<Context> {
-        return .ignore
-    }
- */
-
+     public func runAndLink(config: Context.Config, options: ServerOption) -> ServerRun<Context> {
+     return .ignore
+     }
+     */
+    
     public func terminate(error: ServerError<Context>, timeout: Int? = nil) {
         context.onTerminate(error: error)
         parcel ! .terminate(error: error)
@@ -136,23 +136,23 @@ open class Server<Context> where Context: ServerContext {
     
     // MARK: Sending Requests
     
-    public func sendSync(client: Context.Client? = nil,
-                         request: Context.Request,
-                         timeout: Int? = nil) -> Context.Response {
+    public func sync(client: Context.Client? = nil,
+                     request: Context.Request,
+                     timeout: Int? = nil) -> Context.Response {
         assert(parcel != nil)
         var returnValue: Context.Response?
         let block: (Context.Response) -> Void = { response in
             returnValue = response
         }
-        parcel ! .sendSync(client: client,
-                           request: request,
-                           timeout: timeout,
-                           block: block)
+        parcel ! .sync(client: client,
+                       request: request,
+                       timeout: timeout,
+                       block: block)
         while returnValue == nil {}
         return returnValue!
     }
     
-    public func sendAsync(request: Context.Request) {
+    public func async(request: Context.Request) {
         
     }
     
