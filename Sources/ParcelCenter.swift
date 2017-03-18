@@ -32,7 +32,7 @@ public class ParcelCenter {
         }
     }
     
-    func register<T>(parcel: Parcel<T>) {
+    func register<Message>(parcel: Parcel<Message>) {
         availableWorker.register(parcel: parcel)
     }
     

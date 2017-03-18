@@ -65,10 +65,10 @@ open class BasicParcel {
     
 }
 
-open class Parcel<T>: BasicParcel {
+open class Parcel<Message>: BasicParcel {
     
-    var onReceiveHandler: ((T) throws -> Loop)?
-    var mailbox: Mailbox<T>!
+    var onReceiveHandler: ((Message) throws -> Loop)?
+    var mailbox: Mailbox<Message>!
 
     public required override init() {
         super.init()
@@ -77,7 +77,7 @@ open class Parcel<T>: BasicParcel {
     
     // MARK: Event handlers
     
-    public func onReceive(handler: @escaping (T) throws -> Loop) {
+    public func onReceive(handler: @escaping (Message) throws -> Loop) {
         onReceiveHandler = handler
     }
     
@@ -87,8 +87,8 @@ open class Parcel<T>: BasicParcel {
         ParcelCenter.default.register(parcel: self)
     }
     
-    public class func spawn(block: @escaping (Parcel<T>) -> Void) -> Parcel<T> {
-        let parcel: Parcel<T> = self.init()
+    public class func spawn(block: @escaping (Parcel<Message>) -> Void) -> Parcel<Message> {
+        let parcel: Parcel<Message> = self.init()
         block(parcel)
         parcel.run()
         return parcel
@@ -96,15 +96,15 @@ open class Parcel<T>: BasicParcel {
     
     // MARK: Message passing
     
-    public func send(message: T) {
+    public func send(message: Message) {
         mailbox.enqueue(message)
     }
     
-    public func pop() -> T? {
+    public func pop() -> Message? {
         return mailbox.dequeue()
     }
 
-    func evaluate(message: T) throws {
+    func evaluate(message: Message) throws {
         if let handler = onReceiveHandler {
             switch try handler(message) {
             case .continue:
@@ -115,11 +115,11 @@ open class Parcel<T>: BasicParcel {
         }
     }
 
-    public func addLink(_ parcel: Parcel<T>) {
+    public func addLink(_ parcel: Parcel<Message>) {
         ParcelCenter.default.addLink(parcel1: self, parcel2: parcel)
     }
     
-    public func addMonitor(_ parcel: Parcel<T>) {
+    public func addMonitor(_ parcel: Parcel<Message>) {
         ParcelCenter.default.addMonitor(parcel, forParcel: self)
     }
     
@@ -127,22 +127,22 @@ open class Parcel<T>: BasicParcel {
 
 infix operator !
 
-public func !<T>(lhs: Parcel<T>, rhs: T) {
+public func !<Message>(lhs: Parcel<Message>, rhs: Message) {
     lhs.send(message: rhs)
 }
 
-class Mailbox<T> {
+class Mailbox<Message> {
     
-    weak var parcel: Parcel<T>!
-    var firstItem: MailboxItem<T>?
-    var lastItem: MailboxItem<T>?
+    weak var parcel: Parcel<Message>!
+    var firstItem: MailboxItem<Message>?
+    var lastItem: MailboxItem<Message>?
     var count: Int = 0
     
-    init(parcel: Parcel<T>) {
+    init(parcel: Parcel<Message>) {
         self.parcel = parcel
     }
     
-    func enqueue(_ value: T) {
+    func enqueue(_ value: Message) {
         parcel.worker.mailboxQueue.sync {
             let item = MailboxItem(value: value)
             if count == 0 {
@@ -155,8 +155,8 @@ class Mailbox<T> {
         }
     }
     
-    func dequeue() -> T? {
-        var result: T?
+    func dequeue() -> Message? {
+        var result: Message?
         parcel.worker.mailboxQueue.sync {
             if let item = firstItem {
                 firstItem = item.next
@@ -172,12 +172,12 @@ class Mailbox<T> {
     
 }
 
-class MailboxItem<T> {
+class MailboxItem<Message> {
     
-    var value: T
-    var next: MailboxItem<T>?
+    var value: Message
+    var next: MailboxItem<Message>?
     
-    init(value: T) {
+    init(value: Message) {
         self.value = value
     }
     

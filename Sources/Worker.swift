@@ -17,21 +17,21 @@ class Worker {
         self.mailboxQueue = DispatchQueue(label: "worker.mailbox")
     }
     
-    func add<T>(parcel: Parcel<T>) {
+    func add<Message>(parcel: Parcel<Message>) {
         lockQueue.sync {
             parcel.worker = self
             self.parcels[ObjectIdentifier(parcel)] = parcel
         }
     }
     
-    func remove<T>(parcel: Parcel<T>) {
+    func remove<Message>(parcel: Parcel<Message>) {
         lockQueue.sync {
             parcel.worker = nil
             self.parcels[ObjectIdentifier(parcel)] = nil
         }
     }
     
-    func register<T>(parcel: Parcel<T>) {
+    func register<Message>(parcel: Parcel<Message>) {
         self.add(parcel: parcel)
 
         messageQueue.async {
@@ -48,7 +48,7 @@ class Worker {
         }
     }
     
-    func unregister<T>(parcel: Parcel<T>) {
+    func unregister<Message>(parcel: Parcel<Message>) {
         remove(parcel: parcel)
     }
     
