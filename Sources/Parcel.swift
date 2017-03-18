@@ -49,8 +49,6 @@ open class BasicParcel {
 }
 
 open class Parcel<T>: BasicParcel {
-
-    public var userInfo: [String: Any] = [:]
     
     var onReceiveHandler: ((T) throws -> Loop)?
     var messageQueue: MessageQueue<T>!
