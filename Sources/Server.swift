@@ -25,8 +25,8 @@ public enum ServerInit<Context> where Context: ServerContext {
 }
 
 public enum ServerSync<Context> where Context: ServerContext {
-    case sync(timeout: UInt?)
-    case async(timeout: UInt?)
+    case wait(timeout: UInt?)
+    case await(timeout: UInt?)
     case terminate(error: ServerError<Context>)
 }
 
@@ -104,10 +104,10 @@ open class Server<Context> where Context: ServerContext {
                     switch self.context.onSync(client: client,
                                                request: request,
                                                execute: callback) {
-                    case .sync(timeout: let timeout):
+                    case .wait(timeout: let timeout):
                         while sync {}
                         
-                    case .async(timeout: let timeout):
+                    case .await(timeout: let timeout):
                         break
                         
                     case .terminate(error: let error):
