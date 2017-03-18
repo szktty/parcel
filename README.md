@@ -9,7 +9,7 @@ A main component of this library is actor reperesented as ``Parcel`` objects.
 
 ### Creating Parcels
 
-Parcels which defined as ``Percel<T>`` can be receive only messages of the type ``T``.
+Parcels which defined as ``Percel<Message>`` can be receive only messages of the type ``Message``.
 For example, instances of ``Parcel<String>`` can receive only strings as message.
 
 ```
@@ -21,7 +21,7 @@ A message handler can be set in parcels with ``onReceive(handler:)``.
 ``onReceive(handler:)`` takes a block which a parcel received a new message as an argument.
 
 ```
-func onReceive(handler: @escaping (T) throws -> Loop)
+func onReceive(handler: @escaping (Message) throws -> Loop)
 ```
 
 Let's assume that print "Thunder" if a received message is "Flash" but otherwise print "Bye" the following:
@@ -48,7 +48,7 @@ Message handler blocks must return ``Loop.continue`` or ``Loop.break``.
 But Swift does not guarantee tail call optimization.)
 Finally, invoke ``run`` to start waiting for messages.
 
-The code from ``init()`` to ``run()`` can be replace with ``Parcel<T>.spawn()``.
+The code from ``init()`` to ``run()`` can be replace with ``Parcel<Message>.spawn()``.
 ``spawn()`` makes a new parcel start waiting for messages after got block is executed.
 
 ```
