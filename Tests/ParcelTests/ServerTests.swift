@@ -7,7 +7,6 @@ final class MyBankContext: ServerContext {
     public typealias Client = Void
     public typealias Message = String
     public typealias Response = Void
-    public typealias Error = Void
     
     enum Request {
         case new(who: String)
@@ -44,7 +43,7 @@ final class MyBankContext: ServerContext {
             return .wait(timeout: nil)
             
         case .stop:
-            return .terminate(error: .normal)
+            return .terminate(error: ServerError.normal)
         }
     }
     
@@ -52,7 +51,7 @@ final class MyBankContext: ServerContext {
         return .ignore(timeout: nil)
     }
     
-    func onTerminate(error: ServerError<MyBankContext>) {
+    func onTerminate(error: Error) {
         
     }
     

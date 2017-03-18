@@ -7,46 +7,43 @@ public protocol ServerContext {
     associatedtype Request
     associatedtype Response
     associatedtype Message
-    associatedtype Error
     
     func initialize(config: Config?) -> ServerInit<Self>
     func onSync(client: Client?,
                 request: Request,
                 execute: (Response?) -> Void) -> ServerSync<Self>
     func onAsync(client: Client, request: Request) -> ServerAsync<Self>
-    func onTerminate(error: ServerError<Self>)
+    func onTerminate(error: Error)
     
 }
 
 public enum ServerInit<Context> where Context: ServerContext {
     case ok(timeout: UInt?)
-    case terminate(error:ServerError<Context>)
+    case terminate(error: Error)
     case ignore
 }
 
 public enum ServerSync<Context> where Context: ServerContext {
     case wait(timeout: UInt?)
     case await(timeout: UInt?)
-    case terminate(error: ServerError<Context>)
+    case terminate(error: Error)
 }
 
 public enum ServerAsync<Context> where Context: ServerContext {
     case ignore(timeout: UInt?)
-    case terminate(error: ServerError<Context>)
+    case terminate(error: Error)
 }
 
 public enum ServerRun<Context> where Context: ServerContext {
     case ok(Parcel<Context.Message>)
     case ignore
-    case error(ServerError<Context>)
+    case error(Error)
 }
 
-public enum ServerError<Context>: Error where Context: ServerContext {
+public enum ServerError: Error {
     
     case normal
     case timeout
-    case error(Error)
-    case context(Context.Error)
     
 }
 
@@ -62,7 +59,7 @@ public enum ServerOperation<Context> where Context: ServerContext {
         request: Context.Request,
         timeout: UInt,
         execute: (Context.Response?) -> Void)
-    case terminate(error: ServerError<Context>, timeout: UInt?)
+    case terminate(error: Error, timeout: UInt?)
     
 }
 
@@ -105,7 +102,7 @@ open class Server<Context> where Context: ServerContext {
                     let timeoutExecute: (UInt) -> Void = { timeout in
                         p.asyncAfter(deadline: timeout) {
                             if wait {
-                                self.terminate(error: .timeout)
+                                self.terminate(error: ServerError.timeout)
                             }
                         }
                     }
@@ -152,12 +149,12 @@ open class Server<Context> where Context: ServerContext {
         return nil
     }
     
-    public func terminate(error: ServerError<Context>) {
+    public func terminate(error: Error) {
         parcel.terminate()
         self.context.onTerminate(error: error)
     }
     
-    public func terminateAfter(deadline: UInt, error: ServerError<Context>) {
+    public func terminateAfter(deadline: UInt, error: Error) {
         parcel.terminateAfter(deadline: deadline) {
             self.context.onTerminate(error: error)
         }
@@ -185,7 +182,7 @@ open class Server<Context> where Context: ServerContext {
         while result == nil && !isTimeout {}
         
         if isTimeout {
-            throw ServerError<Context>.timeout
+            throw ServerError.timeout
         } else {
             return result
         }
