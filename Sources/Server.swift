@@ -41,7 +41,7 @@ public enum ServerRun<Context> where Context: ServerContext {
     case error(ServerError<Context>)
 }
 
-public enum ServerError<Context> where Context: ServerContext {
+public enum ServerError<Context>: Error where Context: ServerContext {
     
     case normal
     case timeout
@@ -62,7 +62,7 @@ public enum ServerOperation<Context> where Context: ServerContext {
         request: Context.Request,
         timeout: Int?,
         block: (Context.Response) -> Void)
-    case terminate(error: ServerError<Context>)
+    case terminate(error: ServerError<Context>, timeout: Int?)
     
 }
 
@@ -111,14 +111,14 @@ open class Server<Context> where Context: ServerContext {
                         break
                         
                     case .terminate(error: let error):
-                        // TODO
                         self.terminate(error: error)
                     }
-                    return .continue
                     
-                case .terminate(error: let error):
-                    return .break
+                case .terminate(error: let error, timeout: let timeout):
+                    self.terminate(error: error, timeout: timeout)
                 }
+                
+                return .continue
             }
         }
     }
@@ -130,8 +130,15 @@ open class Server<Context> where Context: ServerContext {
      */
     
     public func terminate(error: ServerError<Context>, timeout: Int? = nil) {
-        context.onTerminate(error: error)
-        parcel ! .terminate(error: error)
+        if let timeout = timeout {
+            parcel.after(deadline: DispatchTime(uptimeNanoseconds:
+                UInt64(1000000 * timeout))) {
+                self.context.onTerminate(error: error)
+            }
+        } else {
+            context.onTerminate(error: error)
+            parcel.terminate(error: error)
+        }
     }
     
     // MARK: Sending Requests
