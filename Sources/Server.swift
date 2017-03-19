@@ -8,12 +8,15 @@ public protocol ServerContext {
     associatedtype Response
     associatedtype Message
     
-    func initialize(config: Config?) -> ServerInit<Self>
-    func onSync(client: Client?,
+    func initialize(server: Server<Self>, config: Config?) -> ServerInit<Self>
+    func onSync(server: Server<Self>,
+                client: Client?,
                 request: Request,
                 execute: (Response?) -> Void) -> ServerSync<Self>
-    func onAsync(client: Client, request: Request) -> ServerAsync<Self>
-    func onTerminate(error: Error)
+    func onAsync(server: Server<Self>,
+                 client: Client,
+                 request: Request) -> ServerAsync<Self>
+    func onTerminate(server: Server<Self>, error: Error)
     
 }
 
@@ -80,7 +83,7 @@ open class Server<Context> where Context: ServerContext {
     
     public func run(config: Context.Config? = nil,
                     options: ServerOption? = nil) -> Error? {
-        switch context.initialize(config: config) {
+        switch context.initialize(server: self, config: config) {
         case .ignore:
             break
         default:
@@ -108,7 +111,8 @@ open class Server<Context> where Context: ServerContext {
                     }
                     timeoutExecute(timeout)
                     
-                    switch self.context.onSync(client: client,
+                    switch self.context.onSync(server: self,
+                                               client: client,
                                                request: request,
                                                execute: waitExecute) {
                     case .wait(timeout: let timeout):
@@ -151,12 +155,12 @@ open class Server<Context> where Context: ServerContext {
     
     public func terminate(error: Error) {
         parcel.terminate()
-        self.context.onTerminate(error: error)
+        self.context.onTerminate(server: self, error: error)
     }
     
     public func terminateAfter(deadline: UInt, error: Error) {
         parcel.terminateAfter(deadline: deadline) {
-            self.context.onTerminate(error: error)
+            self.context.onTerminate(server: self, error: error)
         }
     }
     

@@ -17,11 +17,13 @@ final class MyBankContext: ServerContext {
     
     var clients: [String: Int] = [:]
     
-    func initialize(config: Config?) -> ServerInit<MyBankContext> {
+    func initialize(server: Server<MyBankContext>,
+                    config: Config?) -> ServerInit<MyBankContext> {
         return .ignore
     }
     
-    func onSync(client: Client?,
+    func onSync(server: Server<MyBankContext>,
+                client: Client?,
                 request: Request,
                 execute: (Response?) -> Void) -> ServerSync<MyBankContext> {
         execute(())
@@ -47,11 +49,14 @@ final class MyBankContext: ServerContext {
         }
     }
     
-    func onAsync(client: Client, request: Request) -> ServerAsync<MyBankContext> {
+    func onAsync(server: Server<MyBankContext>,
+                 client: Client, request: Request)
+        -> ServerAsync<MyBankContext>
+    {
         return .ignore(timeout: nil)
     }
     
-    func onTerminate(error: Error) {
+    func onTerminate(server: Server<MyBankContext>, error: Error) {
         
     }
     
