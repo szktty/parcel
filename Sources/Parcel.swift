@@ -25,21 +25,6 @@ open class BasicParcel {
     weak var worker: Worker!
     var onTerminateHandler: ((Signal) -> Void)?
 
-    // MARK: Executing Work Items
-    
-    public func sync(execute: () -> Void) {
-        worker.executeQueue.sync(execute: execute)
-    }
-    
-    public func async(execute: @escaping () -> Void) {
-        worker.executeQueue.async(execute: execute)
-    }
-    
-    // deadline: milliseconds
-    public func asyncAfter(deadline: UInt, execute: @escaping () -> Void) {
-        worker.asyncAfter(parcel: self, deadline: deadline, execute: execute)
-    }
-    
     // MARK: Terminating
     
     public func onTerminate(handler: @escaping (Signal) -> Void) {
@@ -50,70 +35,20 @@ open class BasicParcel {
         let signal: Signal = error != nil ? .error(error!) : .normal
         ParcelCenter.default.terminate(parcel: self, signal: signal)
     }
-
-    public func terminateAfter(deadline: UInt, execute: @escaping () -> Void) {
-        asyncAfter(deadline: deadline) {
-            ParcelCenter.default.terminate(parcel: self, signal: .timeout)
+    
+    public func terminateAfter(deadline: UInt,
+                               error: Error? = nil,
+                               execute: @escaping () -> Void) {
+        let signal: Signal = error != nil ? .error(error!) : .normal
+        worker.asyncAfter(parcel: self, deadline: deadline) {
             execute()
+            ParcelCenter.default.terminate(parcel: self, signal: signal)
         }
     }
     
     func finish(signal: Signal) {
         isAlive = false
         onTerminateHandler?(signal)
-    }
-    
-    // MARK: Timer
-    
-    public func waitForStop(timeout: UInt,
-                            execute: @escaping (ParcelTimer) throws -> Void) throws {
-        try ParcelTimer(parcel: self).wait(timeout: timeout, execute: execute)
-    }
-    
-}
-
-public class ParcelTimer {
-    
-    public enum Error: Swift.Error {
-        
-        case timeout
-        
-    }
-    
-    weak var parcel: BasicParcel!
-    var waitQueue: DispatchQueue
-    var complete: Bool = false
-    
-    init(parcel: BasicParcel) {
-        self.parcel = parcel
-        waitQueue = DispatchQueue(label: "ParcelTimer")
-    }
-    
-    func wait(timeout: UInt, execute: @escaping (ParcelTimer) throws -> Void) throws {
-        var error: Swift.Error?
-        let deadline: DispatchTime = .now() + .milliseconds(Int(timeout))
-        waitQueue.asyncAfter(deadline: deadline) {
-            if !self.complete {
-                error = Error.timeout
-                self.complete = true
-            }
-        }
-        
-        waitQueue.async {
-            do {
-                try execute(self)
-            } catch let e {
-                error = e
-            }
-        }
-        while !complete {}
-        if let error = error {
-            throw error
-        }
-    }
-    
-    public func stop() {
-        complete = true
     }
     
 }
@@ -153,6 +88,8 @@ open class Parcel<Message>: BasicParcel {
         mailbox.enqueue(message)
     }
     
+    // MARK: Mailbox
+    
     public func pop() -> Message? {
         return mailbox.dequeue()
     }
@@ -168,6 +105,8 @@ open class Parcel<Message>: BasicParcel {
         }
     }
 
+    // MARK: Linking
+    
     public func addLink(_ parcel: Parcel<Message>) {
         ParcelCenter.default.addLink(parcel1: self, parcel2: parcel)
     }
@@ -175,7 +114,7 @@ open class Parcel<Message>: BasicParcel {
     public func addMonitor(_ parcel: Parcel<Message>) {
         ParcelCenter.default.addMonitor(parcel, forParcel: self)
     }
-    
+
 }
 
 infix operator !

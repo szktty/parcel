@@ -12,7 +12,7 @@ public protocol ServerContext {
     func onSync(server: Server<Self>,
                 client: Client?,
                 request: Request,
-                execute: (Response?) -> Void) -> ServerSync<Self>
+                operation: ServerSyncOperation<Self>)
     func onAsync(server: Server<Self>,
                  client: Client,
                  request: Request) -> ServerAsync<Self>
@@ -58,11 +58,74 @@ public struct ServerOption {
 
 public enum ServerOperation<Context> where Context: ServerContext {
     
-    case sync(client: Context.Client?,
-        request: Context.Request,
-        timeout: UInt,
-        execute: (Context.Response?) -> Void)
     case terminate(error: Error, timeout: UInt?)
+    
+}
+
+public class ServerSyncOperation<Context> where Context: ServerContext {
+    
+    weak var server: Server<Context>!
+    var responseToReturn: Context.Response?
+    var waitQueue: DispatchQueue
+    var complete: Bool = false
+    var isTimeout: Bool = false
+    var syncTimer: Timer?
+    var error: Error?
+    
+    init(server: Server<Context>) {
+        self.server = server
+        waitQueue = DispatchQueue(label: "ParcelSyncOperation")
+    }
+    
+    func waitForReturn(client: Context.Client?,
+                       request: Context.Request,
+                       timeout: UInt?) throws {
+        if let timeout = timeout {
+            updateSyncTimer(timeout: timeout)
+        }
+        waitQueue.async {
+            self.server.context.onSync(server: self.server,
+                                       client: client,
+                                       request: request,
+                                       operation: self)
+        }
+        while !complete {}
+        syncTimer?.invalidate()
+        if let error = error {
+            throw error
+        }
+    }
+    
+    func updateSyncTimer(timeout: UInt) {
+        syncTimer?.invalidate()
+        let interval: Double = Double(timeout) / 1000
+        if #available(OSX 10.12, *) {
+            syncTimer = Timer(timeInterval: interval,
+                              repeats: false)
+            { timer in
+                if !self.complete {
+                    self.error = ServerError.timeout
+                    self.complete = true
+                }
+            }
+        } else {
+            // Fallback on earlier versions
+            assertionFailure()
+        }
+    }
+    
+    public func yield(timeout: UInt? = nil) {
+        complete = false
+        if let timeout = timeout {
+            updateSyncTimer(timeout: timeout)
+        }
+    }
+    
+    public func `return`(response: Context.Response? = nil,
+                         timeout: UInt? = nil) {
+        responseToReturn = response
+        complete = true
+    }
     
 }
 
@@ -93,44 +156,6 @@ open class Server<Context> where Context: ServerContext {
         parcel = Parcel<Operation>.spawn { p in
             p.onReceive { message in
                 switch message {
-                case .sync(client: let client,
-                           request: let request,
-                           timeout: let timeout,
-                           execute: let execute):
-                    var wait = true
-                    let waitExecute: (Context.Response?) -> Void = { response in
-                        wait = false
-                        execute(response)
-                    }
-                    let timeoutExecute: (UInt) -> Void = { timeout in
-                        p.asyncAfter(deadline: timeout) {
-                            if wait {
-                                self.terminate(error: ServerError.timeout)
-                            }
-                        }
-                    }
-                    timeoutExecute(timeout)
-                    
-                    switch self.context.onSync(server: self,
-                                               client: client,
-                                               request: request,
-                                               execute: waitExecute) {
-                    case .wait(timeout: let timeout):
-                        if let timeout = timeout {
-                            timeoutExecute(timeout)
-                        }
-                        while wait {}
-                        
-                    case .await(timeout: let timeout):
-                        if let timeout = timeout {
-                            timeoutExecute(timeout)
-                        }
-                        break
-                        
-                    case .terminate(error: let error):
-                        self.terminate(error: error)
-                    }
-                    
                 case .terminate(error: let error, timeout: let timeout):
                     if let timeout = timeout {
                         self.terminateAfter(deadline: timeout, error: error)
@@ -169,22 +194,15 @@ open class Server<Context> where Context: ServerContext {
     public func sync(client: Context.Client? = nil,
                      request: Context.Request,
                      timeout: UInt = 5000) throws -> Context.Response? {
-        var result: Context.Response?
+        let op = ServerSyncOperation<Context>(server: self)
         do {
-            try parcel.waitForStop(timeout: timeout) { timer in
-                let execute: (Context.Response?) -> Void = { response in
-                    result = response
-                    timer.stop()
-                }
-                self.parcel ! .sync(client: client,
-                                    request: request,
-                                    timeout: timeout,
-                                    execute: execute)
-            }
-        } catch ParcelTimer.Error.timeout {
-            throw ServerError.timeout
+            try op.waitForReturn(client: client,
+                                 request: request,
+                                 timeout: timeout)
+        } catch let e {
+            throw e
         }
-        return result
+        return op.responseToReturn
     }
     
     public func async(request: Context.Request) {

@@ -115,46 +115,4 @@ class ParcelTests: XCTestCase {
         waitForExpectations(timeout: 2)
     }
     
-    func testWaitForStopSuccess() {
-        let exp = expectation(description: "testWaitForStopSuccess")
-        var exec = false
-        let target = Parcel<Void>.spawn { p in
-            p.onReceive { m in
-                do {
-                    try p.waitForStop(timeout: 200) { timer in
-                        exec = true
-                        timer.stop()
-                    }
-                } catch ParcelTimer.Error.timeout {
-                    XCTFail("timeout")
-                }
-                exp.fulfill()
-                return .break
-            }
-        }
-        target ! ()
-        waitForExpectations(timeout: 1)
-        XCTAssert(exec)
-    }
-    
-    func testWaitForStopTimeout() {
-        let exp = expectation(description: "testWaitForStopTimeout")
-        var exec = false
-        let target = Parcel<Void>.spawn { p in
-            p.onReceive { m in
-                do {
-                    try p.waitForStop(timeout: 50) { timer in
-                        exec = true
-                    }
-                } catch ParcelTimer.Error.timeout {
-                    exp.fulfill()
-                }
-                return .break
-            }
-        }
-        target ! ()
-        waitForExpectations(timeout: 2)
-        XCTAssert(exec)
-    }
-    
 }
