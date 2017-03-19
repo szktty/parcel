@@ -165,27 +165,22 @@ open class Server<Context> where Context: ServerContext {
     public func sync(client: Context.Client? = nil,
                      request: Context.Request,
                      timeout: UInt = 5000) throws -> Context.Response? {
-        assert(parcel != nil)
-        var isTimeout = false
         var result: Context.Response?
-        let execute: (Context.Response?) -> Void = { response in
-            result = response
-        }
-        
-        parcel ! .sync(client: client,
-                       request: request,
-                       timeout: timeout,
-                       execute: execute)
-        parcel.asyncAfter(deadline: timeout) {
-            isTimeout = true
-        }
-        while result == nil && !isTimeout {}
-        
-        if isTimeout {
+        do {
+            try parcel.waitForStop(timeout: timeout) { timer in
+                let execute: (Context.Response?) -> Void = { response in
+                    result = response
+                    timer.stop()
+                }
+                self.parcel ! .sync(client: client,
+                                    request: request,
+                                    timeout: timeout,
+                                    execute: execute)
+            }
+        } catch ParcelTimer.Error.timeout {
             throw ServerError.timeout
-        } else {
-            return result
         }
+        return result
     }
     
     public func async(request: Context.Request) {
