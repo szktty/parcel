@@ -63,6 +63,59 @@ open class BasicParcel {
         onTerminateHandler?(signal)
     }
     
+    // MARK: Timer
+    
+    public func waitForStop(timeout: UInt,
+                            execute: @escaping (ParcelTimer) throws -> Void) throws {
+        try ParcelTimer(parcel: self).wait(timeout: timeout, execute: execute)
+    }
+    
+}
+
+public class ParcelTimer {
+    
+    public enum Error: Swift.Error {
+        
+        case timeout
+        
+    }
+    
+    weak var parcel: BasicParcel!
+    var waitQueue: DispatchQueue
+    var complete: Bool = false
+    
+    init(parcel: BasicParcel) {
+        self.parcel = parcel
+        waitQueue = DispatchQueue(label: "ParcelTimer")
+    }
+    
+    func wait(timeout: UInt, execute: @escaping (ParcelTimer) throws -> Void) throws {
+        var error: Swift.Error?
+        let deadline: DispatchTime = .now() + .milliseconds(Int(timeout))
+        waitQueue.asyncAfter(deadline: deadline) {
+            if !self.complete {
+                error = Error.timeout
+                self.complete = true
+            }
+        }
+        
+        waitQueue.async {
+            do {
+                try execute(self)
+            } catch let e {
+                error = e
+            }
+        }
+        while !complete {}
+        if let error = error {
+            throw error
+        }
+    }
+    
+    public func stop() {
+        complete = true
+    }
+    
 }
 
 open class Parcel<Message>: BasicParcel {
