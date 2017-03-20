@@ -25,26 +25,27 @@ final class MyBankContext: ServerContext {
     func onSync(server: Server<MyBankContext>,
                 client: Client?,
                 request: Request,
-                operation: ServerSyncOperation<MyBankContext>) {
+                receiver: ServerResponseReceiver<MyBankContext>) {
         switch request {
         case .new(who: let who):
             clients[who] = 0
-            operation.return()
+            receiver.update(timeout: 1)
+            receiver.return()
             
         case .add(who: let who, amount: let amount):
             if let balance = clients[who] {
                 clients[who] = balance + amount
             }
-            operation.return()
+            receiver.return()
             
         case .remove(who: let who, amount: let amount):
             if let balance = clients[who] {
                 clients[who] = balance - amount
             }
-            operation.return()
+            receiver.return()
             
         case .stop:
-            server.terminate(error: ServerError.normal)
+            receiver.terminate(error: ServerError.normal)
         }
     }
     
