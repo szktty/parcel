@@ -29,7 +29,6 @@ final class MyBankContext: ServerContext {
         switch request {
         case .new(who: let who):
             clients[who] = 0
-            receiver.update(timeout: 1)
             receiver.return()
             
         case .add(who: let who, amount: let amount):
