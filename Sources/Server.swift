@@ -103,11 +103,9 @@ open class Server<Context> where Context: ServerContext {
     
     public var context: Context
     var parcel: Parcel<ServerRequest<Context>>!
-    var syncQueue: DispatchQueue
     
     public init(context: Context) {
         self.context = context
-        syncQueue = DispatchQueue(label: "Server")
     }
     
     // MARK: Running Servers
