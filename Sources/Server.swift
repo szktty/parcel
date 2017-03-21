@@ -121,6 +121,7 @@ open class Server<Context> where Context: ServerContext {
         parcel = Parcel<ServerRequest<Context>>.spawn { p in
             p.onReceive { servReq in
                 var isTerminated: Bool = false
+                var error: Error!
                 
                 switch servReq {
                 case .sync(client: let client,
@@ -131,6 +132,7 @@ open class Server<Context> where Context: ServerContext {
                                         request: request,
                                         receiver: receiver)
                     isTerminated = receiver.isTerminated
+                    error = receiver.error
                     
                 case .async(client: let client,
                             request: let request,
@@ -140,9 +142,11 @@ open class Server<Context> where Context: ServerContext {
                                          request: request,
                                          receiver: receiver)
                     isTerminated = receiver.isTerminated
+                    error = receiver.error
                 }
                 
                 if isTerminated {
+                    self.context.onTerminate(server: self, error: error)
                     return .break
                 } else {
                     return .continue
