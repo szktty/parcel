@@ -20,7 +20,7 @@ final class MyBankContext: ServerContext {
     var isTerminated: Bool = false
     
     func initialize(server: Server<MyBankContext>,
-                    config: Config?) -> ServerInitResult<MyBankContext> {
+                    config: Config?) -> ServerInitResult {
         return .ignore
     }
     

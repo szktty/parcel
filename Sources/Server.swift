@@ -8,7 +8,7 @@ public protocol ServerContext {
     associatedtype Request
     associatedtype Response
     
-    func initialize(server: Server<Self>, config: Config?) -> ServerInitResult<Self>
+    func initialize(server: Server<Self>, config: Config?) -> ServerInitResult
     func onSync(server: Server<Self>,
                 client: Client?,
                 request: Request,
@@ -21,7 +21,7 @@ public protocol ServerContext {
     
 }
 
-public enum ServerInitResult<Context> where Context: ServerContext {
+public enum ServerInitResult {
     
     case ok(timeout: UInt?)
     case terminate(error: Error)
@@ -29,17 +29,20 @@ public enum ServerInitResult<Context> where Context: ServerContext {
     
 }
 
-public enum ServerRun<Context> where Context: ServerContext {
-    //case ok(Parcel<Context.Message>)
+public enum ServerRunResult {
+    
+    case ok
     case ignore
     case error(Error)
+    
 }
 
 public enum ServerError: Error {
     
     case normal
     case timeout
-    case user(Error)
+    case alreadyRunning
+    case other(Error)
     
 }
 
@@ -125,12 +128,16 @@ open class Server<Context> where Context: ServerContext {
     // MARK: Running Servers
     
     public func run(config: Context.Config? = nil,
-                    options: ServerOption? = nil) -> Error? {
+                    options: ServerOption? = nil) -> ServerRunResult {
+        if parcel != nil {
+            return .error(ServerError.alreadyRunning)
+        }
+        
         switch context.initialize(server: self, config: config) {
         case .ignore:
             break
         case .terminate(error: let error):
-            return error
+            return .error(error)
         case .ok(timeout: let timeout):
             if let timeout = timeout {
                 requestWaitTimer = parcel.dispatchQueue.asyncAfter(timeout: timeout) {
@@ -164,8 +171,7 @@ open class Server<Context> where Context: ServerContext {
             }
         }
         
-        // TODO
-        return nil
+        return .ok
     }
     
     public func runUnderSupervision(config: Context.Config? = nil,
