@@ -49,10 +49,10 @@ final class MyBankContext: ServerContext {
     }
     
     func onAsync(server: Server<MyBankContext>,
-                 client: Client, request: Request)
-        -> ServerAsync<MyBankContext>
-    {
-        return .ignore(timeout: nil)
+                 client: Client?,
+                 request: Request,
+                 receiver: ServerResponseReceiver<MyBankContext>) {
+        // ignore
     }
     
     func onTerminate(server: Server<MyBankContext>, error: Error) {

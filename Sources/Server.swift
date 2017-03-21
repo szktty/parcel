@@ -14,8 +14,9 @@ public protocol ServerContext {
                 request: Request,
                 receiver: ServerResponseReceiver<Self>)
     func onAsync(server: Server<Self>,
-                 client: Client,
-                 request: Request) -> ServerAsync<Self>
+                 client: Client?,
+                 request: Request,
+                 receiver: ServerResponseReceiver<Self>)
     func onTerminate(server: Server<Self>, error: Error)
     
 }
@@ -24,11 +25,6 @@ public enum ServerInit<Context> where Context: ServerContext {
     case ok(timeout: UInt?)
     case terminate(error: Error)
     case ignore
-}
-
-public enum ServerAsync<Context> where Context: ServerContext {
-    case ignore(timeout: UInt?)
-    case terminate(error: Error)
 }
 
 public enum ServerRun<Context> where Context: ServerContext {
@@ -51,11 +47,14 @@ public struct ServerOption {
     
 }
 
-struct ServerRequest<Context> where Context: ServerContext {
+enum ServerRequest<Context> where Context: ServerContext {
     
-    var client: Context.Client?
-    var request: Context.Request
-    var receiver: ServerResponseReceiver<Context>
+    case sync(client: Context.Client?,
+        request: Context.Request,
+        receiver: ServerResponseReceiver<Context>)
+    case async(client: Context.Client?,
+        request: Context.Request,
+        receiver: ServerResponseReceiver<Context>)
 
 }
 
@@ -120,12 +119,30 @@ open class Server<Context> where Context: ServerContext {
         }
         
         parcel = Parcel<ServerRequest<Context>>.spawn { p in
-            p.onReceive { request in
-                self.context.onSync(server: self,
-                                    client: request.client,
-                                    request: request.request,
-                                    receiver: request.receiver)
-                if request.receiver.isTerminated {
+            p.onReceive { servReq in
+                var isTerminated: Bool = false
+                
+                switch servReq {
+                case .sync(client: let client,
+                           request: let request,
+                           receiver: let receiver):
+                    self.context.onSync(server: self,
+                                        client: client,
+                                        request: request,
+                                        receiver: receiver)
+                    isTerminated = receiver.isTerminated
+                    
+                case .async(client: let client,
+                            request: let request,
+                            receiver: let receiver):
+                    self.context.onAsync(server: self,
+                                         client: client,
+                                         request: request,
+                                         receiver: receiver)
+                    isTerminated = receiver.isTerminated
+                }
+                
+                if isTerminated {
                     return .break
                 } else {
                     return .continue
@@ -162,9 +179,9 @@ open class Server<Context> where Context: ServerContext {
         -> Result<Context.Response?, ServerError>
     {
         let receiver = ServerResponseReceiver<Context>(server: self)
-        let servReq = ServerRequest<Context>(client: client,
-                                             request: request,
-                                             receiver: receiver)
+        let servReq = ServerRequest<Context>.sync(client: client,
+                                                  request: request,
+                                                  receiver: receiver)
         receiver.update(timeout: timeout)
         parcel ! servReq
         while !receiver.isFinished && !receiver.isTimeout {}
@@ -177,8 +194,13 @@ open class Server<Context> where Context: ServerContext {
         }
     }
     
-    public func async(request: Context.Request) {
-        
+    public func async(client: Context.Client? = nil,
+                      request: Context.Request) {
+        let receiver = ServerResponseReceiver<Context>(server: self)
+        let servReq = ServerRequest<Context>.async(client: client,
+                                                   request: request,
+                                                   receiver: receiver)
+        parcel ! servReq
     }
     
 }
