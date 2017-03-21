@@ -1,12 +1,13 @@
 import XCTest
 @testable import Parcel
+import Result
 
 final class MyBankContext: ServerContext {
     
     public typealias Config = Void
     public typealias Client = Void
     public typealias Message = String
-    public typealias Response = Void
+    public typealias Response = Int
     
     enum Request {
         case new(who: String)
@@ -16,6 +17,7 @@ final class MyBankContext: ServerContext {
     }
     
     var clients: [String: Int] = [:]
+    var isTerminated: Bool = false
     
     func initialize(server: Server<MyBankContext>,
                     config: Config?) -> ServerInit<MyBankContext> {
@@ -29,19 +31,19 @@ final class MyBankContext: ServerContext {
         switch request {
         case .new(who: let who):
             clients[who] = 0
-            receiver.return()
+            receiver.return(response: 0)
             
         case .add(who: let who, amount: let amount):
             if let balance = clients[who] {
                 clients[who] = balance + amount
             }
-            receiver.return()
+            receiver.return(response: clients[who])
             
         case .remove(who: let who, amount: let amount):
             if let balance = clients[who] {
                 clients[who] = balance - amount
             }
-            receiver.return()
+            receiver.return(response: clients[who])
             
         case .stop:
             receiver.terminate(error: ServerError.normal)
@@ -56,7 +58,7 @@ final class MyBankContext: ServerContext {
     }
     
     func onTerminate(server: Server<MyBankContext>, error: Error) {
-        
+        isTerminated = true
     }
     
 }
@@ -76,34 +78,19 @@ class MyBank {
     }
     
     func stop() {
-        try! server.sync(request: .stop)
+        let _ = server.sync(request: .stop)
     }
     
-    func newAccount(who: String) {
-        do {
-            try server.sync(request: .new(who: who))
-        } catch let e {
-            print("newAccount error:", e)
-            assertionFailure()
-        }
+    func newAccount(who: String) -> Int? {
+        return server.sync(request: .new(who: who)).value!
     }
     
-    func deposit(who: String, amount: Int) {
-        do {
-            try server.sync(request: .add(who: who, amount: amount))
-        } catch let e {
-            print("deposit error:", e)
-            assertionFailure()
-        }
+    func deposit(who: String, amount: Int) -> Int? {
+        return server.sync(request: .add(who: who, amount: amount)).value!
     }
     
-    func withdraw(who: String, amount: Int) {
-        do {
-            try server.sync(request: .remove(who: who, amount: amount))
-        } catch let e {
-            print("withdraw error:", e)
-            assertionFailure()
-        }
+    func withdraw(who: String, amount: Int) -> Int? {
+        return server.sync(request: .remove(who: who, amount: amount)).value!
     }
     
 }
@@ -126,9 +113,14 @@ class ServerTests: XCTestCase {
         let bank = MyBank()
         bank.run()
         let joe = "joe"
-        bank.newAccount(who: joe)
-        bank.deposit(who: joe, amount: 10)
+        XCTAssert(bank.newAccount(who: joe) == 0)
+        XCTAssert(bank.deposit(who: joe, amount: 10) == 10)
+        XCTAssert(bank.withdraw(who: joe, amount: 3) == 7)
+        XCTAssert(bank.deposit(who: "john", amount: 10) == nil)
+        
+        XCTAssert(!bank.context.isTerminated)
         bank.stop()
+        XCTAssert(bank.context.isTerminated)
     }
 
     func testPerformanceExample() {
