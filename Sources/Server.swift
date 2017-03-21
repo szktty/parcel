@@ -62,6 +62,7 @@ public class ServerResponseReceiver<Context> where Context: ServerContext {
     
     weak var server: Server<Context>!
     var responseToReturn: Context.Response?
+    var isReturned: Bool = false
     var isFinished: Bool = false
     var isTimeout: Bool = false
     var isTerminated: Bool = false
@@ -87,13 +88,24 @@ public class ServerResponseReceiver<Context> where Context: ServerContext {
     
     public func `return`(response: Context.Response? = nil) {
         responseToReturn = response
-        isFinished = true
+        isReturned = true
     }
     
     public func terminate(error: ServerError) {
         self.error = error
         isTerminated = true
-        isFinished = true
+        isReturned = true
+    }
+    
+    func finish() -> Loop {
+        if isTerminated {
+            server.context.onTerminate(server: server, error: error!)
+            isFinished = true
+            return .break
+        } else {
+            isFinished = true
+            return .continue
+        }
     }
     
 }
@@ -120,9 +132,6 @@ open class Server<Context> where Context: ServerContext {
         
         parcel = Parcel<ServerRequest<Context>>.spawn { p in
             p.onReceive { servReq in
-                var isTerminated: Bool = false
-                var error: Error!
-                
                 switch servReq {
                 case .sync(client: let client,
                            request: let request,
@@ -131,8 +140,7 @@ open class Server<Context> where Context: ServerContext {
                                         client: client,
                                         request: request,
                                         receiver: receiver)
-                    isTerminated = receiver.isTerminated
-                    error = receiver.error
+                    return receiver.finish()
                     
                 case .async(client: let client,
                             request: let request,
@@ -141,15 +149,7 @@ open class Server<Context> where Context: ServerContext {
                                          client: client,
                                          request: request,
                                          receiver: receiver)
-                    isTerminated = receiver.isTerminated
-                    error = receiver.error
-                }
-                
-                if isTerminated {
-                    self.context.onTerminate(server: self, error: error)
-                    return .break
-                } else {
-                    return .continue
+                    return receiver.finish()
                 }
             }
         }
