@@ -1,8 +1,8 @@
 import Foundation
 
-public class ParcelCenter {
+// deprecated
+public class OldParcelCenter {
     
-    public static var `default`: ParcelCenter = ParcelCenter()
     public var maxNumberOfWorkers: Int
     public var maxNumberOfParcels: Int
     
@@ -10,7 +10,7 @@ public class ParcelCenter {
     var parcelLinks: [ObjectIdentifier: [BasicParcel]] = [:]
     var parcelMonitors: [ObjectIdentifier: [BasicParcel]] = [:]
     var lockQueue: DispatchQueue
-
+    
     var availableWorker: Worker {
         get {
             return workers.reduce(workers.first!) {
@@ -147,5 +147,99 @@ public class ParcelCenter {
             parcelMonitors[parcel.id] = nil
         }
     }
+    
+}
 
+public class Dependency {
+    
+    enum Reason {
+        
+        case exit
+        case down
+        
+    }
+    
+    public var diesTogether: Bool
+    public var updatesObserver: Bool
+    public var trapsDeath: Bool
+    public var canStack: Bool
+    
+    public init(diesTogether: Bool = false,
+                updatesObserver: Bool = false,
+                trapsDeath: Bool = false,
+                canStack: Bool = false) {
+        self.diesTogether = diesTogether
+        self.updatesObserver = updatesObserver
+        self.trapsDeath = trapsDeath
+        self.canStack = canStack
+    }
+    
+    public static var link: Dependency = Dependency(diesTogether: true)
+    public static var monitor: Dependency = Dependency(updatesObserver: true,
+                                                       canStack: true)
+    public static var trapper: Dependency = Dependency(trapsDeath: true,
+                                                       canStack: true)
+    
+}
+
+public class Dependent {
+    
+    public var parcel: BasicParcel
+    public var dependency: Dependency
+    
+    public init(parcel: BasicParcel, dependency: Dependency) {
+        self.parcel = parcel
+        self.dependency = dependency
+    }
+    
+}
+
+public class ParcelCenter: OldParcelCenter {
+    
+    public static var `default`: ParcelCenter = ParcelCenter()
+    
+    var parcels: [ObjectIdentifier: BasicParcel] = [:]
+    var parcelLockQueue: DispatchQueue
+    var dependents: [ObjectIdentifier: [Dependent]] = [:]
+
+    // MARK: Dependency
+    
+    init() {
+        parcelLockQueue = DispatchQueue(label: "parcelLockQueue")
+    }
+    
+    public func addObserver(_ observer: BasicParcel,
+                            dependent: BasicParcel,
+                            dependency: Dependency) {
+        let dep = Dependent(parcel: dependent, dependency: dependency)
+    }
+    
+    public func removeObserver(_ observer: BasicParcel,
+                               dependent: BasicParcel? = nil,
+                               dependency: Dependency? = nil) {
+        
+    }
+    
+    func removeParcel(_ parcel: BasicParcel, sync: Bool = true) {
+        if sync {
+            parcelLockQueue.sync {
+                parcels[parcel.id] = nil
+            }
+        } else {
+            parcels[parcel.id] = nil
+        }
+    }
+    
+    public func kill(parcel: BasicParcel) {
+        
+    }
+    
+    public func exit(parcel: BasicParcel) {
+        
+    }
+    
+    public func down(parcel: BasicParcel) {
+        
+    }
+    
 }
