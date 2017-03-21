@@ -8,7 +8,7 @@ public protocol ServerContext {
     associatedtype Request
     associatedtype Response
     
-    func initialize(server: Server<Self>, config: Config?) -> ServerInit<Self>
+    func initialize(server: Server<Self>, config: Config?) -> ServerInitResult<Self>
     func onSync(server: Server<Self>,
                 client: Client?,
                 request: Request,
@@ -21,10 +21,12 @@ public protocol ServerContext {
     
 }
 
-public enum ServerInit<Context> where Context: ServerContext {
+public enum ServerInitResult<Context> where Context: ServerContext {
+    
     case ok(timeout: UInt?)
     case terminate(error: Error)
     case ignore
+    
 }
 
 public enum ServerRun<Context> where Context: ServerContext {
@@ -114,6 +116,7 @@ open class Server<Context> where Context: ServerContext {
     
     public var context: Context
     var parcel: Parcel<ServerRequest<Context>>!
+    var requestWaitTimer: DispatchWorkItem?
     
     public init(context: Context) {
         self.context = context
@@ -126,12 +129,19 @@ open class Server<Context> where Context: ServerContext {
         switch context.initialize(server: self, config: config) {
         case .ignore:
             break
-        default:
-            break
+        case .terminate(error: let error):
+            return error
+        case .ok(timeout: let timeout):
+            if let timeout = timeout {
+                requestWaitTimer = parcel.dispatchQueue.asyncAfter(timeout: timeout) {
+                    self.terminate(error: ServerError.timeout)
+                }
+            }
         }
         
         parcel = Parcel<ServerRequest<Context>>.spawn { p in
             p.onReceive { servReq in
+                self.requestWaitTimer?.cancel()
                 switch servReq {
                 case .sync(client: let client,
                            request: let request,
@@ -165,8 +175,8 @@ open class Server<Context> where Context: ServerContext {
     }
     
     public func terminate(error: Error) {
+        context.onTerminate(server: self, error: error)
         parcel.terminate()
-        self.context.onTerminate(server: self, error: error)
     }
     
     public func terminateAfter(deadline: UInt, error: Error) {

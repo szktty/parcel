@@ -25,6 +25,12 @@ open class BasicParcel {
     weak var worker: Worker!
     var onTerminateHandler: ((Signal) -> Void)?
 
+    // Do not use DispatchQueue.sync().
+    // This dispatch queue is shared with other parcels managed by a same worker.
+    var dispatchQueue: DispatchQueue {
+        get { return worker.executeQueue }
+    }
+    
     // MARK: Terminating
     
     public func onTerminate(handler: @escaping (Signal) -> Void) {
