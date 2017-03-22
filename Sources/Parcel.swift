@@ -38,6 +38,7 @@ open class BasicParcel {
     }
     
     public func terminate(error: Error? = nil) {
+        print("parcel.terminate")
         let signal: Signal = error != nil ? .error(error!) : .normal
         ParcelCenter.default.terminate(parcel: self, signal: signal)
     }
@@ -52,9 +53,14 @@ open class BasicParcel {
         }
     }
     
-    func finish(signal: Signal) {
+    // called from ParcelCenter
+    func finishTerminating(signal: Signal) {
         isAlive = false
         onTerminateHandler?(signal)
+    }
+    
+    func update(dependent: BasicParcel, signal: Signal) {
+        // TODO
     }
     
 }
@@ -78,7 +84,7 @@ open class Parcel<Message>: BasicParcel {
     // MARK: Running
     
     public func run() {
-        ParcelCenter.default.register(parcel: self)
+        ParcelCenter.default.addParcel(self)
     }
     
     public class func spawn(block: @escaping (Parcel<Message>) -> Void) -> Parcel<Message> {
@@ -110,15 +116,17 @@ open class Parcel<Message>: BasicParcel {
             }
         }
     }
-
+    
     // MARK: Linking
     
     public func addLink(_ parcel: Parcel<Message>) {
-        ParcelCenter.default.addLink(parcel1: self, parcel2: parcel)
+        ParcelCenter.default.addEachOfObservers(parcel1: self,
+                                                parcel2: parcel,
+                                                relationship: .link)
     }
     
     public func addMonitor(_ parcel: Parcel<Message>) {
-        ParcelCenter.default.addMonitor(parcel, forParcel: self)
+        // TODO
     }
 
 }

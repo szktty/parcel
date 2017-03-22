@@ -5,7 +5,6 @@ class Worker {
     var workerId: Int
     var messageQueue: DispatchQueue
     var executeQueue: DispatchQueue
-    var lockQueue: DispatchQueue
     var mailboxQueue: DispatchQueue
     var parcels: [ObjectIdentifier: AnyObject] = [:]
 
@@ -13,28 +12,13 @@ class Worker {
         self.workerId = workerId
         self.messageQueue = DispatchQueue(label: workerId.description)
         self.executeQueue = DispatchQueue(label: "worker.execute")
-        self.lockQueue = DispatchQueue(label: "worker.lock")
         self.mailboxQueue = DispatchQueue(label: "worker.mailbox")
     }
     
-    func add<Message>(parcel: Parcel<Message>) {
-        lockQueue.sync {
-            parcel.worker = self
-            self.parcels[ObjectIdentifier(parcel)] = parcel
-        }
-    }
-    
-    func remove<Message>(parcel: Parcel<Message>) {
-        lockQueue.sync {
-            parcel.worker = nil
-            self.parcels[ObjectIdentifier(parcel)] = nil
-        }
-    }
-    
-    func register<Message>(parcel: Parcel<Message>) {
-        self.add(parcel: parcel)
-
+    func assign<Message>(parcel: Parcel<Message>) {
+        parcel.worker = self
         messageQueue.async {
+            // TODO: error handling
             while parcel.isAlive {
                 guard let message = parcel.pop() else { continue }
                 do {
@@ -43,13 +27,8 @@ class Worker {
                     parcel.terminate(error: error)
                 }
             }
-            parcel.finish(signal: .normal)
-            self.unregister(parcel: parcel)
+            let _ = ParcelCenter.default.removeParcel(parcel)
         }
-    }
-    
-    func unregister<Message>(parcel: Parcel<Message>) {
-        remove(parcel: parcel)
     }
     
     // deadline: milliseconds

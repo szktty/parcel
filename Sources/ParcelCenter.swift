@@ -1,163 +1,6 @@
 import Foundation
 
-// deprecated
-public class OldParcelCenter {
-    
-    public var maxNumberOfWorkers: Int
-    public var maxNumberOfParcels: Int
-    
-    var workers: [Worker]
-    var parcelLinks: [ObjectIdentifier: [BasicParcel]] = [:]
-    var parcelMonitors: [ObjectIdentifier: [BasicParcel]] = [:]
-    var lockQueue: DispatchQueue
-    
-    var availableWorker: Worker {
-        get {
-            return workers.reduce(workers.first!) {
-                min, worker in
-                return worker.parcels.count < min.parcels.count ? worker : min
-            }
-        }
-    }
-    
-    init(maxNumberOfWorkers: Int? = nil,
-         maxNumberOfParcels: Int? = nil) {
-        self.maxNumberOfWorkers = maxNumberOfWorkers ?? ProcessInfo.processInfo.processorCount
-        self.maxNumberOfParcels = maxNumberOfParcels ?? 100000
-        lockQueue = DispatchQueue(label: "parcel center")
-        
-        workers = []
-        for i in 0..<self.maxNumberOfWorkers {
-            workers.append(Worker(workerId: i))
-        }
-    }
-    
-    func register<Message>(parcel: Parcel<Message>) {
-        availableWorker.register(parcel: parcel)
-    }
-    
-    // MARK: Links
-    
-    public func addLink(parcel1: BasicParcel, parcel2: BasicParcel) {
-        guard parcel1.id != parcel2.id else { return }
-        lockQueue.sync {
-            addOneLink(parcel1: parcel1, parcel2: parcel2)
-            addOneLink(parcel1: parcel2, parcel2: parcel1)
-        }
-    }
-    
-    func addOneLink(parcel1: BasicParcel, parcel2: BasicParcel) {
-        if var links = parcelLinks[parcel1.id] {
-            for link in links {
-                if link.id == parcel2.id {
-                    return
-                }
-            }
-            links.append(parcel2)
-        } else {
-            parcelLinks[parcel1.id] = [parcel2]
-        }
-    }
-    
-    public func removeLink(parcel1: BasicParcel, parcel2: BasicParcel) {
-        guard parcel1.id != parcel2.id else { return }
-        lockQueue.sync {
-            removeOneLink(parcel1: parcel1, parcel2: parcel2)
-            removeOneLink(parcel1: parcel2, parcel2: parcel1)
-        }
-    }
-    
-    func removeOneLink(parcel1: BasicParcel, parcel2: BasicParcel) {
-        if var links = parcelLinks[parcel1.id] {
-            let i = links.index {
-                link in
-                return link.id == parcel2.id
-            }
-            if let i = i {
-                links.remove(at: i)
-            }
-        }
-    }
-    
-    // MARK: Monitors
-    
-    public func addMonitor(_ monitor: BasicParcel,
-                           forParcel target: BasicParcel) {
-        guard monitor.id != target.id else { return }
-        lockQueue.sync {
-            if var monitors = parcelMonitors[target.id] {
-                for other in monitors {
-                    if other.id == monitor.id {
-                        return
-                    }
-                }
-                monitors.append(monitor)
-            } else {
-                parcelMonitors[target.id] = [monitor]
-            }
-        }
-    }
-    
-    public func removeMonitor(_ monitor: BasicParcel,
-                              forParcel target: BasicParcel) {
-        guard monitor.id != target.id else { return }
-        lockQueue.sync {
-            if var monitors = parcelMonitors[target.id] {
-                monitors = monitors.filter {
-                    other in
-                    return other.id != monitor.id
-                }
-                parcelMonitors[target.id] = monitors.isEmpty ? nil : monitors
-            }
-        }
-    }
-    
-    // MARK: Terminate Parcels
-    
-    func terminate(parcel: BasicParcel, signal: Signal) {
-        lockQueue.sync {
-            parcel.finish(signal: signal)
-            
-            var terminated: [BasicParcel] = []
-            terminateLinks(parcel: parcel, terminated: &terminated)
-            terminateMonitors(parcel: parcel)
-        }
-    }
-    
-    func terminateLinks(parcel: BasicParcel, terminated: inout [BasicParcel]) {
-        guard let links = parcelLinks[parcel.id] else { return }
-        for link in links {
-            if (terminated.contains { terminated in
-                terminated.id == parcel.id
-            }) {
-                continue
-            }
-            terminated.append(link)
-            link.finish(signal: .killed)
-            terminateLinks(parcel: link, terminated: &terminated)
-        }
-        parcelLinks[parcel.id] = nil
-    }
-    
-    func terminateMonitors(parcel: BasicParcel) {
-        if let monitors = parcelMonitors[parcel.id] {
-            for monitor in monitors {
-                monitor.finish(signal: .down)
-            }
-            parcelMonitors[parcel.id] = nil
-        }
-    }
-    
-}
-
-public class Dependency {
-    
-    enum Reason {
-        
-        case exit
-        case down
-        
-    }
+public class DependentRelationship {
     
     public var diesTogether: Bool
     public var updatesObserver: Bool
@@ -174,72 +17,151 @@ public class Dependency {
         self.canStack = canStack
     }
     
-    public static var link: Dependency = Dependency(diesTogether: true)
-    public static var monitor: Dependency = Dependency(updatesObserver: true,
-                                                       canStack: true)
-    public static var trapper: Dependency = Dependency(trapsDeath: true,
-                                                       canStack: true)
+    public static var link: DependentRelationship =
+        DependentRelationship(diesTogether: true)
+    public static var monitor: DependentRelationship =
+        DependentRelationship(updatesObserver: true,
+                              canStack: true)
+    public static var trapper: DependentRelationship =
+        DependentRelationship(trapsDeath: true,
+                              canStack: true)
     
 }
 
-public class Dependent {
+public class Dependency {
     
-    public var parcel: BasicParcel
-    public var dependency: Dependency
+    public weak var observer: BasicParcel!
+    public weak var dependent: BasicParcel!
+    public var relationship: DependentRelationship
     
-    public init(parcel: BasicParcel, dependency: Dependency) {
-        self.parcel = parcel
-        self.dependency = dependency
+    public init(observer: BasicParcel,
+                dependent: BasicParcel,
+                relationship: DependentRelationship) {
+        self.observer = observer
+        self.dependent = dependent
+        self.relationship = relationship
     }
     
 }
 
-public class ParcelCenter: OldParcelCenter {
+public class ParcelCenter {
     
     public static var `default`: ParcelCenter = ParcelCenter()
     
-    var parcels: [ObjectIdentifier: BasicParcel] = [:]
-    var parcelLockQueue: DispatchQueue
-    var dependents: [ObjectIdentifier: [Dependent]] = [:]
-
-    // MARK: Dependency
     
-    init() {
-        parcelLockQueue = DispatchQueue(label: "parcelLockQueue")
+    public var maxNumberOfWorkers: Int
+    public var maxNumberOfParcels: Int
+    
+    var workers: [Worker]
+    var parcelStore: [ObjectIdentifier: BasicParcel] = [:]
+    var parcelLockQueue: DispatchQueue
+    var depcyStore: [ObjectIdentifier: [Dependency]] = [:]
+    
+    var availableWorker: Worker {
+        get {
+            return workers.reduce(workers.first!) {
+                min, worker in
+                return worker.parcels.count < min.parcels.count ? worker : min
+            }
+        }
     }
+    
+    init(maxNumberOfWorkers: Int? = nil,
+         maxNumberOfParcels: Int? = nil) {
+        self.maxNumberOfWorkers = maxNumberOfWorkers ?? ProcessInfo.processInfo.processorCount
+        self.maxNumberOfParcels = maxNumberOfParcels ?? 100000
+        parcelLockQueue = DispatchQueue(label: "parcelLockQueue")
+        
+        workers = []
+        for i in 0..<self.maxNumberOfWorkers {
+            workers.append(Worker(workerId: i))
+        }
+    }
+    
+    // MARK: Parcels
+    
+    func addParcel<Message>(_ parcel: Parcel<Message>) {
+        parcelLockQueue.sync {
+            parcelStore[parcel.id] = parcel
+            availableWorker.assign(parcel: parcel)
+        }
+    }
+    
+    func removeParcel(_ parcel: BasicParcel) -> Bool {
+        return parcelLockQueue.sync {
+            if parcelStore[parcel.id] == nil {
+                return false
+            } else {
+                parcelStore[parcel.id] = nil
+                parcel.finishTerminating(signal: .down) // TODO
+                return true
+            }
+        }
+    }
+    
+    // MARK: Dependencies
     
     public func addObserver(_ observer: BasicParcel,
                             dependent: BasicParcel,
-                            dependency: Dependency) {
-        let dep = Dependent(parcel: dependent, dependency: dependency)
+                            relationship: DependentRelationship) {
+        parcelLockQueue.sync {
+            let depcy = Dependency(observer: observer,
+                                   dependent: dependent,
+                                   relationship: relationship)
+            if var depcies = depcyStore[dependent.id] {
+                depcies.append(depcy)
+                depcyStore[dependent.id] = depcies
+            } else {
+                depcyStore[dependent.id] = [depcy]
+            }
+        }
+    }
+    
+    public func addEachOfObservers(parcel1: BasicParcel,
+                                   parcel2: BasicParcel,
+                                   relationship: DependentRelationship) {
+        addObserver(parcel1, dependent: parcel2, relationship: relationship)
+        addObserver(parcel2, dependent: parcel1, relationship: relationship)
     }
     
     public func removeObserver(_ observer: BasicParcel,
                                dependent: BasicParcel? = nil,
-                               dependency: Dependency? = nil) {
-        
-    }
-    
-    func removeParcel(_ parcel: BasicParcel, sync: Bool = true) {
-        if sync {
-            parcelLockQueue.sync {
-                parcels[parcel.id] = nil
-            }
-        } else {
-            parcels[parcel.id] = nil
+                               dependency: DependentRelationship? = nil) {
+        // TODO
+        parcelLockQueue.sync {
         }
     }
     
-    public func kill(parcel: BasicParcel) {
+    func terminate(parcel: BasicParcel, signal: Signal, ignoreDepenencies: Bool = false) {
+        print("terminate!", ObjectIdentifier(parcel))
+        if !removeParcel(parcel) {
+            print("not exists")
+            return
+        }
         
+        if !ignoreDepenencies {
+            // TODO: signal
+            resolveDependencies(signal: .down, dependent: parcel)
+        }
     }
     
-    public func exit(parcel: BasicParcel) {
+    func resolveDependencies(signal: Signal, dependent: BasicParcel) {
+        print("begin resolve")
+        guard let depcies = depcyStore[dependent.id] else { return }
+        print("depcies:", depcies.count)
+        parcelLockQueue.sync {
+            depcyStore[dependent.id] = nil
+        }
         
-    }
-    
-    public func down(parcel: BasicParcel) {
-        
+        for depcy in depcies {
+            let rel = depcy.relationship
+            if rel.diesTogether {
+                terminate(parcel: depcy.observer, signal: .down)
+            }
+            if rel.updatesObserver {
+                depcy.observer.update(dependent: dependent, signal: signal)
+            }
+        }
     }
     
 }
