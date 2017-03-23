@@ -156,7 +156,9 @@ class Mailbox<Message> {
     }
     
     func enqueue(_ value: Message) {
-        parcel.worker.mailboxQueue.sync {
+        guard let worker = parcel.worker else { return }
+        
+        worker.mailboxQueue.sync {
             let item = MailboxItem(value: value)
             if count == 0 {
                 firstItem = item
@@ -169,8 +171,10 @@ class Mailbox<Message> {
     }
     
     func dequeue() -> Message? {
+        guard let worker = parcel.worker else { return nil }
+
         var result: Message?
-        parcel.worker.mailboxQueue.sync {
+        worker.mailboxQueue.sync {
             if let item = firstItem {
                 firstItem = item.next
                 count -= 1
