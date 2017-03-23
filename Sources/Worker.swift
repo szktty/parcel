@@ -22,7 +22,7 @@ class Worker {
         }
         messageQueue.async {
             // TODO: error handling
-            while parcel.isAlive {
+            while parcel.isAvailable {
                 guard let message = parcel.pop() else { continue }
                 do {
                     try parcel.evaluate(message: message)
@@ -47,7 +47,7 @@ class Worker {
                     execute: @escaping () -> Void) {
         let deadline: DispatchTime = .now() + .milliseconds(Int(deadline))
         executeQueue.asyncAfter(deadline: deadline) {
-            if parcel.isAlive {
+            if parcel.isAvailable {
                 execute()
             }
         }

@@ -20,7 +20,7 @@ open class BasicParcel {
         get { return ObjectIdentifier(self) }
     }
     
-    public var isAlive: Bool {
+    public var isAvailable: Bool {
         get {
             return worker != nil && !isTerminated
         }
