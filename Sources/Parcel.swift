@@ -27,8 +27,9 @@ open class BasicParcel {
     }
     
     weak var worker: Worker!
-    var onTerminateHandler: ((Signal) -> Void)?
     var isTerminated: Bool = false
+    var onTerminateHandler: ((Signal) -> Void)?
+    var onUpdateHandler: ((BasicParcel, Signal) -> Void)?
 
     // Do not use DispatchQueue.sync().
     // This dispatch queue is shared with other parcels managed by a same worker.
@@ -66,8 +67,26 @@ open class BasicParcel {
         worker = nil
     }
     
+    // MARK: Dependents
+    
+    public func addLink(_ parcel: BasicParcel) {
+        ParcelCenter.default.addEachOfObservers(parcel1: self,
+                                                parcel2: parcel,
+                                                relationship: .link)
+    }
+    
+    public func addMonitor(_ observer: BasicParcel) {
+        ParcelCenter.default.addObserver(observer,
+                                         dependent: self,
+                                         relationship: .monitor)
+    }
+    
+    public func onUpdate(handler: @escaping (BasicParcel, Signal) -> Void) {
+        onUpdateHandler = handler
+    }
+    
     func update(dependent: BasicParcel, signal: Signal) {
-        // TODO
+        onUpdateHandler?(dependent, signal)
     }
     
 }
@@ -124,18 +143,6 @@ open class Parcel<Message>: BasicParcel {
         }
     }
     
-    // MARK: Linking
-    
-    public func addLink(_ parcel: Parcel<Message>) {
-        ParcelCenter.default.addEachOfObservers(parcel1: self,
-                                                parcel2: parcel,
-                                                relationship: .link)
-    }
-    
-    public func addMonitor(_ parcel: Parcel<Message>) {
-        // TODO
-    }
-
 }
 
 infix operator !
