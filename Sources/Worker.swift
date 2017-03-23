@@ -3,39 +3,26 @@ import Foundation
 class Worker {
     
     var workerId: Int
+    var numberOfParcels: Int = 0
     var messageQueue: DispatchQueue
     var executeQueue: DispatchQueue
-    var lockQueue: DispatchQueue
     var mailboxQueue: DispatchQueue
-    var parcels: [ObjectIdentifier: AnyObject] = [:]
 
     init(workerId: Int) {
         self.workerId = workerId
         self.messageQueue = DispatchQueue(label: workerId.description)
         self.executeQueue = DispatchQueue(label: "worker.execute")
-        self.lockQueue = DispatchQueue(label: "worker.lock")
         self.mailboxQueue = DispatchQueue(label: "worker.mailbox")
     }
     
-    func add<Message>(parcel: Parcel<Message>) {
-        lockQueue.sync {
+    func assign<Message>(parcel: Parcel<Message>) {
+        executeQueue.sync {
             parcel.worker = self
-            self.parcels[ObjectIdentifier(parcel)] = parcel
+            numberOfParcels += 1
         }
-    }
-    
-    func remove<Message>(parcel: Parcel<Message>) {
-        lockQueue.sync {
-            parcel.worker = nil
-            self.parcels[ObjectIdentifier(parcel)] = nil
-        }
-    }
-    
-    func register<Message>(parcel: Parcel<Message>) {
-        self.add(parcel: parcel)
-
         messageQueue.async {
-            while parcel.isAlive {
+            // TODO: error handling
+            while parcel.isAvailable {
                 guard let message = parcel.pop() else { continue }
                 do {
                     try parcel.evaluate(message: message)
@@ -43,13 +30,15 @@ class Worker {
                     parcel.terminate(error: error)
                 }
             }
-            parcel.finish(signal: .normal)
-            self.unregister(parcel: parcel)
+            let _ = ParcelCenter.default.removeParcel(parcel)
         }
     }
     
-    func unregister<Message>(parcel: Parcel<Message>) {
-        remove(parcel: parcel)
+    func unassign(parcel: BasicParcel) {
+        executeQueue.sync {
+            parcel.worker = nil
+            numberOfParcels -= 1
+        }
     }
     
     // deadline: milliseconds
@@ -58,7 +47,7 @@ class Worker {
                     execute: @escaping () -> Void) {
         let deadline: DispatchTime = .now() + .milliseconds(Int(deadline))
         executeQueue.asyncAfter(deadline: deadline) {
-            if parcel.isAlive {
+            if parcel.isAvailable {
                 execute()
             }
         }

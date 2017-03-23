@@ -8,22 +8,28 @@ public enum Loop {
 public enum Signal {
     case normal
     case timeout
-    case kill
-    case killed
+    case forced
+    case involved
     case down
     case error(Error)
 }
 
 open class BasicParcel {
     
-    public var isAlive: Bool = true
-
     public var id: ObjectIdentifier {
         get { return ObjectIdentifier(self) }
     }
     
+    public var isAvailable: Bool {
+        get {
+            return worker != nil && !isTerminated
+        }
+    }
+    
     weak var worker: Worker!
+    var isTerminated: Bool = false
     var onTerminateHandler: ((Signal) -> Void)?
+    var onUpdateHandler: ((BasicParcel, Signal) -> Void)?
 
     // Do not use DispatchQueue.sync().
     // This dispatch queue is shared with other parcels managed by a same worker.
@@ -52,9 +58,34 @@ open class BasicParcel {
         }
     }
     
-    func finish(signal: Signal) {
-        isAlive = false
+    // called from ParcelCenter
+    func finishTerminating(signal: Signal) {
         onTerminateHandler?(signal)
+        worker.unassign(parcel: self)
+        isTerminated = true
+        worker = nil
+    }
+    
+    // MARK: Dependents
+    
+    public func addLink(_ parcel: BasicParcel) {
+        ParcelCenter.default.addEachOfObservers(parcel1: self,
+                                                parcel2: parcel,
+                                                relationship: .link)
+    }
+    
+    public func addMonitor(_ observer: BasicParcel) {
+        ParcelCenter.default.addObserver(observer,
+                                         dependent: self,
+                                         relationship: .monitor)
+    }
+    
+    public func onUpdate(handler: @escaping (BasicParcel, Signal) -> Void) {
+        onUpdateHandler = handler
+    }
+    
+    func update(dependent: BasicParcel, signal: Signal) {
+        onUpdateHandler?(dependent, signal)
     }
     
 }
@@ -78,7 +109,7 @@ open class Parcel<Message>: BasicParcel {
     // MARK: Running
     
     public func run() {
-        ParcelCenter.default.register(parcel: self)
+        ParcelCenter.default.addParcel(self)
     }
     
     public class func spawn(block: @escaping (Parcel<Message>) -> Void) -> Parcel<Message> {
@@ -110,17 +141,7 @@ open class Parcel<Message>: BasicParcel {
             }
         }
     }
-
-    // MARK: Linking
     
-    public func addLink(_ parcel: Parcel<Message>) {
-        ParcelCenter.default.addLink(parcel1: self, parcel2: parcel)
-    }
-    
-    public func addMonitor(_ parcel: Parcel<Message>) {
-        ParcelCenter.default.addMonitor(parcel, forParcel: self)
-    }
-
 }
 
 infix operator !
@@ -141,7 +162,9 @@ class Mailbox<Message> {
     }
     
     func enqueue(_ value: Message) {
-        parcel.worker.mailboxQueue.sync {
+        guard let worker = parcel.worker else { return }
+        
+        worker.mailboxQueue.sync {
             let item = MailboxItem(value: value)
             if count == 0 {
                 firstItem = item
@@ -154,8 +177,10 @@ class Mailbox<Message> {
     }
     
     func dequeue() -> Message? {
+        guard let worker = parcel.worker else { return nil }
+
         var result: Message?
-        parcel.worker.mailboxQueue.sync {
+        worker.mailboxQueue.sync {
             if let item = firstItem {
                 firstItem = item.next
                 count -= 1
