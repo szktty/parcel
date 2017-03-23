@@ -8,8 +8,8 @@ public enum Loop {
 public enum Signal {
     case normal
     case timeout
-    case kill
-    case killed
+    case forced
+    case involved
     case down
     case error(Error)
 }
