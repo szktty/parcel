@@ -16,14 +16,19 @@ public enum Signal {
 
 open class BasicParcel {
     
-    public var isAlive: Bool = true
-
     public var id: ObjectIdentifier {
         get { return ObjectIdentifier(self) }
     }
     
+    public var isAlive: Bool {
+        get {
+            return worker != nil && !isTerminated
+        }
+    }
+    
     weak var worker: Worker!
     var onTerminateHandler: ((Signal) -> Void)?
+    var isTerminated: Bool = false
 
     // Do not use DispatchQueue.sync().
     // This dispatch queue is shared with other parcels managed by a same worker.
@@ -55,8 +60,10 @@ open class BasicParcel {
     
     // called from ParcelCenter
     func finishTerminating(signal: Signal) {
-        isAlive = false
         onTerminateHandler?(signal)
+        worker.unassign(parcel: self)
+        isTerminated = true
+        worker = nil
     }
     
     func update(dependent: BasicParcel, signal: Signal) {

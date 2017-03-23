@@ -3,10 +3,10 @@ import Foundation
 class Worker {
     
     var workerId: Int
+    var numberOfParcels: Int = 0
     var messageQueue: DispatchQueue
     var executeQueue: DispatchQueue
     var mailboxQueue: DispatchQueue
-    var parcels: [ObjectIdentifier: AnyObject] = [:]
 
     init(workerId: Int) {
         self.workerId = workerId
@@ -16,7 +16,10 @@ class Worker {
     }
     
     func assign<Message>(parcel: Parcel<Message>) {
-        parcel.worker = self
+        executeQueue.sync {
+            parcel.worker = self
+            numberOfParcels += 1
+        }
         messageQueue.async {
             // TODO: error handling
             while parcel.isAlive {
@@ -28,6 +31,13 @@ class Worker {
                 }
             }
             let _ = ParcelCenter.default.removeParcel(parcel)
+        }
+    }
+    
+    func unassign(parcel: BasicParcel) {
+        executeQueue.sync {
+            parcel.worker = nil
+            numberOfParcels -= 1
         }
     }
     

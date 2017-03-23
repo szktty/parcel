@@ -61,7 +61,7 @@ public class ParcelCenter {
         get {
             return workers.reduce(workers.first!) {
                 min, worker in
-                return worker.parcels.count < min.parcels.count ? worker : min
+                return worker.numberOfParcels < min.numberOfParcels ? worker : min
             }
         }
     }
