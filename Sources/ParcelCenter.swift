@@ -1,24 +1,30 @@
 import Foundation
 
+public enum AutoTermination {
+
+    case normal
+    case error
+    case off
+    
+}
+
 public class DependentRelationship {
     
-    public var diesTogether: Bool
+    public var autoTermination: AutoTermination
     public var updatesObserver: Bool
-    public var trapsDeath: Bool
     public var canStack: Bool
     
-    public init(diesTogether: Bool = false,
+    public init(autoTermination: AutoTermination = .normal,
                 updatesObserver: Bool = false,
                 trapsDeath: Bool = false,
                 canStack: Bool = false) {
-        self.diesTogether = diesTogether
+        self.autoTermination = autoTermination
         self.updatesObserver = updatesObserver
-        self.trapsDeath = trapsDeath
         self.canStack = canStack
     }
     
     public static var link: DependentRelationship =
-        DependentRelationship(diesTogether: true)
+        DependentRelationship()
     public static var monitor: DependentRelationship =
         DependentRelationship(updatesObserver: true,
                               canStack: true)
@@ -155,9 +161,23 @@ public class ParcelCenter {
         
         for depcy in depcies {
             let rel = depcy.relationship
-            if rel.diesTogether {
-                terminate(parcel: depcy.observer, signal: .down)
+            
+            switch rel.autoTermination {
+            case .normal:
+                terminate(parcel: depcy.observer, signal: signal)
+                
+            case .error:
+                switch signal {
+                case .normal:
+                    break
+                default:
+                    terminate(parcel: depcy.observer, signal: signal)
+                }
+                
+            case .off:
+                break
             }
+
             if rel.updatesObserver {
                 depcy.observer.update(dependent: dependent, signal: signal)
             }

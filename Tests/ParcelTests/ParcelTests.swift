@@ -19,7 +19,7 @@ class ParcelTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
+    func _testExample() {
         let exp = self.expectation(description: "example")
         var count = 0
         let parcel = Parcel<Area>.spawn {
@@ -50,7 +50,7 @@ class ParcelTests: XCTestCase {
         self.waitForExpectations(timeout: 2)
     }
     
-    func testRepeatSpawn() {
+    func _testRepeatSpawn() {
         measure {
             let n = 10000
             for _ in 0...n {
@@ -63,7 +63,7 @@ class ParcelTests: XCTestCase {
         }
     }
     
-    func testTimeout() {
+    func _testTimeout() {
         let exp = self.expectation(description: "timeout test")
         let parcel = Parcel<Void>.spawn { _ in }
         parcel.terminateAfter(deadline: 1) {
@@ -72,6 +72,8 @@ class ParcelTests: XCTestCase {
         self.waitForExpectations(timeout: 2)
     }
 
+    // MARK: Dependency
+    
     func testLink() {
         let exp = self.expectation(description: "link test")
         let parcel1 = Parcel<Void>.spawn {
@@ -82,6 +84,9 @@ class ParcelTests: XCTestCase {
         }
         let parcel2 = Parcel<Void>.spawn {
             parcel in
+            parcel.onUpdate { (subject, signal) in
+                XCTFail("must not be execute")
+            }
             parcel.onTerminate { signal in
                 exp.fulfill()
             }
@@ -101,13 +106,9 @@ class ParcelTests: XCTestCase {
         }
         let monitor = Parcel<Void>.spawn {
             parcel in
-            parcel.onTerminate { signal in
-                switch signal {
-                case .down:
-                    exp.fulfill()
-                default:
-                    break
-                }
+            parcel.onUpdate { (subject, signal) in
+                XCTAssertEqual(subject.id, target.id)
+                exp.fulfill()
             }
         }
         target.addMonitor(monitor)
