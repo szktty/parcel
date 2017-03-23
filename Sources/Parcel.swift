@@ -44,7 +44,6 @@ open class BasicParcel {
     }
     
     public func terminate(error: Error? = nil) {
-        print("parcel.terminate")
         let signal: Signal = error != nil ? .error(error!) : .normal
         ParcelCenter.default.terminate(parcel: self, signal: signal)
     }

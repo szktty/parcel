@@ -139,9 +139,7 @@ public class ParcelCenter {
     }
     
     func terminate(parcel: BasicParcel, signal: Signal, ignoreDepenencies: Bool = false) {
-        print("terminate!", ObjectIdentifier(parcel))
         if !removeParcel(parcel) {
-            print("not exists")
             return
         }
         
@@ -152,9 +150,8 @@ public class ParcelCenter {
     }
     
     func resolveDependencies(signal: Signal, dependent: BasicParcel) {
-        print("begin resolve")
         guard let depcies = depcyStore[dependent.id] else { return }
-        print("depcies:", depcies.count)
+
         parcelLockQueue.sync {
             depcyStore[dependent.id] = nil
         }
