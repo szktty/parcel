@@ -1,24 +1,16 @@
 import Foundation
 
-public enum AutoTermination {
-
-    case normal
-    case error
-    case off
-    
-}
-
 public class DependentRelationship {
     
-    public var autoTermination: AutoTermination
+    public var terminatesAbnormally: Bool
     public var updatesObserver: Bool
     public var canStack: Bool
     
-    public init(autoTermination: AutoTermination = .normal,
+    public init(terminatesAbnormally: Bool = true,
                 updatesObserver: Bool = false,
                 trapsDeath: Bool = false,
                 canStack: Bool = false) {
-        self.autoTermination = autoTermination
+        self.terminatesAbnormally = terminatesAbnormally
         self.updatesObserver = updatesObserver
         self.canStack = canStack
     }
@@ -158,23 +150,9 @@ public class ParcelCenter {
         
         for depcy in depcies {
             let rel = depcy.relationship
-            
-            switch rel.autoTermination {
-            case .normal:
+            if rel.terminatesAbnormally {
                 terminate(parcel: depcy.observer, signal: signal)
-                
-            case .error:
-                switch signal {
-                case .normal:
-                    break
-                default:
-                    terminate(parcel: depcy.observer, signal: signal)
-                }
-                
-            case .off:
-                break
             }
-
             if rel.updatesObserver {
                 depcy.observer.update(dependent: dependent, signal: signal)
             }
