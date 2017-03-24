@@ -18,7 +18,8 @@ public class DependentRelationship {
     public static var link: DependentRelationship =
         DependentRelationship()
     public static var monitor: DependentRelationship =
-        DependentRelationship(updatesObserver: true,
+        DependentRelationship(terminatesAbnormally: false,
+                              updatesObserver: true,
                               canStack: true)
     public static var trapper: DependentRelationship =
         DependentRelationship(trapsDeath: true,
@@ -85,13 +86,13 @@ public class ParcelCenter {
         }
     }
     
-    func removeParcel(_ parcel: BasicParcel) -> Bool {
+    func removeParcel(_ parcel: BasicParcel, signal: Signal = .normal) -> Bool {
         return parcelLockQueue.sync {
             if parcelStore[parcel.id] == nil {
                 return false
             } else {
                 parcelStore[parcel.id] = nil
-                parcel.finishTerminating(signal: .down) // TODO
+                parcel.finishTerminating(signal: signal)
                 return true
             }
         }
@@ -131,13 +132,13 @@ public class ParcelCenter {
     }
     
     func terminate(parcel: BasicParcel, signal: Signal, ignoreDepenencies: Bool = false) {
-        if !removeParcel(parcel) {
+        if !removeParcel(parcel, signal: signal) {
             return
         }
         
         if !ignoreDepenencies {
             // TODO: signal
-            resolveDependencies(signal: .down, dependent: parcel)
+            resolveDependencies(signal: signal, dependent: parcel)
         }
     }
     

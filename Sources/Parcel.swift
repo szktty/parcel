@@ -9,8 +9,6 @@ public enum Signal {
     case normal
     case timeout
     case forced
-    case involved
-    case down
     case error(Error)
 }
 
