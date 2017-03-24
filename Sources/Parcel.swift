@@ -63,7 +63,6 @@ open class BasicParcel {
         onTerminateHandler?(signal)
         worker.unassign(parcel: self)
         isTerminated = true
-        worker = nil
     }
     
     // MARK: Dependents
