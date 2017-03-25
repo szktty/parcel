@@ -2,7 +2,7 @@ import XCTest
 @testable import Parcel
 import Result
 
-final class MyBankContext: ServerContext {
+final class MyBankDelegate: ServerDelegate {
     
     public typealias Config = Void
     public typealias Client = Void
@@ -19,15 +19,15 @@ final class MyBankContext: ServerContext {
     var clients: [String: Int] = [:]
     var isTerminated: Bool = false
     
-    func initialize(server: Server<MyBankContext>,
+    func initialize(server: Server<MyBankDelegate>,
                     config: Config?) -> ServerInitResult {
         return .ignore
     }
     
-    func onSync(server: Server<MyBankContext>,
+    func onSync(server: Server<MyBankDelegate>,
                 client: Client?,
                 request: Request,
-                receiver: ServerResponseReceiver<MyBankContext>) {
+                receiver: ServerResponseReceiver<MyBankDelegate>) {
         switch request {
         case .new(who: let who):
             clients[who] = 0
@@ -50,14 +50,14 @@ final class MyBankContext: ServerContext {
         }
     }
     
-    func onAsync(server: Server<MyBankContext>,
+    func onAsync(server: Server<MyBankDelegate>,
                  client: Client?,
                  request: Request,
-                 receiver: ServerResponseReceiver<MyBankContext>) {
+                 receiver: ServerResponseReceiver<MyBankDelegate>) {
         // ignore
     }
     
-    func onTerminate(server: Server<MyBankContext>, error: Error) {
+    func onTerminate(server: Server<MyBankDelegate>, error: Error) {
         isTerminated = true
     }
     
@@ -65,12 +65,12 @@ final class MyBankContext: ServerContext {
 
 class MyBank {
     
-    var server: Server<MyBankContext>
-    var context: MyBankContext
+    var server: Server<MyBankDelegate>
+    var delegate: MyBankDelegate
     
     init() {
-        context = MyBankContext()
-        server = Server<MyBankContext>(context: context)
+        delegate = MyBankDelegate()
+        server = Server<MyBankDelegate>(delegate: delegate)
     }
     
     func run() {
@@ -118,9 +118,9 @@ class ServerTests: XCTestCase {
         XCTAssert(bank.withdraw(who: joe, amount: 3) == 7)
         XCTAssert(bank.deposit(who: "john", amount: 10) == nil)
         
-        XCTAssert(!bank.context.isTerminated)
+        XCTAssert(!bank.delegate.isTerminated)
         bank.stop()
-        XCTAssert(bank.context.isTerminated)
+        XCTAssert(bank.delegate.isTerminated)
     }
 
     func testPerformanceExample() {

@@ -1,7 +1,7 @@
 import Foundation
 import Result
 
-public protocol ServerContext {
+public protocol ServerDelegate {
     
     associatedtype Config
     associatedtype Client
@@ -52,21 +52,21 @@ public struct ServerOption {
     
 }
 
-enum ServerRequest<Context> where Context: ServerContext {
+enum ServerRequest<Delegate> where Delegate: ServerDelegate {
     
-    case sync(client: Context.Client?,
-        request: Context.Request,
-        receiver: ServerResponseReceiver<Context>)
-    case async(client: Context.Client?,
-        request: Context.Request,
-        receiver: ServerResponseReceiver<Context>)
+    case sync(client: Delegate.Client?,
+        request: Delegate.Request,
+        receiver: ServerResponseReceiver<Delegate>)
+    case async(client: Delegate.Client?,
+        request: Delegate.Request,
+        receiver: ServerResponseReceiver<Delegate>)
 
 }
 
-public class ServerResponseReceiver<Context> where Context: ServerContext {
+public class ServerResponseReceiver<Delegate> where Delegate: ServerDelegate {
     
-    weak var server: Server<Context>!
-    var responseToReturn: Context.Response?
+    weak var server: Server<Delegate>!
+    var responseToReturn: Delegate.Response?
     var isReturned: Bool = false
     var isFinished: Bool = false
     var isTimeout: Bool = false
@@ -74,7 +74,7 @@ public class ServerResponseReceiver<Context> where Context: ServerContext {
     var timerWorkItem: DispatchWorkItem?
     var error: ServerError?
     
-    init(server: Server<Context>) {
+    init(server: Server<Delegate>) {
         self.server = server
     }
     
@@ -91,7 +91,7 @@ public class ServerResponseReceiver<Context> where Context: ServerContext {
         worker.executeQueue.async(execute: timerWorkItem!)
     }
     
-    public func `return`(response: Context.Response? = nil) {
+    public func `return`(response: Delegate.Response? = nil) {
         responseToReturn = response
         isReturned = true
     }
@@ -104,7 +104,7 @@ public class ServerResponseReceiver<Context> where Context: ServerContext {
     
     func finish() -> Loop {
         if isTerminated {
-            server.context.onTerminate(server: server, error: error!)
+            server.delegate.onTerminate(server: server, error: error!)
             isFinished = true
             return .break
         } else {
@@ -115,25 +115,25 @@ public class ServerResponseReceiver<Context> where Context: ServerContext {
     
 }
 
-open class Server<Context> where Context: ServerContext {
+open class Server<Delegate> where Delegate: ServerDelegate {
     
-    public var context: Context
-    var parcel: Parcel<ServerRequest<Context>>!
+    public var delegate: Delegate
+    var parcel: Parcel<ServerRequest<Delegate>>!
     var requestWaitTimer: DispatchWorkItem?
     
-    public init(context: Context) {
-        self.context = context
+    public init(delegate: Delegate) {
+        self.delegate = delegate
     }
     
     // MARK: Running Servers
     
-    public func run(config: Context.Config? = nil,
+    public func run(config: Delegate.Config? = nil,
                     options: ServerOption? = nil) -> ServerRunResult {
         if parcel != nil {
             return .error(ServerError.alreadyRunning)
         }
         
-        switch context.initialize(server: self, config: config) {
+        switch delegate.initialize(server: self, config: config) {
         case .ignore:
             break
         case .terminate(error: let error):
@@ -146,14 +146,14 @@ open class Server<Context> where Context: ServerContext {
             }
         }
         
-        parcel = Parcel<ServerRequest<Context>>.spawn { p in
+        parcel = Parcel<ServerRequest<Delegate>>.spawn { p in
             p.onReceive { servReq in
                 self.requestWaitTimer?.cancel()
                 switch servReq {
                 case .sync(client: let client,
                            request: let request,
                            receiver: let receiver):
-                    self.context.onSync(server: self,
+                    self.delegate.onSync(server: self,
                                         client: client,
                                         request: request,
                                         receiver: receiver)
@@ -162,7 +162,7 @@ open class Server<Context> where Context: ServerContext {
                 case .async(client: let client,
                             request: let request,
                             receiver: let receiver):
-                    self.context.onAsync(server: self,
+                    self.delegate.onAsync(server: self,
                                          client: client,
                                          request: request,
                                          receiver: receiver)
@@ -174,32 +174,32 @@ open class Server<Context> where Context: ServerContext {
         return .ok
     }
     
-    public func runUnderSupervision(config: Context.Config? = nil,
+    public func runUnderSupervision(config: Delegate.Config? = nil,
                                     options: ServerOption? = nil) -> Error? {
         // TODO
         return nil
     }
     
     public func terminate(error: Error) {
-        context.onTerminate(server: self, error: error)
+        delegate.onTerminate(server: self, error: error)
         parcel.terminate()
     }
     
     public func terminateAfter(deadline: UInt, error: Error) {
         parcel.terminateAfter(deadline: deadline) {
-            self.context.onTerminate(server: self, error: error)
+            self.delegate.onTerminate(server: self, error: error)
         }
     }
     
     // MARK: Sending Requests
     
-    public func sync(client: Context.Client? = nil,
-                     request: Context.Request,
+    public func sync(client: Delegate.Client? = nil,
+                     request: Delegate.Request,
                      timeout: UInt = 5000)
-        -> Result<Context.Response?, ServerError>
+        -> Result<Delegate.Response?, ServerError>
     {
-        let receiver = ServerResponseReceiver<Context>(server: self)
-        let servReq = ServerRequest<Context>.sync(client: client,
+        let receiver = ServerResponseReceiver<Delegate>(server: self)
+        let servReq = ServerRequest<Delegate>.sync(client: client,
                                                   request: request,
                                                   receiver: receiver)
         receiver.update(timeout: timeout)
@@ -214,10 +214,10 @@ open class Server<Context> where Context: ServerContext {
         }
     }
     
-    public func async(client: Context.Client? = nil,
-                      request: Context.Request) {
-        let receiver = ServerResponseReceiver<Context>(server: self)
-        let servReq = ServerRequest<Context>.async(client: client,
+    public func async(client: Delegate.Client? = nil,
+                      request: Delegate.Request) {
+        let receiver = ServerResponseReceiver<Delegate>(server: self)
+        let servReq = ServerRequest<Delegate>.async(client: client,
                                                    request: request,
                                                    receiver: receiver)
         parcel ! servReq
