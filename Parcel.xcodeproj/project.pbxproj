@@ -7,110 +7,146 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9120DEDD1E815DDF00038244 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9120DEDC1E815DDF00038244 /* Extensions.swift */; };
-		9120DEDE1E8164BE00038244 /* ParcelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_40 /* ParcelTests.swift */; };
-		9124F8271E796844004839CC /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9124F8261E796844004839CC /* Server.swift */; };
-		9127A77E1E7EAA05002992B5 /* ServerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9124F82A1E79ABEE004839CC /* ServerTests.swift */; };
-		912B98E71E756E84006E6CE7 /* TCPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912B98E51E756C1B006E6CE7 /* TCPSocket.swift */; };
-		OBJ_100 /* Worker.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_37 /* Worker.swift */; };
-		OBJ_102 /* SocksCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_46 /* SocksCore.framework */; };
-		OBJ_103 /* Socks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_45 /* Socks.framework */; };
-		OBJ_104 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_47 /* Result.framework */; };
-		OBJ_115 /* SocksCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_46 /* SocksCore.framework */; };
-		OBJ_116 /* Socks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_45 /* Socks.framework */; };
-		OBJ_117 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_47 /* Result.framework */; };
-		OBJ_118 /* Parcel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_48 /* Parcel.framework */; };
-		OBJ_55 /* Socks.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* Socks.swift */; };
-		OBJ_56 /* SynchronousTCPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* SynchronousTCPServer.swift */; };
-		OBJ_57 /* SynchronousUDPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* SynchronousUDPServer.swift */; };
-		OBJ_58 /* TCPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* TCPClient.swift */; };
-		OBJ_59 /* UDPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* UDPClient.swift */; };
-		OBJ_61 /* SocksCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_46 /* SocksCore.framework */; };
-		OBJ_68 /* Address+C.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* Address+C.swift */; };
-		OBJ_69 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* Address.swift */; };
-		OBJ_70 /* Bytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* Bytes.swift */; };
-		OBJ_71 /* Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_18 /* Conversions.swift */; };
-		OBJ_72 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_19 /* Error.swift */; };
-		OBJ_73 /* FDSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_20 /* FDSet.swift */; };
-		OBJ_74 /* InternetSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_21 /* InternetSocket.swift */; };
-		OBJ_75 /* Pipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_22 /* Pipe.swift */; };
-		OBJ_76 /* Select.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_23 /* Select.swift */; };
-		OBJ_77 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_24 /* Socket.swift */; };
-		OBJ_78 /* SocketOptions+Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_25 /* SocketOptions+Deprecated.swift */; };
-		OBJ_79 /* SocketOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_26 /* SocketOptions.swift */; };
-		OBJ_80 /* TCPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_27 /* TCPSocket.swift */; };
-		OBJ_81 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_28 /* Types.swift */; };
-		OBJ_82 /* UDPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_29 /* UDPSocket.swift */; };
-		OBJ_89 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_31 /* Result.swift */; };
-		OBJ_90 /* ResultProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_32 /* ResultProtocol.swift */; };
-		OBJ_97 /* Parcel.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_34 /* Parcel.swift */; };
-		OBJ_98 /* ParcelCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_35 /* ParcelCenter.swift */; };
+		OBJ_100 /* TCPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_27 /* TCPSocket.swift */; };
+		OBJ_101 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_28 /* Types.swift */; };
+		OBJ_102 /* UDPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_29 /* UDPSocket.swift */; };
+		OBJ_109 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_31 /* Result.swift */; };
+		OBJ_110 /* ResultProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_32 /* ResultProtocol.swift */; };
+		OBJ_117 /* Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_34 /* Async.swift */; };
+		OBJ_118 /* AsyncType+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_35 /* AsyncType+Debug.swift */; };
+		OBJ_119 /* AsyncType+ResultType.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_36 /* AsyncType+ResultType.swift */; };
+		OBJ_120 /* AsyncType.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_37 /* AsyncType.swift */; };
+		OBJ_121 /* Dispatch+BrightFutures.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_38 /* Dispatch+BrightFutures.swift */; };
+		OBJ_122 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_39 /* Errors.swift */; };
+		OBJ_123 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_40 /* ExecutionContext.swift */; };
+		OBJ_124 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_41 /* Future.swift */; };
+		OBJ_125 /* InvalidationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_42 /* InvalidationToken.swift */; };
+		OBJ_126 /* MutableAsyncType+ResultType.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_43 /* MutableAsyncType+ResultType.swift */; };
+		OBJ_127 /* MutableAsyncType.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_44 /* MutableAsyncType.swift */; };
+		OBJ_128 /* NSOperationQueue+BrightFutures.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_45 /* NSOperationQueue+BrightFutures.swift */; };
+		OBJ_129 /* Number+BrightFutures.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_46 /* Number+BrightFutures.swift */; };
+		OBJ_130 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_47 /* Promise.swift */; };
+		OBJ_131 /* Result+BrightFutures.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_48 /* Result+BrightFutures.swift */; };
+		OBJ_132 /* SequenceType+BrightFutures.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_49 /* SequenceType+BrightFutures.swift */; };
+		OBJ_134 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_66 /* Result.framework */; };
+		OBJ_141 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_51 /* Extensions.swift */; };
+		OBJ_142 /* Parcel.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_52 /* Parcel.swift */; };
+		OBJ_143 /* ParcelCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_53 /* ParcelCenter.swift */; };
+		OBJ_144 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_54 /* Server.swift */; };
+		OBJ_145 /* TCPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_55 /* TCPSocket.swift */; };
+		OBJ_146 /* Worker.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_56 /* Worker.swift */; };
+		OBJ_148 /* SocksCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_65 /* SocksCore.framework */; };
+		OBJ_149 /* Socks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_64 /* Socks.framework */; };
+		OBJ_150 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_66 /* Result.framework */; };
+		OBJ_151 /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_67 /* BrightFutures.framework */; };
+		OBJ_161 /* ParcelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_59 /* ParcelTests.swift */; };
+		OBJ_162 /* ServerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_60 /* ServerTests.swift */; };
+		OBJ_164 /* SocksCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_65 /* SocksCore.framework */; };
+		OBJ_165 /* Socks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_64 /* Socks.framework */; };
+		OBJ_166 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_66 /* Result.framework */; };
+		OBJ_167 /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_67 /* BrightFutures.framework */; };
+		OBJ_168 /* Parcel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_68 /* Parcel.framework */; };
+		OBJ_75 /* Socks.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* Socks.swift */; };
+		OBJ_76 /* SynchronousTCPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* SynchronousTCPServer.swift */; };
+		OBJ_77 /* SynchronousUDPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* SynchronousUDPServer.swift */; };
+		OBJ_78 /* TCPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* TCPClient.swift */; };
+		OBJ_79 /* UDPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* UDPClient.swift */; };
+		OBJ_81 /* SocksCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_65 /* SocksCore.framework */; };
+		OBJ_88 /* Address+C.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* Address+C.swift */; };
+		OBJ_89 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* Address.swift */; };
+		OBJ_90 /* Bytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* Bytes.swift */; };
+		OBJ_91 /* Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_18 /* Conversions.swift */; };
+		OBJ_92 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_19 /* Error.swift */; };
+		OBJ_93 /* FDSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_20 /* FDSet.swift */; };
+		OBJ_94 /* InternetSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_21 /* InternetSocket.swift */; };
+		OBJ_95 /* Pipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_22 /* Pipe.swift */; };
+		OBJ_96 /* Select.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_23 /* Select.swift */; };
+		OBJ_97 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_24 /* Socket.swift */; };
+		OBJ_98 /* SocketOptions+Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_25 /* SocketOptions+Deprecated.swift */; };
+		OBJ_99 /* SocketOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_26 /* SocketOptions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		912B98DD1E751FA9006E6CE7 /* PBXContainerItemProxy */ = {
+		9125D28E1E87E7C80011B3EB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = OBJ_63;
+			remoteGlobalIDString = OBJ_83;
 			remoteInfo = SocksCore;
 		};
-		912B98DE1E751FA9006E6CE7 /* PBXContainerItemProxy */ = {
+		9125D28F1E87E7C80011B3EB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = OBJ_63;
-			remoteInfo = SocksCore;
-		};
-		912B98DF1E751FA9006E6CE7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = OBJ_1 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = OBJ_50;
-			remoteInfo = Socks;
-		};
-		912B98E01E751FA9006E6CE7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = OBJ_1 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = OBJ_84;
+			remoteGlobalIDString = OBJ_104;
 			remoteInfo = Result;
 		};
-		912B98E11E751FA9006E6CE7 /* PBXContainerItemProxy */ = {
+		9125D2901E87E7C80011B3EB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = OBJ_63;
+			remoteGlobalIDString = OBJ_83;
 			remoteInfo = SocksCore;
 		};
-		912B98E21E751FA9006E6CE7 /* PBXContainerItemProxy */ = {
+		9125D2911E87E7C80011B3EB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = OBJ_50;
+			remoteGlobalIDString = OBJ_70;
 			remoteInfo = Socks;
 		};
-		912B98E31E751FA9006E6CE7 /* PBXContainerItemProxy */ = {
+		9125D2921E87E7C80011B3EB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = OBJ_84;
+			remoteGlobalIDString = OBJ_104;
 			remoteInfo = Result;
 		};
-		912B98E41E751FA9006E6CE7 /* PBXContainerItemProxy */ = {
+		9125D2931E87E7C80011B3EB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = OBJ_92;
+			remoteGlobalIDString = OBJ_112;
+			remoteInfo = BrightFutures;
+		};
+		9125D2941E87E7C80011B3EB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = OBJ_83;
+			remoteInfo = SocksCore;
+		};
+		9125D2951E87E7C80011B3EB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = OBJ_70;
+			remoteInfo = Socks;
+		};
+		9125D2961E87E7C80011B3EB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = OBJ_104;
+			remoteInfo = Result;
+		};
+		9125D2971E87E7C80011B3EB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = OBJ_112;
+			remoteInfo = BrightFutures;
+		};
+		9125D2981E87E7C80011B3EB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = OBJ_136;
 			remoteInfo = Parcel;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		9120DEDC1E815DDF00038244 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		9124F8261E796844004839CC /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
-		9124F82A1E79ABEE004839CC /* ServerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerTests.swift; sourceTree = "<group>"; };
-		912B98E51E756C1B006E6CE7 /* TCPSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPSocket.swift; sourceTree = "<group>"; };
 		OBJ_10 /* SynchronousTCPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronousTCPServer.swift; sourceTree = "<group>"; };
 		OBJ_11 /* SynchronousUDPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronousUDPServer.swift; sourceTree = "<group>"; };
 		OBJ_12 /* TCPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClient.swift; sourceTree = "<group>"; };
@@ -132,60 +168,93 @@
 		OBJ_29 /* UDPSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDPSocket.swift; sourceTree = "<group>"; };
 		OBJ_31 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		OBJ_32 /* ResultProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultProtocol.swift; sourceTree = "<group>"; };
-		OBJ_34 /* Parcel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parcel.swift; sourceTree = "<group>"; };
-		OBJ_35 /* ParcelCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcelCenter.swift; sourceTree = "<group>"; };
-		OBJ_37 /* Worker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Worker.swift; sourceTree = "<group>"; };
-		OBJ_40 /* ParcelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcelTests.swift; sourceTree = "<group>"; };
-		OBJ_45 /* Socks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Socks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		OBJ_46 /* SocksCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SocksCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		OBJ_47 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		OBJ_48 /* Parcel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Parcel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		OBJ_49 /* ParcelTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = ParcelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		OBJ_34 /* Async.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Async.swift; sourceTree = "<group>"; };
+		OBJ_35 /* AsyncType+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AsyncType+Debug.swift"; sourceTree = "<group>"; };
+		OBJ_36 /* AsyncType+ResultType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AsyncType+ResultType.swift"; sourceTree = "<group>"; };
+		OBJ_37 /* AsyncType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncType.swift; sourceTree = "<group>"; };
+		OBJ_38 /* Dispatch+BrightFutures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dispatch+BrightFutures.swift"; sourceTree = "<group>"; };
+		OBJ_39 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		OBJ_40 /* ExecutionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutionContext.swift; sourceTree = "<group>"; };
+		OBJ_41 /* Future.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Future.swift; sourceTree = "<group>"; };
+		OBJ_42 /* InvalidationToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvalidationToken.swift; sourceTree = "<group>"; };
+		OBJ_43 /* MutableAsyncType+ResultType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MutableAsyncType+ResultType.swift"; sourceTree = "<group>"; };
+		OBJ_44 /* MutableAsyncType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableAsyncType.swift; sourceTree = "<group>"; };
+		OBJ_45 /* NSOperationQueue+BrightFutures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSOperationQueue+BrightFutures.swift"; sourceTree = "<group>"; };
+		OBJ_46 /* Number+BrightFutures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Number+BrightFutures.swift"; sourceTree = "<group>"; };
+		OBJ_47 /* Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
+		OBJ_48 /* Result+BrightFutures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+BrightFutures.swift"; sourceTree = "<group>"; };
+		OBJ_49 /* SequenceType+BrightFutures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SequenceType+BrightFutures.swift"; sourceTree = "<group>"; };
+		OBJ_51 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		OBJ_52 /* Parcel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parcel.swift; sourceTree = "<group>"; };
+		OBJ_53 /* ParcelCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcelCenter.swift; sourceTree = "<group>"; };
+		OBJ_54 /* Server.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
+		OBJ_55 /* TCPSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPSocket.swift; sourceTree = "<group>"; };
+		OBJ_56 /* Worker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Worker.swift; sourceTree = "<group>"; };
+		OBJ_59 /* ParcelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcelTests.swift; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
+		OBJ_60 /* ServerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerTests.swift; sourceTree = "<group>"; };
+		OBJ_61 /* bench */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bench; sourceTree = SOURCE_ROOT; };
+		OBJ_62 /* Examples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Examples; sourceTree = SOURCE_ROOT; };
+		OBJ_64 /* Socks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Socks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		OBJ_65 /* SocksCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SocksCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		OBJ_66 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		OBJ_67 /* BrightFutures.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BrightFutures.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		OBJ_68 /* Parcel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Parcel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		OBJ_69 /* ParcelTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = ParcelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_9 /* Socks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Socks.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		OBJ_101 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 0;
-			files = (
-				OBJ_102 /* SocksCore.framework in Frameworks */,
-				OBJ_103 /* Socks.framework in Frameworks */,
-				OBJ_104 /* Result.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		OBJ_114 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 0;
-			files = (
-				OBJ_115 /* SocksCore.framework in Frameworks */,
-				OBJ_116 /* Socks.framework in Frameworks */,
-				OBJ_117 /* Result.framework in Frameworks */,
-				OBJ_118 /* Parcel.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		OBJ_60 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 0;
-			files = (
-				OBJ_61 /* SocksCore.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		OBJ_83 /* Frameworks */ = {
+		OBJ_103 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		OBJ_91 /* Frameworks */ = {
+		OBJ_111 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_133 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_134 /* Result.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_147 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_148 /* SocksCore.framework in Frameworks */,
+				OBJ_149 /* Socks.framework in Frameworks */,
+				OBJ_150 /* Result.framework in Frameworks */,
+				OBJ_151 /* BrightFutures.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_163 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_164 /* SocksCore.framework in Frameworks */,
+				OBJ_165 /* Socks.framework in Frameworks */,
+				OBJ_166 /* Result.framework in Frameworks */,
+				OBJ_167 /* BrightFutures.framework in Frameworks */,
+				OBJ_168 /* Parcel.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_80 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_81 /* SocksCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,59 +294,87 @@
 			path = "Packages/Result-3.2.1/Result";
 			sourceTree = SOURCE_ROOT;
 		};
-		OBJ_33 /* Parcel */ = {
+		OBJ_33 /* BrightFutures */ = {
 			isa = PBXGroup;
 			children = (
-				9120DEDC1E815DDF00038244 /* Extensions.swift */,
-				OBJ_34 /* Parcel.swift */,
-				OBJ_35 /* ParcelCenter.swift */,
-				9124F8261E796844004839CC /* Server.swift */,
-				912B98E51E756C1B006E6CE7 /* TCPSocket.swift */,
-				OBJ_37 /* Worker.swift */,
+				OBJ_34 /* Async.swift */,
+				OBJ_35 /* AsyncType+Debug.swift */,
+				OBJ_36 /* AsyncType+ResultType.swift */,
+				OBJ_37 /* AsyncType.swift */,
+				OBJ_38 /* Dispatch+BrightFutures.swift */,
+				OBJ_39 /* Errors.swift */,
+				OBJ_40 /* ExecutionContext.swift */,
+				OBJ_41 /* Future.swift */,
+				OBJ_42 /* InvalidationToken.swift */,
+				OBJ_43 /* MutableAsyncType+ResultType.swift */,
+				OBJ_44 /* MutableAsyncType.swift */,
+				OBJ_45 /* NSOperationQueue+BrightFutures.swift */,
+				OBJ_46 /* Number+BrightFutures.swift */,
+				OBJ_47 /* Promise.swift */,
+				OBJ_48 /* Result+BrightFutures.swift */,
+				OBJ_49 /* SequenceType+BrightFutures.swift */,
+			);
+			name = BrightFutures;
+			path = "Packages/BrightFutures-5.1.0/Sources/BrightFutures";
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_5 /*  */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_6 /* Package.swift */,
+				OBJ_7 /* Sources */,
+				OBJ_57 /* Tests */,
+				OBJ_61 /* bench */,
+				OBJ_62 /* Examples */,
+				OBJ_63 /* Products */,
+			);
+			name = "";
+			sourceTree = "<group>";
+		};
+		OBJ_50 /* Parcel */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_51 /* Extensions.swift */,
+				OBJ_52 /* Parcel.swift */,
+				OBJ_53 /* ParcelCenter.swift */,
+				OBJ_54 /* Server.swift */,
+				OBJ_55 /* TCPSocket.swift */,
+				OBJ_56 /* Worker.swift */,
 			);
 			name = Parcel;
 			path = Sources;
 			sourceTree = SOURCE_ROOT;
 		};
-		OBJ_38 /* Tests */ = {
+		OBJ_57 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_39 /* ParcelTests */,
+				OBJ_58 /* ParcelTests */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
 		};
-		OBJ_39 /* ParcelTests */ = {
+		OBJ_58 /* ParcelTests */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_40 /* ParcelTests.swift */,
-				9124F82A1E79ABEE004839CC /* ServerTests.swift */,
+				OBJ_59 /* ParcelTests.swift */,
+				OBJ_60 /* ServerTests.swift */,
 			);
 			name = ParcelTests;
 			path = Tests/ParcelTests;
 			sourceTree = SOURCE_ROOT;
 		};
-		OBJ_44 /* Products */ = {
+		OBJ_63 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_45 /* Socks.framework */,
-				OBJ_46 /* SocksCore.framework */,
-				OBJ_47 /* Result.framework */,
-				OBJ_48 /* Parcel.framework */,
-				OBJ_49 /* ParcelTests.xctest */,
+				OBJ_64 /* Socks.framework */,
+				OBJ_65 /* SocksCore.framework */,
+				OBJ_66 /* Result.framework */,
+				OBJ_67 /* BrightFutures.framework */,
+				OBJ_68 /* Parcel.framework */,
+				OBJ_69 /* ParcelTests.xctest */,
 			);
 			name = Products;
 			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		OBJ_5 = {
-			isa = PBXGroup;
-			children = (
-				OBJ_6 /* Package.swift */,
-				OBJ_7 /* Sources */,
-				OBJ_38 /* Tests */,
-				OBJ_44 /* Products */,
-			);
-			sourceTree = "<group>";
 		};
 		OBJ_7 /* Sources */ = {
 			isa = PBXGroup;
@@ -285,7 +382,8 @@
 				OBJ_8 /* Socks */,
 				OBJ_14 /* SocksCore */,
 				OBJ_30 /* Result */,
-				OBJ_33 /* Parcel */,
+				OBJ_33 /* BrightFutures */,
+				OBJ_50 /* Parcel */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -306,65 +404,12 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		OBJ_108 /* ParcelTests */ = {
+		OBJ_104 /* Result */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = OBJ_109 /* Build configuration list for PBXNativeTarget "ParcelTests" */;
+			buildConfigurationList = OBJ_105 /* Build configuration list for PBXNativeTarget "Result" */;
 			buildPhases = (
-				OBJ_112 /* Sources */,
-				OBJ_114 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				OBJ_119 /* PBXTargetDependency */,
-				OBJ_120 /* PBXTargetDependency */,
-				OBJ_121 /* PBXTargetDependency */,
-				OBJ_122 /* PBXTargetDependency */,
-			);
-			name = ParcelTests;
-			productName = ParcelTests;
-			productReference = OBJ_49 /* ParcelTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		OBJ_50 /* Socks */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = OBJ_51 /* Build configuration list for PBXNativeTarget "Socks" */;
-			buildPhases = (
-				OBJ_54 /* Sources */,
-				OBJ_60 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				OBJ_62 /* PBXTargetDependency */,
-			);
-			name = Socks;
-			productName = Socks;
-			productReference = OBJ_45 /* Socks.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		OBJ_63 /* SocksCore */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = OBJ_64 /* Build configuration list for PBXNativeTarget "SocksCore" */;
-			buildPhases = (
-				OBJ_67 /* Sources */,
-				OBJ_83 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = SocksCore;
-			productName = SocksCore;
-			productReference = OBJ_46 /* SocksCore.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		OBJ_84 /* Result */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = OBJ_85 /* Build configuration list for PBXNativeTarget "Result" */;
-			buildPhases = (
-				OBJ_88 /* Sources */,
-				OBJ_91 /* Frameworks */,
+				OBJ_108 /* Sources */,
+				OBJ_111 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -372,26 +417,98 @@
 			);
 			name = Result;
 			productName = Result;
-			productReference = OBJ_47 /* Result.framework */;
+			productReference = OBJ_66 /* Result.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		OBJ_92 /* Parcel */ = {
+		OBJ_112 /* BrightFutures */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = OBJ_93 /* Build configuration list for PBXNativeTarget "Parcel" */;
+			buildConfigurationList = OBJ_113 /* Build configuration list for PBXNativeTarget "BrightFutures" */;
 			buildPhases = (
-				OBJ_96 /* Sources */,
-				OBJ_101 /* Frameworks */,
+				OBJ_116 /* Sources */,
+				OBJ_133 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				OBJ_105 /* PBXTargetDependency */,
-				OBJ_106 /* PBXTargetDependency */,
-				OBJ_107 /* PBXTargetDependency */,
+				OBJ_135 /* PBXTargetDependency */,
+			);
+			name = BrightFutures;
+			productName = BrightFutures;
+			productReference = OBJ_67 /* BrightFutures.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		OBJ_136 /* Parcel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_137 /* Build configuration list for PBXNativeTarget "Parcel" */;
+			buildPhases = (
+				OBJ_140 /* Sources */,
+				OBJ_147 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				OBJ_152 /* PBXTargetDependency */,
+				OBJ_153 /* PBXTargetDependency */,
+				OBJ_154 /* PBXTargetDependency */,
+				OBJ_155 /* PBXTargetDependency */,
 			);
 			name = Parcel;
 			productName = Parcel;
-			productReference = OBJ_48 /* Parcel.framework */;
+			productReference = OBJ_68 /* Parcel.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		OBJ_156 /* ParcelTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_157 /* Build configuration list for PBXNativeTarget "ParcelTests" */;
+			buildPhases = (
+				OBJ_160 /* Sources */,
+				OBJ_163 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				OBJ_169 /* PBXTargetDependency */,
+				OBJ_170 /* PBXTargetDependency */,
+				OBJ_171 /* PBXTargetDependency */,
+				OBJ_172 /* PBXTargetDependency */,
+				OBJ_173 /* PBXTargetDependency */,
+			);
+			name = ParcelTests;
+			productName = ParcelTests;
+			productReference = OBJ_69 /* ParcelTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		OBJ_70 /* Socks */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_71 /* Build configuration list for PBXNativeTarget "Socks" */;
+			buildPhases = (
+				OBJ_74 /* Sources */,
+				OBJ_80 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				OBJ_82 /* PBXTargetDependency */,
+			);
+			name = Socks;
+			productName = Socks;
+			productReference = OBJ_64 /* Socks.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		OBJ_83 /* SocksCore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_84 /* Build configuration list for PBXNativeTarget "SocksCore" */;
+			buildPhases = (
+				OBJ_87 /* Sources */,
+				OBJ_103 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SocksCore;
+			productName = SocksCore;
+			productReference = OBJ_65 /* SocksCore.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -409,133 +526,292 @@
 			knownRegions = (
 				en,
 			);
-			mainGroup = OBJ_5;
-			productRefGroup = OBJ_44 /* Products */;
+			mainGroup = OBJ_5 /*  */;
+			productRefGroup = OBJ_63 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				OBJ_50 /* Socks */,
-				OBJ_63 /* SocksCore */,
-				OBJ_84 /* Result */,
-				OBJ_92 /* Parcel */,
-				OBJ_108 /* ParcelTests */,
+				OBJ_70 /* Socks */,
+				OBJ_83 /* SocksCore */,
+				OBJ_104 /* Result */,
+				OBJ_112 /* BrightFutures */,
+				OBJ_136 /* Parcel */,
+				OBJ_156 /* ParcelTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		OBJ_112 /* Sources */ = {
+		OBJ_108 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				9120DEDE1E8164BE00038244 /* ParcelTests.swift in Sources */,
-				9127A77E1E7EAA05002992B5 /* ServerTests.swift in Sources */,
+				OBJ_109 /* Result.swift in Sources */,
+				OBJ_110 /* ResultProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		OBJ_54 /* Sources */ = {
+		OBJ_116 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_55 /* Socks.swift in Sources */,
-				OBJ_56 /* SynchronousTCPServer.swift in Sources */,
-				OBJ_57 /* SynchronousUDPServer.swift in Sources */,
-				OBJ_58 /* TCPClient.swift in Sources */,
-				OBJ_59 /* UDPClient.swift in Sources */,
+				OBJ_117 /* Async.swift in Sources */,
+				OBJ_118 /* AsyncType+Debug.swift in Sources */,
+				OBJ_119 /* AsyncType+ResultType.swift in Sources */,
+				OBJ_120 /* AsyncType.swift in Sources */,
+				OBJ_121 /* Dispatch+BrightFutures.swift in Sources */,
+				OBJ_122 /* Errors.swift in Sources */,
+				OBJ_123 /* ExecutionContext.swift in Sources */,
+				OBJ_124 /* Future.swift in Sources */,
+				OBJ_125 /* InvalidationToken.swift in Sources */,
+				OBJ_126 /* MutableAsyncType+ResultType.swift in Sources */,
+				OBJ_127 /* MutableAsyncType.swift in Sources */,
+				OBJ_128 /* NSOperationQueue+BrightFutures.swift in Sources */,
+				OBJ_129 /* Number+BrightFutures.swift in Sources */,
+				OBJ_130 /* Promise.swift in Sources */,
+				OBJ_131 /* Result+BrightFutures.swift in Sources */,
+				OBJ_132 /* SequenceType+BrightFutures.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		OBJ_67 /* Sources */ = {
+		OBJ_140 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_68 /* Address+C.swift in Sources */,
-				OBJ_69 /* Address.swift in Sources */,
-				OBJ_70 /* Bytes.swift in Sources */,
-				OBJ_71 /* Conversions.swift in Sources */,
-				OBJ_72 /* Error.swift in Sources */,
-				OBJ_73 /* FDSet.swift in Sources */,
-				OBJ_74 /* InternetSocket.swift in Sources */,
-				OBJ_75 /* Pipe.swift in Sources */,
-				OBJ_76 /* Select.swift in Sources */,
-				OBJ_77 /* Socket.swift in Sources */,
-				OBJ_78 /* SocketOptions+Deprecated.swift in Sources */,
-				OBJ_79 /* SocketOptions.swift in Sources */,
-				OBJ_80 /* TCPSocket.swift in Sources */,
-				OBJ_81 /* Types.swift in Sources */,
-				OBJ_82 /* UDPSocket.swift in Sources */,
+				OBJ_141 /* Extensions.swift in Sources */,
+				OBJ_142 /* Parcel.swift in Sources */,
+				OBJ_143 /* ParcelCenter.swift in Sources */,
+				OBJ_144 /* Server.swift in Sources */,
+				OBJ_145 /* TCPSocket.swift in Sources */,
+				OBJ_146 /* Worker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		OBJ_88 /* Sources */ = {
+		OBJ_160 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_89 /* Result.swift in Sources */,
-				OBJ_90 /* ResultProtocol.swift in Sources */,
+				OBJ_161 /* ParcelTests.swift in Sources */,
+				OBJ_162 /* ServerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		OBJ_96 /* Sources */ = {
+		OBJ_74 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				9124F8271E796844004839CC /* Server.swift in Sources */,
-				9120DEDD1E815DDF00038244 /* Extensions.swift in Sources */,
-				OBJ_97 /* Parcel.swift in Sources */,
-				OBJ_98 /* ParcelCenter.swift in Sources */,
-				912B98E71E756E84006E6CE7 /* TCPSocket.swift in Sources */,
-				OBJ_100 /* Worker.swift in Sources */,
+				OBJ_75 /* Socks.swift in Sources */,
+				OBJ_76 /* SynchronousTCPServer.swift in Sources */,
+				OBJ_77 /* SynchronousUDPServer.swift in Sources */,
+				OBJ_78 /* TCPClient.swift in Sources */,
+				OBJ_79 /* UDPClient.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_87 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_88 /* Address+C.swift in Sources */,
+				OBJ_89 /* Address.swift in Sources */,
+				OBJ_90 /* Bytes.swift in Sources */,
+				OBJ_91 /* Conversions.swift in Sources */,
+				OBJ_92 /* Error.swift in Sources */,
+				OBJ_93 /* FDSet.swift in Sources */,
+				OBJ_94 /* InternetSocket.swift in Sources */,
+				OBJ_95 /* Pipe.swift in Sources */,
+				OBJ_96 /* Select.swift in Sources */,
+				OBJ_97 /* Socket.swift in Sources */,
+				OBJ_98 /* SocketOptions+Deprecated.swift in Sources */,
+				OBJ_99 /* SocketOptions.swift in Sources */,
+				OBJ_100 /* TCPSocket.swift in Sources */,
+				OBJ_101 /* Types.swift in Sources */,
+				OBJ_102 /* UDPSocket.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		OBJ_105 /* PBXTargetDependency */ = {
+		OBJ_135 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = OBJ_63 /* SocksCore */;
-			targetProxy = 912B98DE1E751FA9006E6CE7 /* PBXContainerItemProxy */;
+			target = OBJ_104 /* Result */;
+			targetProxy = 9125D28F1E87E7C80011B3EB /* PBXContainerItemProxy */;
 		};
-		OBJ_106 /* PBXTargetDependency */ = {
+		OBJ_152 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = OBJ_50 /* Socks */;
-			targetProxy = 912B98DF1E751FA9006E6CE7 /* PBXContainerItemProxy */;
+			target = OBJ_83 /* SocksCore */;
+			targetProxy = 9125D2901E87E7C80011B3EB /* PBXContainerItemProxy */;
 		};
-		OBJ_107 /* PBXTargetDependency */ = {
+		OBJ_153 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = OBJ_84 /* Result */;
-			targetProxy = 912B98E01E751FA9006E6CE7 /* PBXContainerItemProxy */;
+			target = OBJ_70 /* Socks */;
+			targetProxy = 9125D2911E87E7C80011B3EB /* PBXContainerItemProxy */;
 		};
-		OBJ_119 /* PBXTargetDependency */ = {
+		OBJ_154 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = OBJ_63 /* SocksCore */;
-			targetProxy = 912B98E11E751FA9006E6CE7 /* PBXContainerItemProxy */;
+			target = OBJ_104 /* Result */;
+			targetProxy = 9125D2921E87E7C80011B3EB /* PBXContainerItemProxy */;
 		};
-		OBJ_120 /* PBXTargetDependency */ = {
+		OBJ_155 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = OBJ_50 /* Socks */;
-			targetProxy = 912B98E21E751FA9006E6CE7 /* PBXContainerItemProxy */;
+			target = OBJ_112 /* BrightFutures */;
+			targetProxy = 9125D2931E87E7C80011B3EB /* PBXContainerItemProxy */;
 		};
-		OBJ_121 /* PBXTargetDependency */ = {
+		OBJ_169 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = OBJ_84 /* Result */;
-			targetProxy = 912B98E31E751FA9006E6CE7 /* PBXContainerItemProxy */;
+			target = OBJ_83 /* SocksCore */;
+			targetProxy = 9125D2941E87E7C80011B3EB /* PBXContainerItemProxy */;
 		};
-		OBJ_122 /* PBXTargetDependency */ = {
+		OBJ_170 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = OBJ_92 /* Parcel */;
-			targetProxy = 912B98E41E751FA9006E6CE7 /* PBXContainerItemProxy */;
+			target = OBJ_70 /* Socks */;
+			targetProxy = 9125D2951E87E7C80011B3EB /* PBXContainerItemProxy */;
 		};
-		OBJ_62 /* PBXTargetDependency */ = {
+		OBJ_171 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = OBJ_63 /* SocksCore */;
-			targetProxy = 912B98DD1E751FA9006E6CE7 /* PBXContainerItemProxy */;
+			target = OBJ_104 /* Result */;
+			targetProxy = 9125D2961E87E7C80011B3EB /* PBXContainerItemProxy */;
+		};
+		OBJ_172 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = OBJ_112 /* BrightFutures */;
+			targetProxy = 9125D2971E87E7C80011B3EB /* PBXContainerItemProxy */;
+		};
+		OBJ_173 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = OBJ_136 /* Parcel */;
+			targetProxy = 9125D2981E87E7C80011B3EB /* PBXContainerItemProxy */;
+		};
+		OBJ_82 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = OBJ_83 /* SocksCore */;
+			targetProxy = 9125D28E1E87E7C80011B3EB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		OBJ_110 /* Debug */ = {
+		OBJ_106 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = Parcel.xcodeproj/Result_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = Result;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				TARGET_NAME = Result;
+			};
+			name = Debug;
+		};
+		OBJ_107 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = Parcel.xcodeproj/Result_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = Result;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				TARGET_NAME = Result;
+			};
+			name = Release;
+		};
+		OBJ_114 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = Parcel.xcodeproj/BrightFutures_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = BrightFutures;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				TARGET_NAME = BrightFutures;
+			};
+			name = Debug;
+		};
+		OBJ_115 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = Parcel.xcodeproj/BrightFutures_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = BrightFutures;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				TARGET_NAME = BrightFutures;
+			};
+			name = Release;
+		};
+		OBJ_138 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = Parcel.xcodeproj/Parcel_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = Parcel;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				TARGET_NAME = Parcel;
+			};
+			name = Debug;
+		};
+		OBJ_139 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = Parcel.xcodeproj/Parcel_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = Parcel;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				TARGET_NAME = Parcel;
+			};
+			name = Release;
+		};
+		OBJ_158 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -552,7 +828,7 @@
 			};
 			name = Debug;
 		};
-		OBJ_111 /* Release */ = {
+		OBJ_159 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -611,7 +887,7 @@
 			};
 			name = Release;
 		};
-		OBJ_52 /* Debug */ = {
+		OBJ_72 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ENABLE_TESTABILITY = YES;
@@ -631,7 +907,7 @@
 			};
 			name = Debug;
 		};
-		OBJ_53 /* Release */ = {
+		OBJ_73 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ENABLE_TESTABILITY = YES;
@@ -651,7 +927,7 @@
 			};
 			name = Release;
 		};
-		OBJ_65 /* Debug */ = {
+		OBJ_85 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ENABLE_TESTABILITY = YES;
@@ -671,7 +947,7 @@
 			};
 			name = Debug;
 		};
-		OBJ_66 /* Release */ = {
+		OBJ_86 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ENABLE_TESTABILITY = YES;
@@ -688,97 +964,44 @@
 				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				TARGET_NAME = SocksCore;
-			};
-			name = Release;
-		};
-		OBJ_86 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
-				);
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Parcel.xcodeproj/Result_Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
-				OTHER_LDFLAGS = "$(inherited)";
-				OTHER_SWIFT_FLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = Result;
-				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				TARGET_NAME = Result;
-			};
-			name = Debug;
-		};
-		OBJ_87 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
-				);
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Parcel.xcodeproj/Result_Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
-				OTHER_LDFLAGS = "$(inherited)";
-				OTHER_SWIFT_FLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = Result;
-				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				TARGET_NAME = Result;
-			};
-			name = Release;
-		};
-		OBJ_94 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
-				);
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Parcel.xcodeproj/Parcel_Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
-				OTHER_LDFLAGS = "$(inherited)";
-				OTHER_SWIFT_FLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = Parcel;
-				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				TARGET_NAME = Parcel;
-			};
-			name = Debug;
-		};
-		OBJ_95 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
-				);
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Parcel.xcodeproj/Parcel_Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
-				OTHER_LDFLAGS = "$(inherited)";
-				OTHER_SWIFT_FLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = Parcel;
-				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				TARGET_NAME = Parcel;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		OBJ_109 /* Build configuration list for PBXNativeTarget "ParcelTests" */ = {
+		OBJ_105 /* Build configuration list for PBXNativeTarget "Result" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				OBJ_110 /* Debug */,
-				OBJ_111 /* Release */,
+				OBJ_106 /* Debug */,
+				OBJ_107 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		OBJ_113 /* Build configuration list for PBXNativeTarget "BrightFutures" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_114 /* Debug */,
+				OBJ_115 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		OBJ_137 /* Build configuration list for PBXNativeTarget "Parcel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_138 /* Debug */,
+				OBJ_139 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		OBJ_157 /* Build configuration list for PBXNativeTarget "ParcelTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_158 /* Debug */,
+				OBJ_159 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -792,38 +1015,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		OBJ_51 /* Build configuration list for PBXNativeTarget "Socks" */ = {
+		OBJ_71 /* Build configuration list for PBXNativeTarget "Socks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				OBJ_52 /* Debug */,
-				OBJ_53 /* Release */,
+				OBJ_72 /* Debug */,
+				OBJ_73 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		OBJ_64 /* Build configuration list for PBXNativeTarget "SocksCore" */ = {
+		OBJ_84 /* Build configuration list for PBXNativeTarget "SocksCore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				OBJ_65 /* Debug */,
-				OBJ_66 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		OBJ_85 /* Build configuration list for PBXNativeTarget "Result" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				OBJ_86 /* Debug */,
-				OBJ_87 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		OBJ_93 /* Build configuration list for PBXNativeTarget "Parcel" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				OBJ_94 /* Debug */,
-				OBJ_95 /* Release */,
+				OBJ_85 /* Debug */,
+				OBJ_86 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
