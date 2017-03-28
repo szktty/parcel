@@ -5,7 +5,7 @@ public enum Loop {
     case `break`
 }
 
-public enum Signal {
+public enum Signal: Error {
     case normal
     case timeout
     case forced
