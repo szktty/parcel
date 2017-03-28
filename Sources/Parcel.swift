@@ -118,7 +118,7 @@ open class Parcel<Message>: BasicParcel {
     
     // MARK: Message passing
     
-    public func send(message: Message) {
+    public func async(message: Message) {
         mailbox.enqueue(message)
     }
     
@@ -144,7 +144,7 @@ open class Parcel<Message>: BasicParcel {
 infix operator !
 
 public func !<Message>(lhs: Parcel<Message>, rhs: Message) {
-    lhs.send(message: rhs)
+    lhs.async(message: rhs)
 }
 
 class Mailbox<Message> {
