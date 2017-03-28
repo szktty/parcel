@@ -87,7 +87,7 @@ open class BasicParcel {
     
 }
 
-open class Parcel<Message>: BasicParcel {
+public final class Parcel<Message>: BasicParcel {
     
     var onReceiveHandler: ((Message) throws -> Loop)?
     var mailbox: Mailbox<Message>!
