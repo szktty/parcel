@@ -143,12 +143,6 @@ public final class Parcel<Message>: BasicParcel {
     
 }
 
-infix operator !
-
-public func !<Message>(lhs: Parcel<Message>, rhs: Message) {
-    lhs.async(message: rhs)
-}
-
 class Mailbox<Message> {
     
     weak var parcel: Parcel<Message>!
@@ -203,4 +197,12 @@ class MailboxItem<Message> {
         self.value = value
     }
     
+}
+
+// MARK: - Operators
+
+infix operator !
+
+public func !<Message>(lhs: Parcel<Message>, rhs: Message) {
+    lhs.async(message: rhs)
 }
