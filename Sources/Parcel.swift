@@ -136,6 +136,8 @@ public final class Parcel<Message>: BasicParcel {
             case .break:
                 terminate()
             }
+        } else {
+            terminate()
         }
     }
     
