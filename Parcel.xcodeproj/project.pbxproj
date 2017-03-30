@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		913C80671E8D6A6200D83864 /* SyncParcel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 913C80661E8D6A6200D83864 /* SyncParcel.swift */; };
 		OBJ_100 /* TCPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_27 /* TCPSocket.swift */; };
 		OBJ_101 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_28 /* Types.swift */; };
 		OBJ_102 /* UDPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_29 /* UDPSocket.swift */; };
@@ -147,6 +148,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		913C80661E8D6A6200D83864 /* SyncParcel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncParcel.swift; sourceTree = "<group>"; };
 		OBJ_10 /* SynchronousTCPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronousTCPServer.swift; sourceTree = "<group>"; };
 		OBJ_11 /* SynchronousUDPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronousUDPServer.swift; sourceTree = "<group>"; };
 		OBJ_12 /* TCPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClient.swift; sourceTree = "<group>"; };
@@ -318,7 +320,7 @@
 			path = "Packages/BrightFutures-5.1.0/Sources/BrightFutures";
 			sourceTree = SOURCE_ROOT;
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
 				OBJ_6 /* Package.swift */,
@@ -328,7 +330,6 @@
 				OBJ_62 /* Examples */,
 				OBJ_63 /* Products */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_50 /* Parcel */ = {
@@ -340,6 +341,7 @@
 				OBJ_54 /* Server.swift */,
 				OBJ_55 /* TCPSocket.swift */,
 				OBJ_56 /* Worker.swift */,
+				913C80661E8D6A6200D83864 /* SyncParcel.swift */,
 			);
 			name = Parcel;
 			path = Sources;
@@ -526,7 +528,7 @@
 			knownRegions = (
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_63 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -578,6 +580,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				913C80671E8D6A6200D83864 /* SyncParcel.swift in Sources */,
 				OBJ_141 /* Extensions.swift in Sources */,
 				OBJ_142 /* Parcel.swift in Sources */,
 				OBJ_143 /* ParcelCenter.swift in Sources */,
