@@ -1,7 +1,8 @@
 import Foundation
 import BrightFutures
+import Result
 
-public typealias SyncFuture<Reply> = Future<Reply, SyncError>
+public typealias SyncFuture<Value> = Future<Value, SyncError>
 
 public enum SyncError: Error {
     
@@ -10,27 +11,29 @@ public enum SyncError: Error {
     
 }
 
-struct SyncMessage<Message, Reply> {
+struct SyncMessage<Message, Value> {
 
     var message: Message
-    var future: SyncFuture<Reply>?
+    var complete: ((Result<Value, SyncError>) -> Void)?
     
 }
 
-public final class SyncParcel<Message, Reply>: BasicParcel {
+public final class SyncParcel<Message, Value>: BasicParcel {
     
-    var parcel: Parcel<SyncMessage<Message, Reply>>!
+    public typealias Complete = (Result<Value, SyncError>) -> Void
     
-    var onReceiveHandler: ((Message, SyncFuture<Reply>?) throws -> Loop)?
+    private var parcel: Parcel<SyncMessage<Message, Value>>!
+    
+    private var onReceiveHandler: ((Message, Complete?) throws -> Loop)?
     
     // MARK: Initialization
     
     public required override init() {
         super.init()
-        parcel = Parcel<SyncMessage<Message, Reply>>()
+        parcel = Parcel<SyncMessage<Message, Value>>()
         parcel.onReceive { message in
             if let handler = self.onReceiveHandler {
-                return try handler(message.message, message.future)
+                return try handler(message.message, message.complete)
             } else {
                 return .break
             }
@@ -39,7 +42,7 @@ public final class SyncParcel<Message, Reply>: BasicParcel {
     
     // MARK: Event handlers
     
-    public func onReceive(handler: @escaping (Message, SyncFuture<Reply>?) throws -> Loop) {
+    public func onReceive(handler: @escaping (Message, Complete?) throws -> Loop) {
         onReceiveHandler = handler
     }
     
@@ -49,8 +52,8 @@ public final class SyncParcel<Message, Reply>: BasicParcel {
         parcel.run()
     }
     
-    public class func spawn(block: @escaping (SyncParcel<Message, Reply>) -> Void) -> SyncParcel<Message, Reply> {
-        let syncParcel: SyncParcel<Message, Reply> = self.init()
+    public class func spawn(block: @escaping (SyncParcel<Message, Value>) -> Void) -> SyncParcel<Message, Value> {
+        let syncParcel: SyncParcel<Message, Value> = self.init()
         block(syncParcel)
         syncParcel.run()
         return syncParcel
@@ -59,15 +62,15 @@ public final class SyncParcel<Message, Reply>: BasicParcel {
     // MARK: Message passing
     
     public func async(message: Message) {
-        parcel ! SyncMessage(message: message, future: nil)
+        parcel ! SyncMessage(message: message, complete: nil)
     }
     
-    public func sync(message: Message) -> SyncFuture<Reply> {
-        let future = SyncFuture<Reply>()
-        let syncMessage = SyncMessage<Message, Reply>(message: message,
-                                                      future: future)
-        parcel ! syncMessage
-        return future
+    public func sync(message: Message) -> SyncFuture<Value> {
+        return SyncFuture<Value> { complete in
+            let syncMessage = SyncMessage<Message, Value>(message: message,
+                                                          complete: complete)
+            parcel ! syncMessage
+        }
     }
     
 }
@@ -76,10 +79,10 @@ public final class SyncParcel<Message, Reply>: BasicParcel {
 
 infix operator !!
 
-public func !<Message, Reply>(lhs: SyncParcel<Message, Reply>, rhs: Message) {
+public func !<Message, Value>(lhs: SyncParcel<Message, Value>, rhs: Message) {
     lhs.async(message: rhs)
 }
 
-public func !!<Message, Reply>(lhs: SyncParcel<Message, Reply>, rhs: Message) -> SyncFuture<Reply> {
+public func !!<Message, Value>(lhs: SyncParcel<Message, Value>, rhs: Message) -> SyncFuture<Value> {
     return lhs.sync(message: rhs)
 }
