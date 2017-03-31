@@ -199,8 +199,6 @@
 		OBJ_59 /* ParcelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcelTests.swift; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		OBJ_60 /* ServerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerTests.swift; sourceTree = "<group>"; };
-		OBJ_61 /* bench */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bench; sourceTree = SOURCE_ROOT; };
-		OBJ_62 /* Examples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Examples; sourceTree = SOURCE_ROOT; };
 		OBJ_64 /* Socks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Socks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_65 /* SocksCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SocksCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_66 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -330,8 +328,6 @@
 				OBJ_6 /* Package.swift */,
 				OBJ_7 /* Sources */,
 				OBJ_57 /* Tests */,
-				OBJ_61 /* bench */,
-				OBJ_62 /* Examples */,
 				OBJ_63 /* Products */,
 			);
 			sourceTree = "<group>";
