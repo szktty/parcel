@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		91288E281E8E91CA00F6B99B /* SyncParcelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91288E271E8E91CA00F6B99B /* SyncParcelTests.swift */; };
+		91288E2A1E8EC99D00F6B99B /* Supervisor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91288E291E8EC99D00F6B99B /* Supervisor.swift */; };
 		913C80671E8D6A6200D83864 /* SyncParcel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 913C80661E8D6A6200D83864 /* SyncParcel.swift */; };
 		OBJ_100 /* TCPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_27 /* TCPSocket.swift */; };
 		OBJ_101 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_28 /* Types.swift */; };
@@ -150,6 +151,7 @@
 
 /* Begin PBXFileReference section */
 		91288E271E8E91CA00F6B99B /* SyncParcelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncParcelTests.swift; sourceTree = "<group>"; };
+		91288E291E8EC99D00F6B99B /* Supervisor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Supervisor.swift; sourceTree = "<group>"; };
 		913C80661E8D6A6200D83864 /* SyncParcel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncParcel.swift; sourceTree = "<group>"; };
 		OBJ_10 /* SynchronousTCPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronousTCPServer.swift; sourceTree = "<group>"; };
 		OBJ_11 /* SynchronousUDPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronousUDPServer.swift; sourceTree = "<group>"; };
@@ -344,6 +346,7 @@
 				OBJ_55 /* TCPSocket.swift */,
 				OBJ_56 /* Worker.swift */,
 				913C80661E8D6A6200D83864 /* SyncParcel.swift */,
+				91288E291E8EC99D00F6B99B /* Supervisor.swift */,
 			);
 			name = Parcel;
 			path = Sources;
@@ -588,6 +591,7 @@
 				OBJ_142 /* Parcel.swift in Sources */,
 				OBJ_143 /* ParcelCenter.swift in Sources */,
 				OBJ_144 /* Server.swift in Sources */,
+				91288E2A1E8EC99D00F6B99B /* Supervisor.swift in Sources */,
 				OBJ_145 /* TCPSocket.swift in Sources */,
 				OBJ_146 /* Worker.swift in Sources */,
 			);
