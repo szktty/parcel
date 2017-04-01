@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		91288E2A1E8EC99D00F6B99B /* Supervisor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91288E291E8EC99D00F6B99B /* Supervisor.swift */; };
 		9136B8B71E8FE05000626EF2 /* SyncParcelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91288E271E8E91CA00F6B99B /* SyncParcelTests.swift */; };
+		9136B8BA1E90195700626EF2 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9136B8B91E90195700626EF2 /* Application.swift */; };
 		913C80671E8D6A6200D83864 /* SyncParcel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 913C80661E8D6A6200D83864 /* SyncParcel.swift */; };
 		OBJ_100 /* TCPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_27 /* TCPSocket.swift */; };
 		OBJ_101 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_28 /* Types.swift */; };
@@ -150,6 +151,7 @@
 /* Begin PBXFileReference section */
 		91288E271E8E91CA00F6B99B /* SyncParcelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncParcelTests.swift; sourceTree = "<group>"; };
 		91288E291E8EC99D00F6B99B /* Supervisor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Supervisor.swift; sourceTree = "<group>"; };
+		9136B8B91E90195700626EF2 /* Application.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		913C80661E8D6A6200D83864 /* SyncParcel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncParcel.swift; sourceTree = "<group>"; };
 		OBJ_10 /* SynchronousTCPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronousTCPServer.swift; sourceTree = "<group>"; };
 		OBJ_11 /* SynchronousUDPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronousUDPServer.swift; sourceTree = "<group>"; };
@@ -341,6 +343,7 @@
 				OBJ_56 /* Worker.swift */,
 				913C80661E8D6A6200D83864 /* SyncParcel.swift */,
 				91288E291E8EC99D00F6B99B /* Supervisor.swift */,
+				9136B8B91E90195700626EF2 /* Application.swift */,
 			);
 			name = Parcel;
 			path = Sources;
@@ -580,6 +583,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				9136B8BA1E90195700626EF2 /* Application.swift in Sources */,
 				913C80671E8D6A6200D83864 /* SyncParcel.swift in Sources */,
 				OBJ_141 /* Extensions.swift in Sources */,
 				OBJ_142 /* Parcel.swift in Sources */,
