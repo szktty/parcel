@@ -47,12 +47,10 @@ public class ParcelCenter {
     
     public static var `default`: ParcelCenter = ParcelCenter()
     
-    
     public var maxNumberOfWorkers: Int
     public var maxNumberOfParcels: Int
     
     var workers: [Worker]
-    var parcelStore: [ObjectIdentifier: BasicParcel] = [:]
     var parcelLockQueue: DispatchQueue
     var depcyStore: [ObjectIdentifier: [Dependency]] = [:]
     
@@ -77,24 +75,18 @@ public class ParcelCenter {
         }
     }
     
-    // MARK: Parcels
+    // MARK: Managing Parcels
     
-    func addParcel<Message>(_ parcel: Parcel<Message>) {
-        parcelLockQueue.sync {
-            parcelStore[parcel.id] = parcel
-            availableWorker.assign(parcel: parcel)
-        }
+    func initializeParcel<Message>(_ parcel: Parcel<Message>) {
+        availableWorker.assign(parcel: parcel)
     }
     
-    func removeParcel(_ parcel: BasicParcel, signal: Signal = .normal) -> Bool {
-        return parcelLockQueue.sync {
-            if parcelStore[parcel.id] == nil {
-                return false
-            } else {
-                parcelStore[parcel.id] = nil
-                parcel.finishTerminating(signal: signal)
-                return true
-            }
+    func finishParcel(_ parcel: BasicParcel, signal: Signal = .normal) -> Bool {
+        if parcel.isAvailable {
+            parcel.finishTerminating(signal: signal)
+            return true
+        } else {
+            return false
         }
     }
     
@@ -132,7 +124,7 @@ public class ParcelCenter {
     }
     
     func terminate(parcel: BasicParcel, signal: Signal, ignoreDepenencies: Bool = false) {
-        if !removeParcel(parcel, signal: signal) {
+        if !finishParcel(parcel, signal: signal) {
             return
         }
         

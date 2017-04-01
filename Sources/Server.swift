@@ -88,7 +88,7 @@ public class ServerResponseReceiver<Delegate> where Delegate: ServerDelegate {
                 self.isTimeout = true
             }
         }
-        worker.executeQueue.async(execute: timerWorkItem!)
+        worker.evaluationQueue.async(execute: timerWorkItem!)
     }
     
     public func `return`(response: Delegate.Response? = nil) {

@@ -19,7 +19,7 @@ class ParcelTests: XCTestCase {
         super.tearDown()
     }
     
-    func _testExample() {
+    func testExample() {
         let exp = self.expectation(description: "example")
         var count = 0
         let parcel = Parcel<Area>.spawn {
@@ -63,10 +63,10 @@ class ParcelTests: XCTestCase {
         }
     }
     
-    func _testTimeout() {
+    func testTimeout() {
         let exp = self.expectation(description: "timeout test")
         let parcel = Parcel<Void>.spawn { _ in }
-        parcel.terminateAfter(deadline: 1) {
+        parcel.terminateAfter(deadline: DispatchTimeInterval.seconds(1)) {
             exp.fulfill()
         }
         self.waitForExpectations(timeout: 2)

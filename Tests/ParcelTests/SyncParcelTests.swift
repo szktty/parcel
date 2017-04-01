@@ -15,7 +15,7 @@ class SyncParcelTests: XCTestCase {
     
     func testComplete() {
         let exp = expectation(description: "immediate complete")
-        let parcel: SyncParcel<String, Int> = SyncParcel.spawn { p in
+        let parcel = SyncParcel<String, Int>.spawn { p in
             p.onReceive { message, complete in
                 if let int = Int(message) {
                     complete?(.success(int))

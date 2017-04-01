@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		91288E281E8E91CA00F6B99B /* SyncParcelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91288E271E8E91CA00F6B99B /* SyncParcelTests.swift */; };
 		91288E2A1E8EC99D00F6B99B /* Supervisor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91288E291E8EC99D00F6B99B /* Supervisor.swift */; };
+		9136B8B71E8FE05000626EF2 /* SyncParcelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91288E271E8E91CA00F6B99B /* SyncParcelTests.swift */; };
 		913C80671E8D6A6200D83864 /* SyncParcel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 913C80661E8D6A6200D83864 /* SyncParcel.swift */; };
 		OBJ_100 /* TCPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_27 /* TCPSocket.swift */; };
 		OBJ_101 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_28 /* Types.swift */; };
@@ -35,7 +35,6 @@
 		OBJ_141 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_51 /* Extensions.swift */; };
 		OBJ_142 /* Parcel.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_52 /* Parcel.swift */; };
 		OBJ_143 /* ParcelCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_53 /* ParcelCenter.swift */; };
-		OBJ_144 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_54 /* Server.swift */; };
 		OBJ_145 /* TCPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_55 /* TCPSocket.swift */; };
 		OBJ_146 /* Worker.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_56 /* Worker.swift */; };
 		OBJ_148 /* SocksCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_65 /* SocksCore.framework */; };
@@ -43,7 +42,6 @@
 		OBJ_150 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_66 /* Result.framework */; };
 		OBJ_151 /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_67 /* BrightFutures.framework */; };
 		OBJ_161 /* ParcelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_59 /* ParcelTests.swift */; };
-		OBJ_162 /* ServerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_60 /* ServerTests.swift */; };
 		OBJ_164 /* SocksCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_65 /* SocksCore.framework */; };
 		OBJ_165 /* Socks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_64 /* Socks.framework */; };
 		OBJ_166 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_66 /* Result.framework */; };
@@ -586,7 +584,6 @@
 				OBJ_141 /* Extensions.swift in Sources */,
 				OBJ_142 /* Parcel.swift in Sources */,
 				OBJ_143 /* ParcelCenter.swift in Sources */,
-				OBJ_144 /* Server.swift in Sources */,
 				91288E2A1E8EC99D00F6B99B /* Supervisor.swift in Sources */,
 				OBJ_145 /* TCPSocket.swift in Sources */,
 				OBJ_146 /* Worker.swift in Sources */,
@@ -597,9 +594,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				91288E281E8E91CA00F6B99B /* SyncParcelTests.swift in Sources */,
 				OBJ_161 /* ParcelTests.swift in Sources */,
-				OBJ_162 /* ServerTests.swift in Sources */,
+				9136B8B71E8FE05000626EF2 /* SyncParcelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

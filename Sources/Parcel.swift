@@ -28,12 +28,6 @@ open class BasicParcel {
     var isTerminated: Bool = false
     var onTerminateHandler: ((Signal) -> Void)?
     var onUpdateHandler: ((BasicParcel, Signal) -> Void)?
-
-    // Do not use DispatchQueue.sync().
-    // This dispatch queue is shared with other parcels managed by a same worker.
-    var dispatchQueue: DispatchQueue {
-        get { return worker.executeQueue }
-    }
     
     // MARK: Terminating
     
@@ -46,11 +40,11 @@ open class BasicParcel {
         ParcelCenter.default.terminate(parcel: self, signal: signal)
     }
     
-    public func terminateAfter(deadline: UInt,
+    public func terminateAfter(deadline: DispatchTimeInterval,
                                error: Error? = nil,
                                execute: @escaping () -> Void) {
         let signal: Signal = error != nil ? .error(error!) : .normal
-        worker.asyncAfter(parcel: self, deadline: deadline) {
+        worker.mainQueue.asyncAfter(deadline: DispatchTime.now() + deadline) {
             execute()
             ParcelCenter.default.terminate(parcel: self, signal: signal)
         }
@@ -90,11 +84,9 @@ open class BasicParcel {
 public final class Parcel<Message>: BasicParcel {
     
     var onReceiveHandler: ((Message) throws -> Loop)?
-    var mailbox: Mailbox<Message>!
 
     public required override init() {
         super.init()
-        mailbox = Mailbox(parcel: self)
     }
     
     // MARK: Event handlers
@@ -106,7 +98,7 @@ public final class Parcel<Message>: BasicParcel {
     // MARK: Running
     
     public func run() {
-        ParcelCenter.default.addParcel(self)
+        ParcelCenter.default.initializeParcel(self)
     }
     
     public class func spawn(block: @escaping (Parcel<Message>) -> Void) -> Parcel<Message> {
@@ -119,16 +111,13 @@ public final class Parcel<Message>: BasicParcel {
     // MARK: Message passing
     
     public func async(message: Message) {
-        mailbox.enqueue(message)
-    }
-    
-    // MARK: Mailbox
-    
-    public func pop() -> Message? {
-        return mailbox.dequeue()
+        let mail = Mail(parcel: self, message: message) {
+            try self.evaluate(message: message)
+        }
+        worker.mailbox.enqueue(mail)
     }
 
-    func evaluate(message: Message) throws {
+    private func evaluate(message: Message) throws {
         if let handler = onReceiveHandler {
             switch try handler(message) {
             case .continue:
@@ -136,65 +125,7 @@ public final class Parcel<Message>: BasicParcel {
             case .break:
                 terminate()
             }
-        } else {
-            terminate()
         }
-    }
-    
-}
-
-class Mailbox<Message> {
-    
-    weak var parcel: Parcel<Message>!
-    var firstItem: MailboxItem<Message>?
-    var lastItem: MailboxItem<Message>?
-    var count: Int = 0
-    
-    init(parcel: Parcel<Message>) {
-        self.parcel = parcel
-    }
-    
-    func enqueue(_ value: Message) {
-        guard let worker = parcel.worker else { return }
-        
-        worker.mailboxQueue.sync {
-            let item = MailboxItem(value: value)
-            if count == 0 {
-                firstItem = item
-            } else {
-                lastItem?.next = item
-            }
-            lastItem = item
-            count += 1
-        }
-    }
-    
-    func dequeue() -> Message? {
-        guard let worker = parcel.worker else { return nil }
-
-        var result: Message?
-        worker.mailboxQueue.sync {
-            if let item = firstItem {
-                firstItem = item.next
-                count -= 1
-                if firstItem == nil {
-                    lastItem = nil
-                }
-                result = item.value
-            }
-        }
-        return result
-    }
-    
-}
-
-class MailboxItem<Message> {
-    
-    var value: Message
-    var next: MailboxItem<Message>?
-    
-    init(value: Message) {
-        self.value = value
     }
     
 }
