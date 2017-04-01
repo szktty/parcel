@@ -65,7 +65,7 @@ public class ParcelCenter {
     
     init(maxNumberOfWorkers: Int? = nil,
          maxNumberOfParcels: Int? = nil) {
-        self.maxNumberOfWorkers = maxNumberOfWorkers ?? ProcessInfo.processInfo.processorCount
+        self.maxNumberOfWorkers = maxNumberOfWorkers ?? 1
         self.maxNumberOfParcels = maxNumberOfParcels ?? 100000
         parcelLockQueue = DispatchQueue(label: "parcelLockQueue")
         
