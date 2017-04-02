@@ -8,16 +8,17 @@ public protocol ServerDelegate {
     associatedtype Request
     associatedtype Response
     
-    func initialize(server: Server<Self>, config: Config?) -> ServerInitResult
-    func onSync(server: Server<Self>,
-                client: Client?,
+    func server(_ server: Server<Self>,
+                onSetUp config: Config?) -> ServerInitResult
+    func server(_ server: Server<Self>,
+                onSync client: Client?,
                 request: Request,
                 receiver: ServerResponseReceiver<Self>)
-    func onAsync(server: Server<Self>,
-                 client: Client?,
-                 request: Request,
-                 receiver: ServerResponseReceiver<Self>)
-    func onTerminate(server: Server<Self>, error: Error)
+    func server(_ server: Server<Self>,
+                onAsync client: Client?,
+                request: Request,
+                receiver: ServerResponseReceiver<Self>)
+    func server(_ server: Server<Self>, onTerminate error: Error)
     
 }
 
@@ -104,7 +105,7 @@ public class ServerResponseReceiver<Delegate> where Delegate: ServerDelegate {
     
     func finish() -> Loop {
         if isTerminated {
-            server.delegate.onTerminate(server: server, error: error!)
+            server.delegate.server(server, onTerminate: error!)
             isFinished = true
             return .break
         } else {
@@ -133,7 +134,7 @@ open class Server<Delegate> where Delegate: ServerDelegate {
             return .error(ServerError.alreadyRunning)
         }
         
-        switch delegate.initialize(server: self, config: config) {
+        switch delegate.server(self, onSetUp: config) {
         case .ignore:
             break
         case .terminate(error: let error):
@@ -153,17 +154,17 @@ open class Server<Delegate> where Delegate: ServerDelegate {
                 case .sync(client: let client,
                            request: let request,
                            receiver: let receiver):
-                    self.delegate.onSync(server: self,
-                                        client: client,
-                                        request: request,
-                                        receiver: receiver)
+                    self.delegate.server(self,
+                                         onSync: client,
+                                         request: request,
+                                         receiver: receiver)
                     return receiver.finish()
                     
                 case .async(client: let client,
                             request: let request,
                             receiver: let receiver):
-                    self.delegate.onAsync(server: self,
-                                         client: client,
+                    self.delegate.server(self,
+                                         onAsync: client,
                                          request: request,
                                          receiver: receiver)
                     return receiver.finish()
@@ -181,13 +182,13 @@ open class Server<Delegate> where Delegate: ServerDelegate {
     }
     
     public func terminate(error: Error) {
-        delegate.onTerminate(server: self, error: error)
+        delegate.server(self, onTerminate: error)
         parcel.terminate()
     }
     
     public func terminateAfter(deadline: UInt, error: Error) {
         parcel.terminateAfter(deadline: deadline) {
-            self.delegate.onTerminate(server: self, error: error)
+            self.delegate.server(self, onTerminate: error)
         }
     }
     
